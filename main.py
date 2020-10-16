@@ -65,7 +65,7 @@ def detect_face():
             host="localhost",
             user="admin",
             passwd="password",
-            database="Authorized_user"
+            database="student_data"
             )
             mycursor=mydb.cursor()
             mycursor.execute("select name from my_table where id="+str(id))
@@ -110,9 +110,9 @@ def generate_dataset():
     else:
         mydb=mysql.connector.connect(
         host="localhost",
-        user="root",
-        passwd="",
-        database="Authorized_user"
+        user="admin",
+        passwd="password",
+        database="student_data"
         )
         mycursor=mydb.cursor()
         mycursor.execute("SELECT * from my_table")
@@ -147,7 +147,7 @@ def generate_dataset():
                 img_id+=1
                 face = cv2.resize(face_cropped(frame),(200,200))
                 face  = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
-                file_name_path = "data/user."+str(id)+"."+str(img_id)+".jpg"
+                file_name_path = "/home/pi/Desktop/smart-checking-attendance/dataset/user."+str(id)+"."+str(img_id)+".jpg"
                 cv2.imwrite(file_name_path,face)
                 cv2.putText(face,str(img_id),(50,50),cv2.FONT_HERSHEY_COMPLEX,1, (0,255,0),2)
                 # (50,50) is the origin point from where text is to be written
@@ -155,7 +155,7 @@ def generate_dataset():
                 #thickness=2
 
                 cv2.imshow("Cropped face",face)
-                if cv2.waitKey(1)==13 or int(img_id)==200:
+                if cv2.waitKey(1)==13 or int(img_id)==10:
                     break
         cap.release()
         cv2.destroyAllWindows()
