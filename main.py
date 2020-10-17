@@ -4,26 +4,33 @@ import cv2
 import os
 from PIL import Image
 import numpy as np
+import RPi.GPIO as GPIO
+from mfrc522 import SimpleMFRC522
 import mysql.connector
 
 window=tk.Tk()
 window.title("Face recognition system")
 
 #window.config(background="lime")
-l1=tk.Label(window,text="Name",font=("Algerian",20))
+l1=tk.Label(window,text="First name",font=("Algerian",20))
 l1.grid(column=0, row=0)
 t1=tk.Entry(window,width=50,bd=5)
 t1.grid(column=1, row=0)
 
-l2=tk.Label(window,text="Age",font=("Algerian",20))
+l2=tk.Label(window,text="Last name",font=("Algerian",20))
 l2.grid(column=0, row=1)
 t2=tk.Entry(window,width=50,bd=5)
 t2.grid(column=1, row=1)
 
-l3=tk.Label(window,text="Address",font=("Algerian",20))
+l3=tk.Label(window,text="Student id",font=("Algerian",20))
 l3.grid(column=0, row=2)
 t3=tk.Entry(window,width=50,bd=5)
 t3.grid(column=1, row=2)
+
+l4=tk.Label(window,text="Email",font=("Algerian",20))
+l4.grid(column=0, row=3)
+t4=tk.Entry(window,width=50,bd=5)
+t4.grid(column=1, row=3)
 
 def train_classifier():
     data_dir="/home/pi/Desktop/smart-checking-attendance/dataset"
@@ -68,7 +75,7 @@ def detect_face():
             database="student_data"
             )
             mycursor=mydb.cursor()
-            mycursor.execute("select name from my_table where id="+str(id))
+            mycursor.execute("select first_name from students_details where id="+str(id))
             s = mycursor.fetchone()
             s = ''+''.join(s)
             
@@ -105,7 +112,7 @@ b2=tk.Button(window,text="Detect the face",font=("Algerian",20),bg='green',fg='w
 b2.grid(column=1, row=4)
 
 def generate_dataset():
-    if(t1.get()=="" or t2.get()=="" or t3.get()==""):
+    if(t1.get()=="" or t2.get()=="" or t3.get()=="" or t4.get()==""):
         messagebox.showinfo('Result','Please provide complete details of the user')
     else:
         mydb=mysql.connector.connect(
@@ -115,13 +122,13 @@ def generate_dataset():
         database="student_data"
         )
         mycursor=mydb.cursor()
-        mycursor.execute("SELECT * from my_table")
+        mycursor.execute("SELECT * from students_details")
         myresult=mycursor.fetchall()
         id=1
         for x in myresult:
             id+=1
-        sql="insert into my_table(id,Name,Age,Address) values(%s,%s,%s,%s)"
-        val=(id,t1.get(),t2.get(),t3.get())
+        sql="insert into students_details(id,first_name,last_name,student_id,email_address) values(%s,%s,%s,%s,%s)"
+        val=(id,t1.get(),t2.get(),t3.get(),t4.get())
         mycursor.execute(sql,val)
         mydb.commit()
         
@@ -164,5 +171,5 @@ def generate_dataset():
 b3=tk.Button(window,text="Generate dataset",font=("Algerian",20),bg='pink',fg='black',command=generate_dataset)
 b3.grid(column=2, row=4)
 
-window.geometry("800x200")
+window.geometry("800x250")
 window.mainloop()
