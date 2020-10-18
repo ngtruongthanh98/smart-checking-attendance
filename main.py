@@ -32,30 +32,6 @@ l4.grid(column=0, row=3)
 t4=tk.Entry(window,width=50,bd=5)
 t4.grid(column=1, row=3)
 
-def train_classifier():
-    data_dir="/home/pi/Desktop/smart-checking-attendance/dataset"
-    path = [os.path.join(data_dir,f) for f in os.listdir(data_dir)]
-    faces  = []
-    ids   = []
-    
-    for image in path:
-        img = Image.open(image).convert('L');
-        imageNp= np.array(img, 'uint8')
-        id = int(os.path.split(image)[1].split(".")[1])
-        
-        faces.append(imageNp)
-        ids.append(id)
-    ids = np.array(ids)
-    
-    #Train the classifier and save
-    clf = cv2.face.LBPHFaceRecognizer_create()
-    clf.train(faces,ids)
-    clf.write("classifier.xml")
-    messagebox.showinfo('Result','Training dataset completed!!!')
-
-b1=tk.Button(window,text="Training",font=("Algerian",20),bg='orange',fg='red',command=train_classifier)
-b1.grid(column=0, row=4)
-
 def detect_face():
     def draw_boundary(img,classifier,scaleFactor,minNeighbors,color,text,clf):
         gray_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -69,10 +45,10 @@ def detect_face():
             confidence = int(100*(1-pred/300))
             
             mydb=mysql.connector.connect(
-            host="localhost",
-            user="admin",
-            passwd="password",
-            database="student_data"
+                host="localhost",
+                user="admin",
+                passwd="password",
+                database="student_data"
             )
             mycursor=mydb.cursor()
             mycursor.execute("select first_name from students_details where id="+str(id))
@@ -108,18 +84,67 @@ def detect_face():
     video_capture.release()
     cv2.destroyAllWindows()
 
-b2=tk.Button(window,text="Detect the face",font=("Algerian",20),bg='green',fg='white',command=detect_face)
-b2.grid(column=1, row=4)
+b1=tk.Button(window,text="Detect the face",font=("Algerian",20),bg='green',fg='white',command=detect_face)
+b1.grid(column=2, row=0)
 
+def registrate_card():
+    reader = SimpleMFRC522()
+    messagebox.showinfo('Put card to read')
+    
+    try:
+        id = reader.read()
+        print(id)
+        
+        mydb=mysql.connector.connect(
+            host="localhost",
+            user="admin",
+            passwd="password",
+            database="student_data"
+        )
+        mycursor=mydb.cursor()
+        #change code here !!!!
+        mycursor.execute("SELECT * from students_details")
+        myresult=mycursor.fetchall()
+
+    finally:
+        GPIO.cleanup()
+
+b2=tk.Button(window,text="Registrate card",font=("Algerian",20),bg='green',fg='white',command=registrate_card)
+b2.grid(column=2, row=1)
+
+def train_classifier():
+    data_dir="/home/pi/Desktop/smart-checking-attendance/dataset"
+    path = [os.path.join(data_dir,f) for f in os.listdir(data_dir)]
+    faces  = []
+    ids   = []
+    
+    for image in path:
+        img = Image.open(image).convert('L');
+        imageNp= np.array(img, 'uint8')
+        id = int(os.path.split(image)[1].split(".")[1])
+        
+        faces.append(imageNp)
+        ids.append(id)
+    ids = np.array(ids)
+    
+    #Train the classifier and save
+    clf = cv2.face.LBPHFaceRecognizer_create()
+    clf.train(faces,ids)
+    clf.write("classifier.xml")
+    messagebox.showinfo('Result','Training dataset completed!!!')
+
+b3=tk.Button(window,text="Training",font=("Algerian",20),bg='orange',fg='red',command=train_classifier)
+b3.grid(column=2, row=2)
+        
 def generate_dataset():
     if(t1.get()=="" or t2.get()=="" or t3.get()=="" or t4.get()==""):
         messagebox.showinfo('Result','Please provide complete details of the user')
     else:
         mydb=mysql.connector.connect(
-        host="localhost",
-        user="admin",
-        passwd="password",
-        database="student_data"
+            host="localhost",
+            user="admin",
+            passwd="password",
+            database="student_data"
         )
         mycursor=mydb.cursor()
         mycursor.execute("SELECT * from students_details")
@@ -168,8 +193,8 @@ def generate_dataset():
         cv2.destroyAllWindows()
         messagebox.showinfo('Result','Generating dataset completed!!!')
 
-b3=tk.Button(window,text="Generate dataset",font=("Algerian",20),bg='pink',fg='black',command=generate_dataset)
-b3.grid(column=2, row=4)
+b4=tk.Button(window,text="Generate dataset",font=("Algerian",20),bg='pink',fg='black',command=generate_dataset)
+b4.grid(column=2, row=3)
 
-window.geometry("800x250")
+window.geometry("900x250")
 window.mainloop()
