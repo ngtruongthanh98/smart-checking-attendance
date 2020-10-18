@@ -48,10 +48,10 @@ def detect_face():
                 host="localhost",
                 user="admin",
                 passwd="password",
-                database="student_data"
+                database="attendance"
             )
             mycursor=mydb.cursor()
-            mycursor.execute("select first_name from students_details where id="+str(id))
+            mycursor.execute("select first_name from student_table where id_stu="+str(id))
             s = mycursor.fetchone()
             s = ''+''.join(s)
             
@@ -78,7 +78,7 @@ def detect_face():
         img=  recognize(img,clf,faceCascade)
         cv2.imshow("face detection",img)
 
-        if cv2.waitKey(1)==13:
+        if (cv2.waitKey(1)==ord('q')):
             break
 
     video_capture.release()
@@ -89,22 +89,31 @@ b1.grid(column=2, row=0)
 
 def registrate_card():
     reader = SimpleMFRC522()
-    messagebox.showinfo('Put card to read')
+#     messagebox.showinfo('Command','Put card to read')
+    print("Put card to read")
     
     try:
         id = reader.read()
-        print(id)
+#         print(id)
         
         mydb=mysql.connector.connect(
             host="localhost",
             user="admin",
             passwd="password",
-            database="student_data"
+            database="attendance"
         )
         mycursor=mydb.cursor()
         #change code here !!!!
-        mycursor.execute("SELECT * from students_details")
-        myresult=mycursor.fetchall()
+#         mycursor.execute("SELECT * from students_details")
+#         myresult=mycursor.fetchall()
+#         
+#         id_num=1
+#         for x in myresult:
+#             id+=1
+#         sql="insert into students_details(id_num,card_number) values(%s,%s)"
+#         val=(id_num,id) #error here
+#         mycursor.execute(sql,val)
+#         mydb.commit()
 
     finally:
         GPIO.cleanup()
@@ -144,16 +153,16 @@ def generate_dataset():
             host="localhost",
             user="admin",
             passwd="password",
-            database="student_data"
+            database="attendance"
         )
         mycursor=mydb.cursor()
-        mycursor.execute("SELECT * from students_details")
+        mycursor.execute("SELECT * from student_table")
         myresult=mycursor.fetchall()
-        id=1
+        id_stu=1
         for x in myresult:
-            id+=1
-        sql="insert into students_details(id,first_name,last_name,student_id,email_address) values(%s,%s,%s,%s,%s)"
-        val=(id,t1.get(),t2.get(),t3.get(),t4.get())
+            id_stu+=1
+        sql="insert into student_table(id_stu,first_name,last_name,student_number,email) values(%s,%s,%s,%s,%s)"
+        val=(id_stu,t1.get(),t2.get(),t3.get(),t4.get())
         mycursor.execute(sql,val)
         mydb.commit()
         
@@ -179,7 +188,7 @@ def generate_dataset():
                 img_id+=1
                 face = cv2.resize(face_cropped(frame),(200,200))
                 face  = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
-                file_name_path = "/home/pi/Desktop/smart-checking-attendance/dataset/user."+str(id)+"."+str(img_id)+".jpg"
+                file_name_path = "/home/pi/Desktop/smart-checking-attendance/dataset/user."+str(id_stu)+"."+str(img_id)+".jpg"
                 cv2.imwrite(file_name_path,face)
                 cv2.putText(face,str(img_id),(50,50),cv2.FONT_HERSHEY_COMPLEX,1, (0,255,0),2)
                 # (50,50) is the origin point from where text is to be written
@@ -187,7 +196,7 @@ def generate_dataset():
                 #thickness=2
 
                 cv2.imshow("Cropped face",face)
-                if cv2.waitKey(1)==13 or int(img_id)==10:
+                if cv2.waitKey(1)==13 or int(img_id)==200:
                     break
         cap.release()
         cv2.destroyAllWindows()
