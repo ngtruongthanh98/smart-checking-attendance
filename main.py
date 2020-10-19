@@ -7,6 +7,7 @@ import numpy as np
 import RPi.GPIO as GPIO
 from mfrc522 import SimpleMFRC522
 import mysql.connector
+import time
 
 window=tk.Tk()
 window.title("Face recognition system")
@@ -85,7 +86,7 @@ def detect_face():
     cv2.destroyAllWindows()
 
 b1=tk.Button(window,text="Detect the face",font=("Algerian",20),bg='green',fg='white',command=detect_face)
-b1.grid(column=2, row=0)
+b1.grid(column=0, row=6)
 
 def registrate_card():
     reader = SimpleMFRC522()
@@ -118,8 +119,8 @@ def registrate_card():
     finally:
         GPIO.cleanup()
 
-b2=tk.Button(window,text="Registrate card",font=("Algerian",20),bg='green',fg='white',command=registrate_card)
-b2.grid(column=2, row=1)
+b2=tk.Button(window,text="Registrate card",font=("Algerian",20),bg='orange',fg='red',command=registrate_card)
+b2.grid(column=1, row=6)
 
 def train_classifier():
     data_dir="/home/pi/Desktop/smart-checking-attendance/dataset"
@@ -143,7 +144,7 @@ def train_classifier():
     messagebox.showinfo('Result','Training dataset completed!!!')
 
 b3=tk.Button(window,text="Training",font=("Algerian",20),bg='orange',fg='red',command=train_classifier)
-b3.grid(column=2, row=2)
+b3.grid(column=0, row=10)
         
 def generate_dataset():
     if(t1.get()=="" or t2.get()=="" or t3.get()=="" or t4.get()==""):
@@ -202,8 +203,8 @@ def generate_dataset():
         cv2.destroyAllWindows()
         messagebox.showinfo('Result','Generating dataset completed!!!')
 
-b4=tk.Button(window,text="Generate dataset",font=("Algerian",20),bg='pink',fg='black',command=generate_dataset)
-b4.grid(column=2, row=3)
+b4=tk.Button(window,text="Generate dataset",font=("Algerian",20),bg='green',fg='white',command=generate_dataset)
+b4.grid(column=1, row=10)
 
-window.geometry("900x250")
+window.geometry("900x300")
 window.mainloop()
