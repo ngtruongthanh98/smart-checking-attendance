@@ -1,16 +1,31 @@
 import tkinter as tk
 from tkinter import messagebox
+from tkinter import *
 import cv2
 import os
 from PIL import Image
+from PIL import ImageTk
 import numpy as np
 import RPi.GPIO as GPIO
 from mfrc522 import SimpleMFRC522
 import mysql.connector
 import time
 
-window=tk.Tk()
+window=Tk()
 window.title("Face recognition system")
+
+#Set Background Image to window
+path = '/home/pi/Desktop/smart-checking-attendance/LogoBK.jpg'
+image = Image.open(path)
+
+image = image.resize((300,300), Image.ANTIALIAS)
+img = ImageTk.PhotoImage(image)
+
+# imgLabel = Label(window, image=img).grid(row=4,column=14)
+imgLabel = Label(window, image=img).place(x=650,y=0)
+
+
+# imgLabel = Label(window, image=img).grid(row=0, column=4)
 
 #window.config(background="lime")
 l1=tk.Label(window,text="First name",font=("Algerian",20))
@@ -86,7 +101,8 @@ def detect_face():
     cv2.destroyAllWindows()
 
 b1=tk.Button(window,text="Detect the face",font=("Algerian",20),bg='green',fg='white',command=detect_face)
-b1.grid(column=0, row=6)
+# b1.grid(column=0, row=4)
+b1.place(x=10, y=150)
 
 def registrate_card():
     reader = SimpleMFRC522()
@@ -120,7 +136,8 @@ def registrate_card():
         GPIO.cleanup()
 
 b2=tk.Button(window,text="Registrate card",font=("Algerian",20),bg='orange',fg='red',command=registrate_card)
-b2.grid(column=1, row=6)
+# b2.grid(column=1, row=4)
+b2.place(x=300,y=150)
 
 def train_classifier():
     data_dir="/home/pi/Desktop/smart-checking-attendance/dataset"
@@ -144,7 +161,8 @@ def train_classifier():
     messagebox.showinfo('Result','Training dataset completed!!!')
 
 b3=tk.Button(window,text="Training",font=("Algerian",20),bg='orange',fg='red',command=train_classifier)
-b3.grid(column=0, row=10)
+# b3.grid(column=0, row=6)
+b3.place(x=10,y=250)
         
 def generate_dataset():
     if(t1.get()=="" or t2.get()=="" or t3.get()=="" or t4.get()==""):
@@ -204,7 +222,8 @@ def generate_dataset():
         messagebox.showinfo('Result','Generating dataset completed!!!')
 
 b4=tk.Button(window,text="Generate dataset",font=("Algerian",20),bg='green',fg='white',command=generate_dataset)
-b4.grid(column=1, row=10)
+# b4.grid(column=1, row=6)
+b4.place(x=300,y=250)
 
-window.geometry("900x300")
+window.geometry("950x300")
 window.mainloop()
