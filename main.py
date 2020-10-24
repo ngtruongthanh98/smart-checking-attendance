@@ -21,11 +21,8 @@ image = Image.open(path)
 image = image.resize((300,300), Image.ANTIALIAS)
 img = ImageTk.PhotoImage(image)
 
-# imgLabel = Label(window, image=img).grid(row=4,column=14)
-imgLabel = Label(window, image=img).place(x=650,y=0)
+imgLabel = Label(window, image=img).place(x=600,y=10)
 
-
-# imgLabel = Label(window, image=img).grid(row=0, column=4)
 
 #window.config(background="lime")
 l1=tk.Label(window,text="First name",font=("Algerian",20))
@@ -101,43 +98,14 @@ def detect_face():
     cv2.destroyAllWindows()
 
 b1=tk.Button(window,text="Detect the face",font=("Algerian",20),bg='green',fg='white',command=detect_face)
-# b1.grid(column=0, row=4)
-b1.place(x=10, y=150)
+b1.place(x=10, y=180)
 
-def registrate_card():
-    reader = SimpleMFRC522()
-#     messagebox.showinfo('Command','Put card to read')
-    print("Put card to read")
-    
-    try:
-        id = reader.read()
-#         print(id)
-        
-        mydb=mysql.connector.connect(
-            host="localhost",
-            user="admin",
-            passwd="password",
-            database="attendance"
-        )
-        mycursor=mydb.cursor()
-        #change code here !!!!
-#         mycursor.execute("SELECT * from students_details")
-#         myresult=mycursor.fetchall()
-#         
-#         id_num=1
-#         for x in myresult:
-#             id+=1
-#         sql="insert into students_details(id_num,card_number) values(%s,%s)"
-#         val=(id_num,id) #error here
-#         mycursor.execute(sql,val)
-#         mydb.commit()
-
-    finally:
-        GPIO.cleanup()
-
-b2=tk.Button(window,text="Registrate card",font=("Algerian",20),bg='orange',fg='red',command=registrate_card)
-# b2.grid(column=1, row=4)
-b2.place(x=300,y=150)
+# def registrate_card():
+# 
+#     
+# 
+# b2=tk.Button(window,text="Registrate card",font=("Algerian",20),bg='orange',fg='red',command=registrate_card)
+# b2.place(x=300,y=180)
 
 def train_classifier():
     data_dir="/home/pi/Desktop/smart-checking-attendance/dataset"
@@ -161,8 +129,7 @@ def train_classifier():
     messagebox.showinfo('Result','Training dataset completed!!!')
 
 b3=tk.Button(window,text="Training",font=("Algerian",20),bg='orange',fg='red',command=train_classifier)
-# b3.grid(column=0, row=6)
-b3.place(x=10,y=250)
+b3.place(x=10,y=240)
         
 def generate_dataset():
     if(t1.get()=="" or t2.get()=="" or t3.get()=="" or t4.get()==""):
@@ -175,12 +142,12 @@ def generate_dataset():
             database="attendance"
         )
         mycursor=mydb.cursor()
-        mycursor.execute("SELECT * from student_table")
+        mycursor.execute("SELECT * FROM student_table")
         myresult=mycursor.fetchall()
         id_stu=1
         for x in myresult:
             id_stu+=1
-        sql="insert into student_table(id_stu,first_name,last_name,student_number,email) values(%s,%s,%s,%s,%s)"
+        sql="INSERT INTO student_table(id_stu,first_name,last_name,student_number,email) values(%s,%s,%s,%s,%s)"
         val=(id_stu,t1.get(),t2.get(),t3.get(),t4.get())
         mycursor.execute(sql,val)
         mydb.commit()
@@ -215,15 +182,46 @@ def generate_dataset():
                 #thickness=2
 
                 cv2.imshow("Cropped face",face)
-                if cv2.waitKey(1)==13 or int(img_id)==200:
+                if cv2.waitKey(1)==13 or int(img_id)==10:
                     break
         cap.release()
         cv2.destroyAllWindows()
         messagebox.showinfo('Result','Generating dataset completed!!!')
+        
+        mydb=mysql.connector.connect(
+            host="localhost",
+            user="admin",
+            passwd="password",
+            database="attendance"
+        )
+            
+        mycursor=mydb.cursor()
+        reader = SimpleMFRC522()
+        try:
+            while True:
+                print("Put card to register")
+#                 messagebox.showinfo('Noti','Put card to register')
+                id, text = reader.read()
+#                 mycursor.execute("SELECT id_stu FROM student_table WHERE rfid_uid="+str(id))
+                mycursor.execute("SELECT id_stu FROM student_table WHERE student_number=t3.get()")
+                myresult=mycursor.fetchall()
+                for y in myresult:
+#                     id_stu+=1
+                    sql="INSERT INTO student_table(id_stu, rfid_uid) values(%s,%s)"
+                    val=(id_stu, id)
+                    mycursor.execute(sql,val)
+                    mydb.commit()
+                    
+                    print("Saved to database")
+#                     messagebox.showinfo('Noti','Saved to database')
+
+
+        finally:
+            GPIO.cleanup()
+        
 
 b4=tk.Button(window,text="Generate dataset",font=("Algerian",20),bg='green',fg='white',command=generate_dataset)
-# b4.grid(column=1, row=6)
-b4.place(x=300,y=250)
+b4.place(x=300,y=240)
 
-window.geometry("950x300")
+window.geometry("910x320")
 window.mainloop()
