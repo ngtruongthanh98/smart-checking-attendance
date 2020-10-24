@@ -15,7 +15,7 @@ window=Tk()
 window.title("Face recognition system")
 
 #Set Background Image to window
-path = '/home/pi/Desktop/smart-checking-attendance/LogoBK.jpg'
+path = '/home/pi/smart-checking-attendance/LogoBK.jpg'
 image = Image.open(path)
 
 image = image.resize((300,300), Image.ANTIALIAS)
@@ -108,7 +108,7 @@ b1.place(x=10, y=180)
 # b2.place(x=300,y=180)
 
 def train_classifier():
-    data_dir="/home/pi/Desktop/smart-checking-attendance/dataset"
+    data_dir="/home/pi/smart-checking-attendance/dataset"
     path = [os.path.join(data_dir,f) for f in os.listdir(data_dir)]
     faces  = []
     ids   = []
@@ -174,7 +174,7 @@ def generate_dataset():
                 img_id+=1
                 face = cv2.resize(face_cropped(frame),(200,200))
                 face  = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
-                file_name_path = "/home/pi/Desktop/smart-checking-attendance/dataset/user."+str(id_stu)+"."+str(img_id)+".jpg"
+                file_name_path = "/home/pi/smart-checking-attendance/dataset/user."+str(id_stu)+"."+str(img_id)+".jpg"
                 cv2.imwrite(file_name_path,face)
                 cv2.putText(face,str(img_id),(50,50),cv2.FONT_HERSHEY_COMPLEX,1, (0,255,0),2)
                 # (50,50) is the origin point from where text is to be written
@@ -197,9 +197,11 @@ def generate_dataset():
             
         mycursor=mydb.cursor()
         reader = SimpleMFRC522()
+        print("Put card to register")
+        
         try:
             while True:
-                print("Put card to register")
+                
 #                 messagebox.showinfo('Noti','Put card to register')
                 id, text = reader.read()
 #                 mycursor.execute("SELECT id_stu FROM student_table WHERE rfid_uid="+str(id))
