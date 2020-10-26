@@ -15,7 +15,7 @@ window=Tk()
 window.title("Face recognition system")
 
 #Set Background Image to window
-path = '/home/pi/smart-checking-attendance/LogoBK.jpg'
+path = '/home/pi/Desktop/smart-checking-attendance/LogoBK.jpg'
 image = Image.open(path)
 
 image = image.resize((300,300), Image.ANTIALIAS)
@@ -45,7 +45,7 @@ l4.grid(column=0, row=3)
 t4=tk.Entry(window,width=50,bd=5)
 t4.grid(column=1, row=3)
 
-def detect_face():
+def checking_attendance():
     def draw_boundary(img,classifier,scaleFactor,minNeighbors,color,text,clf):
         gray_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         features = classifier.detectMultiScale(gray_image,scaleFactor,minNeighbors)
@@ -97,7 +97,7 @@ def detect_face():
     video_capture.release()
     cv2.destroyAllWindows()
 
-b1=tk.Button(window,text="Detect the face",font=("Algerian",20),bg='green',fg='white',command=detect_face)
+b1=tk.Button(window,text="Check Attendance",font=("Algerian",20),bg='green',fg='white',command=checking_attendance)
 b1.place(x=10, y=180)
 
 # def registrate_card():
@@ -108,7 +108,7 @@ b1.place(x=10, y=180)
 # b2.place(x=300,y=180)
 
 def train_classifier():
-    data_dir="/home/pi/smart-checking-attendance/dataset"
+    data_dir="/home/pi/Desktop/smart-checking-attendance/dataset"
     path = [os.path.join(data_dir,f) for f in os.listdir(data_dir)]
     faces  = []
     ids   = []
@@ -128,7 +128,7 @@ def train_classifier():
     clf.write("classifier.xml")
     messagebox.showinfo('Result','Training dataset completed!!!')
 
-b3=tk.Button(window,text="Training",font=("Algerian",20),bg='orange',fg='red',command=train_classifier)
+b3=tk.Button(window,text="Training Dataset",font=("Algerian",20),bg='orange',fg='red',command=train_classifier)
 b3.place(x=10,y=240)
         
 def generate_dataset():
@@ -152,6 +152,8 @@ def generate_dataset():
         mycursor.execute(sql,val)
         mydb.commit()
         
+        print("Saved to database")        
+        
         face_classifier = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
         def face_cropped(img):
             gray  = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -174,7 +176,7 @@ def generate_dataset():
                 img_id+=1
                 face = cv2.resize(face_cropped(frame),(200,200))
                 face  = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
-                file_name_path = "/home/pi/smart-checking-attendance/dataset/user."+str(id_stu)+"."+str(img_id)+".jpg"
+                file_name_path = "/home/pi/Desktop/smart-checking-attendance/dataset/user."+str(id_stu)+"."+str(img_id)+".jpg"
                 cv2.imwrite(file_name_path,face)
                 cv2.putText(face,str(img_id),(50,50),cv2.FONT_HERSHEY_COMPLEX,1, (0,255,0),2)
                 # (50,50) is the origin point from where text is to be written
@@ -197,33 +199,33 @@ def generate_dataset():
             
         mycursor=mydb.cursor()
         reader = SimpleMFRC522()
-        print("Put card to register")
         
+        messagebox.showinfo('Noti','Put card to read')
+
+
+        mycursor.execute("SELECT * FROM student_table")
+        myresult=mycursor.fetchall()
+
         try:
-            while True:
-                
-#                 messagebox.showinfo('Noti','Put card to register')
-                id, text = reader.read()
-#                 mycursor.execute("SELECT id_stu FROM student_table WHERE rfid_uid="+str(id))
-                mycursor.execute("SELECT id_stu FROM student_table WHERE student_number=t3.get()")
-                myresult=mycursor.fetchall()
-                for y in myresult:
-#                     id_stu+=1
-                    sql="INSERT INTO student_table(id_stu, rfid_uid) values(%s,%s)"
-                    val=(id_stu, id)
-                    mycursor.execute(sql,val)
-                    mydb.commit()
-                    
-                    print("Saved to database")
-#                     messagebox.showinfo('Noti','Saved to database')
+            id, text = reader.read()
+            print(id)
+    
+            sql="UPDATE student_table SET rfid_uid = %s WHERE student_number=%s"
+            val=(id, t3.get())
+            mycursor.execute(sql,val)
+            mydb.commit()
+    
+            messagebox.showinfo('Result','Saved to database')
 
 
         finally:
             GPIO.cleanup()
         
+        
 
-b4=tk.Button(window,text="Generate dataset",font=("Algerian",20),bg='green',fg='white',command=generate_dataset)
-b4.place(x=300,y=240)
+b4=tk.Button(window,text="Generate Dataset",font=("Algerian",20),bg='orange',fg='red',command=generate_dataset)
+b4.place(x=300,y=180)
 
 window.geometry("910x320")
 window.mainloop()
+

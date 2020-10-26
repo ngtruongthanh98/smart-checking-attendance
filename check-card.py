@@ -31,17 +31,20 @@ print("Put card to read")
 
 mycursor.execute("SELECT * FROM student_table")
 myresult=mycursor.fetchall()
-id_stu=10
+id_stu=4
 
 
 try:
     id, text = reader.read()
     print(id)
     
-    sql="INSERT INTO student_table(id_stu,rfid_uid) values(%s,%s)"
-    val=(id_stu,id)
+    sql="UPDATE student_table SET rfid_uid = %s WHERE id_stu=%s"
+    val=(id, id_stu)
     mycursor.execute(sql,val)
     mydb.commit()
+    
+    print("Saved to database")
+
 
 finally:
     GPIO.cleanup()
