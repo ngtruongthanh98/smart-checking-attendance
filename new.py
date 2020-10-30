@@ -15,7 +15,7 @@ window=Tk()
 window.title("Face recognition system")
 
 #Set Background Image to window
-path = '/home/pi/smart-checking-attendance/LogoBK.jpg'
+path = '/home/pi/Desktop/smart-checking-attendance/LogoBK.jpg'
 image = Image.open(path)
 
 image = image.resize((300,300), Image.ANTIALIAS)
@@ -45,7 +45,39 @@ l4.grid(column=0, row=3)
 t4=tk.Entry(window,width=50,bd=5)
 t4.grid(column=1, row=3)
 
-def detect_face():
+def checking_attendance():
+    # 1) Check the sv
+    mydb=mysql.connector.connect(
+        host="localhost",
+        user="admin",
+        passwd="password",
+        database="attendance"
+    )
+    cursor = mydb.cursor()
+    reader = SimpleMFRC522()
+    
+    try:
+        while True:
+            print('Place card \nrecord attendance')
+            id, text = reader.read()
+            
+            cursor.execute("select id_stu, first_name FROM student_table where rfid_uid="+str(id))
+            result = cursor.fetchone()
+            
+            if cursor.rowcount >= 1:
+                print("welcome " + result[1])
+                cursor.execute("Insert into attendance_table (id_atd) VALUES (%s)", (result[0],))
+                mydb.commit()
+            else:
+                print("User does not exist.")
+                time.sleep(2)
+    finally:
+        GPIO.cleanup()
+    # 2) Check khuon mat
+    
+    
+    # 3) Check timetable
+    
     def draw_boundary(img,classifier,scaleFactor,minNeighbors,color,text,clf):
         gray_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         features = classifier.detectMultiScale(gray_image,scaleFactor,minNeighbors)
@@ -97,43 +129,18 @@ def detect_face():
     video_capture.release()
     cv2.destroyAllWindows()
 
-b1=tk.Button(window,text="Detect the face",font=("Algerian",20),bg='green',fg='white',command=detect_face)
+b1=tk.Button(window,text="Check Attendance",font=("Algerian",20),bg='green',fg='white',command=checking_attendance)
 b1.place(x=10, y=180)
 
 # def registrate_card():
-#     mydb=mysql.connector.connect(
-#         host="localhost",
-#         user="admin",
-#         passwd="password",
-#         database="attendance"
-#     )
-#             
-#     mycursor=mydb.cursor()
-#     reader = SimpleMFRC522()
-#     print("Put card to read")
 # 
-#     mycursor.execute("SELECT * FROM student_table")
-#     myresult=mycursor.fetchall()
-# 
-# 
-#     try:
-#         id, text = reader.read()
-#         print(id)
-#     
-#         sql="UPDATE student_table SET rfid_uid = %s WHERE student_number=%s"
-#         val=(id, t3.get())
-#         mycursor.execute(sql,val)
-#         mydb.commit()
-# 
-#     finally:
-#         GPIO.cleanup()
 #     
 # 
 # b2=tk.Button(window,text="Registrate card",font=("Algerian",20),bg='orange',fg='red',command=registrate_card)
 # b2.place(x=300,y=180)
 
 def train_classifier():
-    data_dir="/home/pi/smart-checking-attendance/dataset"
+    data_dir="/home/pi/Desktop/smart-checking-attendance/dataset"
     path = [os.path.join(data_dir,f) for f in os.listdir(data_dir)]
     faces  = []
     ids   = []
@@ -153,7 +160,7 @@ def train_classifier():
     clf.write("classifier.xml")
     messagebox.showinfo('Result','Training dataset completed!!!')
 
-b3=tk.Button(window,text="Training",font=("Algerian",20),bg='orange',fg='red',command=train_classifier)
+b3=tk.Button(window,text="Training Dataset",font=("Algerian",20),bg='orange',fg='red',command=train_classifier)
 b3.place(x=10,y=240)
         
 def generate_dataset():
@@ -167,42 +174,18 @@ def generate_dataset():
             database="attendance"
         )
         mycursor=mydb.cursor()
-
-        reader = SimpleMFRC522()
-        print("Put card to read")
-
         mycursor.execute("SELECT * FROM student_table")
         myresult=mycursor.fetchall()
+        id_stu=1
+        for x in myresult:
+            id_stu+=1
+        sql="INSERT INTO student_table(id_stu,first_name,last_name,student_number,email) values(%s,%s,%s,%s,%s)"
+        val=(id_stu,t1.get(),t2.get(),t3.get(),t4.get())
+        mycursor.execute(sql,val)
+        mydb.commit()
         
-#         id_stu=1
-#         for x in myresult:
-#             id_stu+=1
-#         sql="INSERT INTO student_table(id_stu,first_name,last_name,student_number,email) values(%s,%s,%s,%s,%s)"
-#         val=(id_stu,t1.get(),t2.get(),t3.get(),t4.get())
-#         mycursor.execute(sql,val)
-#         mydb.commit()
-        
-        
-        try:
-            id, text = reader.read()
-            print(id)
-            
-            id_stu=1
-            for x in myresult:
-                id_stu+=1
-                sql="INSERT INTO student_table(id_stu,first_name,last_name,student_number,email) values(%s,%s,%s,%s,%s)"
-                val=(id_stu,t1.get(),t2.get(),t3.get(),t4.get())
-                mycursor.execute(sql,val)
-                
-                sql1="UPDATE student_table SET rfid_uid = %s WHERE id_stu=%s"
-                val1=(id, id_stu)   
-                mycursor.execute(sql1,val1)
-                mydb.commit()
-                
-                print("Saved to database")
-
-        finally:
-            GPIO.cleanup()
+        print("Saved to database")
+        messagebox.showinfo('Notification','Saved to database \nStart camera to capture images')
         
         face_classifier = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
         def face_cropped(img):
@@ -226,7 +209,7 @@ def generate_dataset():
                 img_id+=1
                 face = cv2.resize(face_cropped(frame),(200,200))
                 face  = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
-                file_name_path = "/home/pi/smart-checking-attendance/dataset/user."+str(id_stu)+"."+str(img_id)+".jpg"
+                file_name_path = "/home/pi/Desktop/smart-checking-attendance/dataset/user."+str(id_stu)+"."+str(img_id)+".jpg"
                 cv2.imwrite(file_name_path,face)
                 cv2.putText(face,str(img_id),(50,50),cv2.FONT_HERSHEY_COMPLEX,1, (0,255,0),2)
                 # (50,50) is the origin point from where text is to be written
@@ -240,8 +223,43 @@ def generate_dataset():
         cv2.destroyAllWindows()
         messagebox.showinfo('Result','Generating dataset completed!!!')
         
-b4=tk.Button(window,text="Generate dataset",font=("Algerian",20),bg='green',fg='white',command=generate_dataset)
-b4.place(x=300,y=240)
+        mydb=mysql.connector.connect(
+            host="localhost",
+            user="admin",
+            passwd="password",
+            database="attendance"
+        )
+            
+        mycursor=mydb.cursor()
+        reader = SimpleMFRC522()
+        
+        messagebox.showinfo('Noti','Put card to read')
+
+
+        mycursor.execute("SELECT * FROM student_table")
+        myresult=mycursor.fetchall()
+
+        try:
+            id, text = reader.read()
+            print(id)
+    
+            sql="UPDATE student_table SET rfid_uid = %s WHERE student_number=%s"
+            val=(id, t3.get())
+            mycursor.execute(sql,val)
+            mydb.commit()
+    
+            messagebox.showinfo('Result','Saved to database')
+
+
+        finally:
+            GPIO.cleanup()
+        
+        
+
+b4=tk.Button(window,text="Generate Dataset",font=("Algerian",20),bg='orange',fg='red',command=generate_dataset)
+b4.place(x=300,y=180)
 
 window.geometry("910x320")
 window.mainloop()
+
+

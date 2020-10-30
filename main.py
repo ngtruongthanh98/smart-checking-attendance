@@ -46,6 +46,10 @@ t4=tk.Entry(window,width=50,bd=5)
 t4.grid(column=1, row=3)
 
 def checking_attendance():
+    # 1) Check the sv
+    # 2) Check khuon mat
+    # 3) Check timetable
+    
     def draw_boundary(img,classifier,scaleFactor,minNeighbors,color,text,clf):
         gray_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         features = classifier.detectMultiScale(gray_image,scaleFactor,minNeighbors)
@@ -152,7 +156,8 @@ def generate_dataset():
         mycursor.execute(sql,val)
         mydb.commit()
         
-        print("Saved to database")        
+        print("Saved to database")
+        messagebox.showinfo('Notification','Saved to database \nStart camera to capture images')
         
         face_classifier = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
         def face_cropped(img):
