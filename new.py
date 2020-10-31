@@ -46,6 +46,8 @@ t4=tk.Entry(window,width=50,bd=5)
 t4.grid(column=1, row=3)
 
 def checking_attendance():
+    
+    
     # 1) Check the sv
     mydb=mysql.connector.connect(
         host="localhost",
@@ -58,86 +60,43 @@ def checking_attendance():
     
     try:
         while True:
-            print('Place card \nrecord attendance')
+#             print('Place card \nrecord attendance')
+            messagebox.showinfo('Notification','Place card \nrecord attendance')
+            
             id, text = reader.read()
             
-            cursor.execute("select id_stu, first_name FROM student_table where rfid_uid="+str(id))
+            cursor.execute("select first_name, last_name, student_number FROM student_table where rfid_uid="+str(id))
             result = cursor.fetchone()
             
             if cursor.rowcount >= 1:
-                print("welcome " + result[1])
-                cursor.execute("Insert into attendance_table (id_atd) VALUES (%s)", (result[0],))
+#                 print("welcome " + result[1])
+                messagebox.showinfo('Notification','Welcome ' + result[0])
+
+
+                
+                # 2) Check khuon mat
+    
+    
+                # 3) Check timetable
+                
+                cursor.execute("Insert into attendance_table (first_name, last_name, student_number) VALUES (%s,%s,%s)", (result[0],result[1],result[2],))
                 mydb.commit()
+                
+                
             else:
-                print("User does not exist.")
+#                 print("User does not exist")
+                messagebox.showinfo('Notification','User does not exist')
+
                 time.sleep(2)
+                
     finally:
         GPIO.cleanup()
-    # 2) Check khuon mat
+
     
-    
-    # 3) Check timetable
-    
-    def draw_boundary(img,classifier,scaleFactor,minNeighbors,color,text,clf):
-        gray_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        features = classifier.detectMultiScale(gray_image,scaleFactor,minNeighbors)
 
-        coords = []
-
-        for(x,y,w,h) in features:
-            cv2.rectangle(img,(x,y),(x+w,y+h),color,2)
-            id,pred = clf.predict(gray_image[y:y+h,x:x+w])
-            confidence = int(100*(1-pred/300))
-            
-            mydb=mysql.connector.connect(
-                host="localhost",
-                user="admin",
-                passwd="password",
-                database="attendance"
-            )
-            mycursor=mydb.cursor()
-            mycursor.execute("select first_name from student_table where id_stu="+str(id))
-            s = mycursor.fetchone()
-            s = ''+''.join(s)
-            
-            if confidence>74:
-                cv2.putText(img,s,(x,y-5),cv2.FONT_HERSHEY_SIMPLEX,0.8,color,1,cv2.LINE_AA)   
-            else:
-                cv2.putText(img,"UNKNOWN",(x,y-5),cv2.FONT_HERSHEY_SIMPLEX,0.8,(0,0,255),1,cv2.LINE_AA)
-
-            coords=[x,y,w,h]
-        return coords
-
-    def recognize(img,clf,faceCascade):
-        coords = draw_boundary(img,faceCascade,1.1,10,(255,255,255),"Face",clf)
-        return img
-
-    faceCascade=cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
-    clf = cv2.face.LBPHFaceRecognizer_create()
-    clf.read("classifier.xml")
-
-    video_capture =  cv2.VideoCapture(0)
-
-    while True:
-        ret,img = video_capture.read()
-        img=  recognize(img,clf,faceCascade)
-        cv2.imshow("face detection",img)
-
-        if (cv2.waitKey(1)==ord('q')):
-            break
-
-    video_capture.release()
-    cv2.destroyAllWindows()
 
 b1=tk.Button(window,text="Check Attendance",font=("Algerian",20),bg='green',fg='white',command=checking_attendance)
 b1.place(x=10, y=180)
-
-# def registrate_card():
-# 
-#     
-# 
-# b2=tk.Button(window,text="Registrate card",font=("Algerian",20),bg='orange',fg='red',command=registrate_card)
-# b2.place(x=300,y=180)
 
 def train_classifier():
     data_dir="/home/pi/Desktop/smart-checking-attendance/dataset"
