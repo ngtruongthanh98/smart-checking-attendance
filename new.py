@@ -228,7 +228,7 @@ def generate_dataset():
                 #thickness=2
 
                 cv2.imshow("Cropped face",face)
-                if cv2.waitKey(1)==13 or int(img_id)==10:
+                if cv2.waitKey(1)==13 or int(img_id)==200:
                     break
         cap.release()
         cv2.destroyAllWindows()
