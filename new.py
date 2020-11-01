@@ -63,16 +63,14 @@ def checking_attendance():
     
     try:
         while True:
-#             print('Place card \nrecord attendance')
             messagebox.showinfo('Notification','Place card \nrecord attendance')
             
-            id, text = reader.read()
+            id_card, text = reader.read()
             
-            cursor.execute("select first_name, last_name, student_number FROM student_table where rfid_uid="+str(id))
+            cursor.execute("select first_name, last_name, student_number FROM student_table where rfid_uid="+str(id_card))
             result = cursor.fetchone()
             
             if cursor.rowcount >= 1:
-#                 print("welcome " + result[1])
                 messagebox.showinfo('Notification','Welcome ' + result[0])
                 
                 # 2) Check khuon mat
@@ -101,8 +99,18 @@ def checking_attendance():
             
                         if confidence>74:
                             cv2.putText(img,s,(x,y-5),cv2.FONT_HERSHEY_SIMPLEX,0.8,color,1,cv2.LINE_AA)   
+                            # Compare info of card and face recognition
+                            mycursor2=mydb.cursor()
+                            mycursor2.execute("select rfid_uid from student_table where id_stu="+str(id))
+                            s2 = mycursor2.fetchone()
+                            s2 = ''+''.join(s2)                            
+                        
+                            if s2 == str(id_card):
+                                print("True value")                            
+                        
                         else:
                             cv2.putText(img,"UNKNOWN",(x,y-5),cv2.FONT_HERSHEY_SIMPLEX,0.8,(0,0,255),1,cv2.LINE_AA)
+                            # Them dieu kien cho, neu vuot qua thoi gian =>> sai nguoi
 
                         coords=[x,y,w,h]
                     return coords
@@ -134,7 +142,6 @@ def checking_attendance():
                 mydb.commit()
                 
             else:
-#                 print("User does not exist")
                 messagebox.showinfo('Notification','User does not exist')
 #                 time.sleep(2)
                 break
@@ -166,7 +173,6 @@ def train_classifier():
     #Train the classifier and save
     clf = cv2.face.LBPHFaceRecognizer_create()
     clf.train(faces,ids)
-#     clf.write("classifier.xml")
     clf.write("Trainer.yml")
 
     messagebox.showinfo('Result','Training dataset completed!!!')
