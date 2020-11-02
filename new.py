@@ -8,7 +8,11 @@ from PIL import ImageTk
 import numpy as np
 import RPi.GPIO as GPIO
 from mfrc522 import SimpleMFRC522
+
+
 import mysql.connector
+
+
 import time
 import datetime
 import pandas as pd
@@ -106,7 +110,28 @@ def checking_attendance():
                             s2 = ''+''.join(s2)                            
                         
                             if s2 == str(id_card):
-                                print("True value")                            
+                                #print("True value")
+
+                                # 3) Check timetable
+                                cursor.execute("Insert into attendance_table (first_name, last_name, student_number) VALUES (%s,%s,%s)", (result[0],result[1],result[2],))
+                                mydb.commit()
+
+                                # send mail at here
+                                yag = yagmail.SMTP('attendancesystembku@gmail.com', '!attendancesystem')
+
+                                mycursor3=mydb.cursor()
+                                mycursor3.execute("select rfid_uid from student_table where id_stu="+str(id))
+                                email = mycursor3.fetchone()
+                                email = ''+''.join(email)  
+
+                                try:
+                                    #initializing the server connection
+                                    yag = yagmail.SMTP(user='attendancesystembku@gmail.com', password='!attendancesystem')
+                                    #sending the email
+                                    yag.send(to=email, subject='Testing Yagmail', contents='Hurray, it worked!')
+                                    print("Email sent successfully")
+                                except:
+                                    print("Error, email was not sent")                    
                         
                         else:
                             cv2.putText(img,"UNKNOWN",(x,y-5),cv2.FONT_HERSHEY_SIMPLEX,0.8,(0,0,255),1,cv2.LINE_AA)
@@ -135,11 +160,6 @@ def checking_attendance():
 
                 video_capture.release()
                 cv2.destroyAllWindows()    
-    
-                # 3) Check timetable
-                
-                cursor.execute("Insert into attendance_table (first_name, last_name, student_number) VALUES (%s,%s,%s)", (result[0],result[1],result[2],))
-                mydb.commit()
                 
             else:
                 messagebox.showinfo('Notification','User does not exist')
@@ -257,19 +277,30 @@ def generate_dataset():
         myresult=mycursor.fetchall()
 
         try:
-            id, text = reader.read()
-            print(id)
+            id_card, text = reader.read()
+            print(id_card)
     
             sql="UPDATE student_table SET rfid_uid = %s WHERE student_number=%s"
-            val=(id, t3.get())
+            val=(id_card, t3.get())
             mycursor.execute(sql,val)
             mydb.commit()
     
-            messagebox.showinfo('Result','Saved to database')
+            messagebox.showinfo('Result','Registration completed!!!')
 
 
         finally:
             GPIO.cleanup()
+
+    # send mail at here
+    try:
+        #initializing the server connection
+        yag = yagmail.SMTP(user='attendancesystembku@gmail.com', password='!attendancesystem')
+        #sending the email
+        yag.send(to=t4.get(), subject='Testing Yagmail', contents='Hurray, it worked!')
+        print("Email sent successfully")
+    except:
+        print("Error, email was not sent")
+
         
         
 
