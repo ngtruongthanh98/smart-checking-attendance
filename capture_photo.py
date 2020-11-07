@@ -1,11 +1,14 @@
-import os
 import cv2
+import os
+from PIL import Image
+from PIL import ImageTk
+import numpy as np
 
 def capturing():
     face_classifier = cv2.CascadeClassifier("haarcascade_frontalface_default.xml") 
 
     # Change id here
-    id_stu = 1
+    id_stu = 2
 
     def face_cropped(img):
         gray  = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)

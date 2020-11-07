@@ -113,7 +113,7 @@ def checking_attendance():
 
                 faceCascade=cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
                 clf = cv2.face.LBPHFaceRecognizer_create()
-                clf.read("Trainer.yml")
+                clf.read("Trainer.xml")
 
                 video_capture =  cv2.VideoCapture(0)
 
@@ -167,7 +167,7 @@ def train_classifier():
     clf = cv2.face.LBPHFaceRecognizer_create()
     clf.train(faces,ids)
 #     clf.write("classifier.xml")
-    clf.write("Trainer.yml")
+    clf.write("Trainer.xml")
 
     messagebox.showinfo('Result','Training dataset completed!!!')
 

@@ -100,6 +100,9 @@ def checking_attendance():
                         mycursor.execute("select first_name from student_table where id_stu="+str(id))
                         s = mycursor.fetchone()
                         s = ''+''.join(s)
+                        
+                        print("s=")
+                        print(s)
             
                         if confidence>74:
                             cv2.putText(img,s,(x,y-5),cv2.FONT_HERSHEY_SIMPLEX,0.8,color,1,cv2.LINE_AA)   
@@ -120,16 +123,24 @@ def checking_attendance():
                                 yag = yagmail.SMTP('attendancesystembku@gmail.com', '!attendancesystem')
 
                                 mycursor3=mydb.cursor()
-                                mycursor3.execute("select rfid_uid from student_table where id_stu="+str(id))
+                                mycursor3.execute("select email from student_table where id_stu="+str(id))
                                 email = mycursor3.fetchone()
-                                email = ''+''.join(email)  
+                                email = ''+''.join(email)
+                                
+                                print(email)
 
                                 try:
                                     #initializing the server connection
                                     yag = yagmail.SMTP(user='attendancesystembku@gmail.com', password='!attendancesystem')
                                     #sending the email
-                                    yag.send(to=email, subject='Testing Yagmail', contents='Hurray, it worked!')
+                                    yag.send(to=email, subject='Testing Yagmail', contents='Attended!!')
                                     print("Email sent successfully")
+                                    # 3) Check timetable
+                
+                                    cursor.execute("Insert into attendance_table (first_name, last_name, student_number) VALUES (%s,%s,%s)", (result[0],result[1],result[2],))
+                                    mydb.commit()
+                                    
+                                    
                                 except:
                                     print("Error, email was not sent")                    
                         
@@ -146,7 +157,9 @@ def checking_attendance():
 
                 faceCascade=cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
                 clf = cv2.face.LBPHFaceRecognizer_create()
-                clf.read("Trainer.yml")
+#                 clf.read("Trainer.yml")
+                clf.read("Trainer.xml")
+
 
                 video_capture =  cv2.VideoCapture(0)
 
@@ -165,7 +178,8 @@ def checking_attendance():
                 messagebox.showinfo('Notification','User does not exist')
 #                 time.sleep(2)
                 break
-                
+
+        
     finally:
         GPIO.cleanup()
 
@@ -193,7 +207,8 @@ def train_classifier():
     #Train the classifier and save
     clf = cv2.face.LBPHFaceRecognizer_create()
     clf.train(faces,ids)
-    clf.write("Trainer.yml")
+#     clf.write("Trainer.yml")
+    clf.write("Trainer.xml")
 
     messagebox.showinfo('Result','Training dataset completed!!!')
 
@@ -213,7 +228,7 @@ def generate_dataset():
         mycursor=mydb.cursor()
         mycursor.execute("SELECT * FROM student_table")
         myresult=mycursor.fetchall()
-        id_stu=1
+        id_stu=0
         for x in myresult:
             id_stu+=1
         sql="INSERT INTO student_table(id_stu,first_name,last_name,student_number,email) values(%s,%s,%s,%s,%s)"
