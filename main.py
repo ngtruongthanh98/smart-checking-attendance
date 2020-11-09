@@ -8,12 +8,18 @@ from PIL import ImageTk
 import numpy as np
 import RPi.GPIO as GPIO
 from mfrc522 import SimpleMFRC522
+
+
 import mysql.connector
+
+
 import time
 import datetime
 import pandas as pd
 
 import yagmail
+
+
 
 window=Tk()
 window.title("Face recognition system")
@@ -63,16 +69,14 @@ def checking_attendance():
     
     try:
         while True:
-#             print('Place card \nrecord attendance')
             messagebox.showinfo('Notification','Place card \nrecord attendance')
             
-            id, text = reader.read()
+            id_card, text = reader.read()
             
-            cursor.execute("select first_name, last_name, student_number FROM student_table where rfid_uid="+str(id))
+            cursor.execute("select first_name, last_name, student_number FROM student_table where rfid_uid="+str(id_card))
             result = cursor.fetchone()
             
             if cursor.rowcount >= 1:
-#                 print("welcome " + result[1])
                 messagebox.showinfo('Notification','Welcome ' + result[0])
                 
                 # 2) Check khuon mat
@@ -98,11 +102,57 @@ def checking_attendance():
                         mycursor.execute("select first_name from student_table where id_stu="+str(id))
                         s = mycursor.fetchone()
                         s = ''+''.join(s)
+                        
+                        print("s=")
+                        print(s)
             
                         if confidence>74:
                             cv2.putText(img,s,(x,y-5),cv2.FONT_HERSHEY_SIMPLEX,0.8,color,1,cv2.LINE_AA)   
+                            # Compare info of card and face recognition
+                            mycursor2=mydb.cursor()
+                            mycursor2.execute("select rfid_uid from student_table where id_stu="+str(id))
+                            s2 = mycursor2.fetchone()
+                            s2 = ''+''.join(s2)                            
+                        
+                            if s2 == str(id_card):
+                                #print("True value")
+
+                                # 3) Check timetable
+                                cursor.execute("Insert into attendance_table (first_name, last_name, student_number) VALUES (%s,%s,%s)", (result[0],result[1],result[2],))
+                                mydb.commit()
+
+                                # send mail at here
+                                yag = yagmail.SMTP('attendancesystembku@gmail.com', '!attendancesystem')
+
+                                mycursor3=mydb.cursor()
+                                mycursor3.execute("select email from student_table where id_stu="+str(id))
+                                email = mycursor3.fetchone()
+                                email = ''+''.join(email)
+                                
+                                print(email)
+
+                                try:
+                                    #initializing the server connection
+                                    yag = yagmail.SMTP(user='attendancesystembku@gmail.com', password='!attendancesystem')
+                                    #sending the email
+                                    yag.send(to=email, subject='Testing Yagmail', contents='Attended!!')
+                                    print("Email sent successfully")
+                                    # 3) Check timetable
+                
+                                    cursor.execute("Insert into attendance_table (first_name, last_name, student_number) VALUES (%s,%s,%s)", (result[0],result[1],result[2],))
+                                    mydb.commit()
+                                    
+                                    
+                                except:
+                                    print("Error, email was not sent")
+                                
+                            video_capture.release()
+                            cv2.destroyAllWindows()    
+                                
+                            
                         else:
                             cv2.putText(img,"UNKNOWN",(x,y-5),cv2.FONT_HERSHEY_SIMPLEX,0.8,(0,0,255),1,cv2.LINE_AA)
+                            # Them dieu kien cho, neu vuot qua thoi gian =>> sai nguoi
 
                         coords=[x,y,w,h]
                     return coords
@@ -113,7 +163,9 @@ def checking_attendance():
 
                 faceCascade=cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
                 clf = cv2.face.LBPHFaceRecognizer_create()
+#                 clf.read("Trainer.yml")
                 clf.read("Trainer.xml")
+
 
                 video_capture =  cv2.VideoCapture(0)
 
@@ -125,20 +177,15 @@ def checking_attendance():
                     if (cv2.waitKey(1)==ord('q')):
                         break
 
-                video_capture.release()
-                cv2.destroyAllWindows()    
-    
-                # 3) Check timetable
-                
-                cursor.execute("Insert into attendance_table (first_name, last_name, student_number) VALUES (%s,%s,%s)", (result[0],result[1],result[2],))
-                mydb.commit()
+#                 video_capture.release()
+#                 cv2.destroyAllWindows()    
                 
             else:
-#                 print("User does not exist")
                 messagebox.showinfo('Notification','User does not exist')
 #                 time.sleep(2)
                 break
-                
+
+        
     finally:
         GPIO.cleanup()
 
@@ -166,7 +213,7 @@ def train_classifier():
     #Train the classifier and save
     clf = cv2.face.LBPHFaceRecognizer_create()
     clf.train(faces,ids)
-#     clf.write("classifier.xml")
+#     clf.write("Trainer.yml")
     clf.write("Trainer.xml")
 
     messagebox.showinfo('Result','Training dataset completed!!!')
@@ -251,19 +298,33 @@ def generate_dataset():
         myresult=mycursor.fetchall()
 
         try:
-            id, text = reader.read()
-            print(id)
+            id_card, text = reader.read()
+            print(id_card)
     
             sql="UPDATE student_table SET rfid_uid = %s WHERE student_number=%s"
-            val=(id, t3.get())
+            val=(id_card, t3.get())
             mycursor.execute(sql,val)
             mydb.commit()
     
-            messagebox.showinfo('Result','Saved to database')
+            messagebox.showinfo('Result','Registration completed!!!')
 
 
         finally:
             GPIO.cleanup()
+
+    # send mail at here
+    try:
+        #initializing the server connection
+        yag = yagmail.SMTP(user='attendancesystembku@gmail.com', password='!attendancesystem')
+        #sending the email
+        
+        
+        
+        yag.send(to=t4.get(), subject='New register completed', contents='Welcome')
+        print("Email sent successfully")
+    except:
+        print("Error, email was not sent")
+
         
         
 

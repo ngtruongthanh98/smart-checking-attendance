@@ -19,6 +19,10 @@ import pandas as pd
 
 import yagmail
 
+import smtplib
+
+# from smtplib import SMTP
+
 window=Tk()
 window.title("Face recognition system")
 
@@ -120,30 +124,31 @@ def checking_attendance():
                                 mydb.commit()
 
                                 # send mail at here
-                                yag = yagmail.SMTP('attendancesystembku@gmail.com', '!attendancesystem')
-
                                 mycursor3=mydb.cursor()
                                 mycursor3.execute("select email from student_table where id_stu="+str(id))
                                 email = mycursor3.fetchone()
                                 email = ''+''.join(email)
                                 
                                 print(email)
+                                
+                                to = email
+                                gmail_user = 'attendancesystembku@gmail.com'
+                                gmail_pwd = '!attendancesystem'
+                                smtpserver = smtplib.SMTP("smtp.gmail.com",587)
+                                smtpserver.ehlo()
+                                smtpserver.starttls()
+                                smtpserver.ehlo
+                                smtpserver.login(gmail_user, gmail_pwd)
+                                header = 'To:' + to + '\n' + 'From: ' + gmail_user + '\n' + 'Subject: Register completed \n'
+                                print(header)
+                                msg = header +  '\n this is test msg from \n\n'
+                                smtpserver.sendmail(gmail_user, to, msg)
+                                print('sent mail')
+                                smtpserver.close()
+                                
+                                video_capture.release()
+                                cv2.destroyAllWindows()    
 
-                                try:
-                                    #initializing the server connection
-                                    yag = yagmail.SMTP(user='attendancesystembku@gmail.com', password='!attendancesystem')
-                                    #sending the email
-                                    yag.send(to=email, subject='Testing Yagmail', contents='Attended!!')
-                                    print("Email sent successfully")
-                                    # 3) Check timetable
-                
-                                    cursor.execute("Insert into attendance_table (first_name, last_name, student_number) VALUES (%s,%s,%s)", (result[0],result[1],result[2],))
-                                    mydb.commit()
-                                    
-                                    
-                                except:
-                                    print("Error, email was not sent")                    
-                        
                         else:
                             cv2.putText(img,"UNKNOWN",(x,y-5),cv2.FONT_HERSHEY_SIMPLEX,0.8,(0,0,255),1,cv2.LINE_AA)
                             # Them dieu kien cho, neu vuot qua thoi gian =>> sai nguoi
@@ -171,8 +176,8 @@ def checking_attendance():
                     if (cv2.waitKey(1)==ord('q')):
                         break
 
-                video_capture.release()
-                cv2.destroyAllWindows()    
+#                 video_capture.release()
+#                 cv2.destroyAllWindows()    
                 
             else:
                 messagebox.showinfo('Notification','User does not exist')
@@ -228,7 +233,7 @@ def generate_dataset():
         mycursor=mydb.cursor()
         mycursor.execute("SELECT * FROM student_table")
         myresult=mycursor.fetchall()
-        id_stu=0
+        id_stu=1
         for x in myresult:
             id_stu+=1
         sql="INSERT INTO student_table(id_stu,first_name,last_name,student_number,email) values(%s,%s,%s,%s,%s)"
@@ -269,7 +274,7 @@ def generate_dataset():
                 #thickness=2
 
                 cv2.imshow("Cropped face",face)
-                if cv2.waitKey(1)==13 or int(img_id)==200:
+                if cv2.waitKey(1)==ord('q') or int(img_id)==200:
                     break
         cap.release()
         cv2.destroyAllWindows()
@@ -305,18 +310,59 @@ def generate_dataset():
 
         finally:
             GPIO.cleanup()
+            
+    
 
     # send mail at here
-    try:
-        #initializing the server connection
-        yag = yagmail.SMTP(user='attendancesystembku@gmail.com', password='!attendancesystem')
-        #sending the email
-        yag.send(to=t4.get(), subject='Testing Yagmail', contents='Hurray, it worked!')
-        print("Email sent successfully")
-    except:
-        print("Error, email was not sent")
+    
+    to = t4.get()
+    gmail_user = 'attendancesystembku@gmail.com'
+    gmail_pwd = '!attendancesystem'
+    smtpserver = smtplib.SMTP("smtp.gmail.com",587)
+    smtpserver.ehlo()
+    smtpserver.starttls()
+    smtpserver.ehlo
+    smtpserver.login(gmail_user, gmail_pwd)
+    header = 'To:' + to + '\n' + 'From: ' + gmail_user + '\n' + 'Subject: Register completed \n'
+    print(header)
+    msg = header +  '\n this is test msg from \n\n'
+    smtpserver.sendmail(gmail_user, to, msg)
+    print('sent mail')
+    smtpserver.close()
+#     try:
+#         #initializing the server connection
+#         yag = yagmail.SMTP(user='attendancesystembku@gmail.com', password='!attendancesystem')
+#         #sending the email
+#         
+#         
+#         
+#         yag.send(to=t4.get(), subject='New register completed', contents='Welcome')
+#         print("Email sent successfully")
+#     except:
+#         print("Error, email was not sent")
+######################################################
 
-        
+#     debuglevel = 0
+#     
+#     smtp = SMTP()
+#     smtp.set_debuglevel(debuglevel)
+#     smtp.connect('smtp.gmail.com',26)
+#     smtp.login('attendancesystembku@gmail.com','!attendancesystem')
+# 
+#     from_addr = "Attendance System <attendancesystembku@gmail.com>"
+#     to_addr = t4.get()
+#     subj = "New register completed"
+#     date = datetime.datetime.now().strftime( "%d/%m/%Y %H:%M" )
+#     
+#     name = t1.get()
+#     
+#     message_text = "Welcome %s\n You successfully registed\n" % (name)
+#     
+#     msg = "From: %s\nTo: %s\nSubject: %s\nDate: %s\n\n%s" % (from_addr, to_addr, subj, date, message_text)
+#                 
+#     smtp.sendmail(from_addr, to_addr, msg)
+#     smtp.quit()
+    
         
 
 b4=tk.Button(window,text="Generate Dataset",font=("Algerian",20),bg='orange',fg='red',command=generate_dataset)
