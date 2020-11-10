@@ -8,20 +8,11 @@ from PIL import ImageTk
 import numpy as np
 import RPi.GPIO as GPIO
 from mfrc522 import SimpleMFRC522
-
-
 import mysql.connector
-
-
 import time
 import datetime
 import pandas as pd
-
-import yagmail
-
 import smtplib
-
-# from smtplib import SMTP
 
 window=Tk()
 window.title("Face recognition system")
@@ -35,8 +26,6 @@ img = ImageTk.PhotoImage(image)
 
 imgLabel = Label(window, image=img).place(x=600,y=10)
 
-
-#window.config(background="lime")
 l1=tk.Label(window,text="First name",font=("Algerian",20))
 l1.grid(column=0, row=0)
 t1=tk.Entry(window,width=50,bd=5)
@@ -117,7 +106,6 @@ def checking_attendance():
                             s2 = ''+''.join(s2)                            
                         
                             if s2 == str(id_card):
-                                #print("True value")
 
                                 # 3) Check timetable
                                 cursor.execute("Insert into attendance_table (first_name, last_name, student_number) VALUES (%s,%s,%s)", (result[0],result[1],result[2],))
@@ -173,7 +161,6 @@ def checking_attendance():
 
                 faceCascade=cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
                 clf = cv2.face.LBPHFaceRecognizer_create()
-#                 clf.read("Trainer.yml")
                 clf.read("Trainer.xml")
 
 
@@ -199,9 +186,6 @@ def checking_attendance():
     finally:
         GPIO.cleanup()
 
-    
-
-
 b1=tk.Button(window,text="Check Attendance",font=("Algerian",20),bg='green',fg='white',command=checking_attendance)
 b1.place(x=10, y=180)
 
@@ -223,13 +207,12 @@ def train_classifier():
     #Train the classifier and save
     clf = cv2.face.LBPHFaceRecognizer_create()
     clf.train(faces,ids)
-#     clf.write("Trainer.yml")
     clf.write("Trainer.xml")
 
     messagebox.showinfo('Result','Training dataset completed!!!')
 
-b3=tk.Button(window,text="Training Dataset",font=("Algerian",20),bg='orange',fg='red',command=train_classifier)
-b3.place(x=10,y=240)
+b2=tk.Button(window,text="Training Dataset",font=("Algerian",20),bg='orange',fg='red',command=train_classifier)
+b2.place(x=10,y=240)
         
 def generate_dataset():
     if(t1.get()=="" or t2.get()=="" or t3.get()=="" or t4.get()==""):
@@ -318,14 +301,10 @@ def generate_dataset():
     
             messagebox.showinfo('Result','Registration completed!!!')
 
-
         finally:
-            GPIO.cleanup()
-            
-    
+            GPIO.cleanup()            
 
-    # send mail at here
-    
+    # send mail at here    
     to = t4.get()
     gmail_user = 'attendancesystembku@gmail.com'
     gmail_pwd = '!attendancesystem'
@@ -337,13 +316,18 @@ def generate_dataset():
     date = datetime.datetime.now().strftime( "%d/%m/%Y %H:%M" )
     header = 'To:' + to + '\n' + 'From: ' + gmail_user + '\n' + 'Subject: Register completed \n'
     print(header)
-    msg = header +  '\n Dear ' + t1.get() + ',\n\n' + '\nThank you for registering for attendance-system-bku\n' + 'Register time: '+ date +'If you have any questions, please let we know!\n\n' +  'Regards,\n\n' + 'attendance-system-bku'
+    msg = header +  '\n Dear ' + t1.get() + ',\n\n' + 'Thank you for registering for attendance-system-bku\n' + 'Register time: '+ date +'\nIf you have any questions, please let we know!\n\n' +  'Regards,\n\n' + 'attendance-system-bku'
     smtpserver.sendmail(gmail_user, to, msg)
     print('sent mail')
     smtpserver.close()
 
-b4=tk.Button(window,text="Generate Dataset",font=("Algerian",20),bg='orange',fg='red',command=generate_dataset)
-b4.place(x=300,y=180)
+b3=tk.Button(window,text="Generate Dataset",font=("Algerian",20),bg='orange',fg='red',command=generate_dataset)
+b3.place(x=300,y=180)
+
+# def access_website():
+# 
+# b4=tk.Button(window,text="Access Website",font=("Algerian",20),bg='green',fg='white',command=generate_dataset)
+# b4.place(x=300,y=240)
 
 window.geometry("910x320")
 window.mainloop()
