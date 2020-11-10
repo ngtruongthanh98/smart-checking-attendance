@@ -128,8 +128,13 @@ def checking_attendance():
                                 mycursor3.execute("select email from student_table where id_stu="+str(id))
                                 email = mycursor3.fetchone()
                                 email = ''+''.join(email)
-                                
                                 print(email)
+                                
+                                mycursor3.execute("select first_name from student_table where id_stu="+str(id))
+                                first_name = mycursor3.fetchone()
+                                first_name = ''+''.join(first_name)
+                                
+                                print(first_name)
                                 
                                 to = email
                                 gmail_user = 'attendancesystembku@gmail.com'
@@ -139,15 +144,21 @@ def checking_attendance():
                                 smtpserver.starttls()
                                 smtpserver.ehlo
                                 smtpserver.login(gmail_user, gmail_pwd)
+                                date = datetime.datetime.now().strftime( "%d/%m/%Y %H:%M" )                                
                                 header = 'To:' + to + '\n' + 'From: ' + gmail_user + '\n' + 'Subject: Register completed \n'
                                 print(header)
-                                msg = header +  '\n this is test msg from \n\n'
+                                msg = header +  '\n Welcome ' + first_name + '\nYour attendance is marked at: ' + date
                                 smtpserver.sendmail(gmail_user, to, msg)
                                 print('sent mail')
                                 smtpserver.close()
                                 
+#                                 if (cv2.waitKey(1)==ord('q')):
+#                                     break
+                                
                                 video_capture.release()
-                                cv2.destroyAllWindows()    
+                                cv2.destroyAllWindows()
+                                break
+
 
                         else:
                             cv2.putText(img,"UNKNOWN",(x,y-5),cv2.FONT_HERSHEY_SIMPLEX,0.8,(0,0,255),1,cv2.LINE_AA)
@@ -176,8 +187,8 @@ def checking_attendance():
                     if (cv2.waitKey(1)==ord('q')):
                         break
 
-#                 video_capture.release()
-#                 cv2.destroyAllWindows()    
+                video_capture.release()
+                cv2.destroyAllWindows()    
                 
             else:
                 messagebox.showinfo('Notification','User does not exist')
@@ -323,47 +334,13 @@ def generate_dataset():
     smtpserver.starttls()
     smtpserver.ehlo
     smtpserver.login(gmail_user, gmail_pwd)
+    date = datetime.datetime.now().strftime( "%d/%m/%Y %H:%M" )
     header = 'To:' + to + '\n' + 'From: ' + gmail_user + '\n' + 'Subject: Register completed \n'
     print(header)
-    msg = header +  '\n this is test msg from \n\n'
+    msg = header +  '\n Dear ' + t1.get() + ',\n\n' + '\nThank you for registering for attendance-system-bku\n' + 'Register time: '+ date +'If you have any questions, please let we know!\n\n' +  'Regards,\n\n' + 'attendance-system-bku'
     smtpserver.sendmail(gmail_user, to, msg)
     print('sent mail')
     smtpserver.close()
-#     try:
-#         #initializing the server connection
-#         yag = yagmail.SMTP(user='attendancesystembku@gmail.com', password='!attendancesystem')
-#         #sending the email
-#         
-#         
-#         
-#         yag.send(to=t4.get(), subject='New register completed', contents='Welcome')
-#         print("Email sent successfully")
-#     except:
-#         print("Error, email was not sent")
-######################################################
-
-#     debuglevel = 0
-#     
-#     smtp = SMTP()
-#     smtp.set_debuglevel(debuglevel)
-#     smtp.connect('smtp.gmail.com',26)
-#     smtp.login('attendancesystembku@gmail.com','!attendancesystem')
-# 
-#     from_addr = "Attendance System <attendancesystembku@gmail.com>"
-#     to_addr = t4.get()
-#     subj = "New register completed"
-#     date = datetime.datetime.now().strftime( "%d/%m/%Y %H:%M" )
-#     
-#     name = t1.get()
-#     
-#     message_text = "Welcome %s\n You successfully registed\n" % (name)
-#     
-#     msg = "From: %s\nTo: %s\nSubject: %s\nDate: %s\n\n%s" % (from_addr, to_addr, subj, date, message_text)
-#                 
-#     smtp.sendmail(from_addr, to_addr, msg)
-#     smtp.quit()
-    
-        
 
 b4=tk.Button(window,text="Generate Dataset",font=("Algerian",20),bg='orange',fg='red',command=generate_dataset)
 b4.place(x=300,y=180)

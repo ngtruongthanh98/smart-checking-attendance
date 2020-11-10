@@ -6,17 +6,6 @@ import os
 import mysql.connector
 import time
 
-# reader = SimpleMFRC522()
-# print("Put card to read")
-# 
-# 
-# try:
-#     id, text = reader.read()
-#     print(id)
-# 
-# finally:
-#     GPIO.cleanup()
-
 
 mydb=mysql.connector.connect(
     host="localhost",

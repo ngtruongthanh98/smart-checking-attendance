@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 01, 2020 at 10:03 PM
+-- Generation Time: Nov 10, 2020 at 08:36 AM
 -- Server version: 10.3.25-MariaDB-0+deb10u1
 -- PHP Version: 7.3.19-1~deb10u1
 
@@ -35,21 +35,6 @@ CREATE TABLE `attendance_table` (
   `clock_in` varchar(255) NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Dumping data for table `attendance_table`
---
-
-INSERT INTO `attendance_table` (`id_atd`, `first_name`, `last_name`, `student_number`, `class`, `clock_in`) VALUES
-(1, 'Thanh', 'Nguyen Truong', 1652557, NULL, '2020-10-30 11:17:07'),
-(2, 'Thanh', 'Nguyen Truong', 1652557, NULL, '2020-10-30 11:17:11'),
-(3, 'Quan', 'Nguyen Anh', 1552310, NULL, '2020-10-30 11:17:17'),
-(7, 'Thanh', 'Nguyen Truong', 1652557, NULL, '2020-10-30 11:46:04'),
-(8, 'Quan', 'Nguyen Anh', 1552310, NULL, '2020-10-31 18:35:45'),
-(9, 'Thanh', 'Nguyen Truong', 1652557, NULL, '2020-11-01 08:16:15'),
-(10, 'Quan', 'Nguyen Anh', 1552310, NULL, '2020-11-01 08:17:19'),
-(11, 'Thanh', 'Nguyen Truong', 1652557, NULL, '2020-11-01 11:30:21'),
-(20, 'Long', 'Nguyen Thanh', 1655353, NULL, '2020-11-01 21:46:05');
-
 -- --------------------------------------------------------
 
 --
@@ -73,8 +58,9 @@ CREATE TABLE `student_table` (
 
 INSERT INTO `student_table` (`id_stu`, `first_name`, `last_name`, `student_number`, `email`, `rfid_uid`, `class`, `created`) VALUES
 (1, 'Thanh', 'Nguyen Truong', 1652557, '1652557@hcmut.edu.vn', '482227026359', NULL, '2020-10-30 10:30:37'),
-(2, 'Quan', 'Nguyen Anh', 1552310, '1552310@hcmut.edu.vn', '798152693871', NULL, '2020-10-30 10:28:47'),
-(3, 'Long', 'Nguyen Thanh', 1655353, 'ngtruongthanh98@gmail.com', '1071090732781', NULL, '2020-11-01 21:42:22');
+(2, 'Quan', 'Nguyen Anh', 1552310, '1552310@hcmut.edu.vn', '798152693871', NULL, '2020-11-03 09:27:27'),
+(3, 'Long', 'Nguyen Thanh', 1655353, 'ngtruongthanh98@gmail.com', '1071090732781', NULL, '2020-11-01 21:42:22'),
+(4, 'Hang', 'Nguyen Thi Thu', 1656868, 'ngtruongthanh98@gmail.com', '1001985576659', NULL, '2020-11-09 14:46:44');
 
 --
 -- Indexes for dumped tables
@@ -100,7 +86,7 @@ ALTER TABLE `student_table`
 -- AUTO_INCREMENT for table `attendance_table`
 --
 ALTER TABLE `attendance_table`
-  MODIFY `id_atd` int(255) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id_atd` int(255) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=155;
 --
 -- AUTO_INCREMENT for table `student_table`
 --
