@@ -8,18 +8,11 @@ from PIL import ImageTk
 import numpy as np
 import RPi.GPIO as GPIO
 from mfrc522 import SimpleMFRC522
-
-
 import mysql.connector
-
-
 import time
 import datetime
 import pandas as pd
-
 import smtplib
-
-# from smtplib import SMTP
 
 window=Tk()
 window.title("Face recognition system")
@@ -33,8 +26,6 @@ img = ImageTk.PhotoImage(image)
 
 imgLabel = Label(window, image=img).place(x=600,y=10)
 
-
-#window.config(background="lime")
 l1=tk.Label(window,text="First name",font=("Algerian",20))
 l1.grid(column=0, row=0)
 t1=tk.Entry(window,width=50,bd=5)
@@ -105,62 +96,72 @@ def checking_attendance():
                         
                         print("s=")
                         print(s)
-            
-                        if confidence>74:
-                            cv2.putText(img,s,(x,y-5),cv2.FONT_HERSHEY_SIMPLEX,0.8,color,1,cv2.LINE_AA)   
-                            # Compare info of card and face recognition
-                            mycursor2=mydb.cursor()
-                            mycursor2.execute("select rfid_uid from student_table where id_stu="+str(id))
-                            s2 = mycursor2.fetchone()
-                            s2 = ''+''.join(s2)                            
                         
-                            if s2 == str(id_card):
-                                #print("True value")
-
-                                # 3) Check timetable
-                                cursor.execute("Insert into attendance_table (first_name, last_name, student_number) VALUES (%s,%s,%s)", (result[0],result[1],result[2],))
-                                mydb.commit()
-
-                                # send mail at here
-                                mycursor3=mydb.cursor()
-                                mycursor3.execute("select email from student_table where id_stu="+str(id))
-                                email = mycursor3.fetchone()
-                                email = ''+''.join(email)
-                                print(email)
+                          
+                        # Compare info of card and face recognition
+                        mycursor2=mydb.cursor()
+                        mycursor2.execute("select rfid_uid from student_table where id_stu="+str(id))
+                        s2 = mycursor2.fetchone()
+                        s2 = ''+''.join(s2)      
+        
+                        if (confidence>74) and (s2 == str(id_card)):
+                            cv2.putText(img,s,(x,y-5),cv2.FONT_HERSHEY_SIMPLEX,0.8,color,1,cv2.LINE_AA)
+                            
+                            mycursor3=mydb.cursor()
+                            mycursor3.execute("SELECT * FROM attendance_table")
+                            id_atd=1
+                            myresult=mycursor.fetchall()
+                            for x in myresult:
+                                id_atd+=1
+                            mycursor3.execute("INSERT INTO attendance_table (id_atd, first_name, last_name, student_number) VALUES (%s,%s,%s,%s)", (id_atd,result[0],result[1],result[2],))
+                            mydb.commit() 
+                            print("Save attendance data to database")
+                            
+                            # send mail at here
+                            mycursor4=mydb.cursor()
+                            mycursor4.execute("select email from student_table where id_stu="+str(id))
+                            email = mycursor4.fetchone()
+                            email = ''+''.join(email)
+                            print(email)
                                 
-                                mycursor3.execute("select first_name from student_table where id_stu="+str(id))
-                                first_name = mycursor3.fetchone()
-                                first_name = ''+''.join(first_name)
+                            mycursor4.execute("select first_name from student_table where id_stu="+str(id))
+                            first_name = mycursor4.fetchone()
+                            first_name = ''+''.join(first_name)
                                 
-                                print(first_name)
+                            print(first_name)
                                 
-                                to = email
-                                gmail_user = 'attendancesystembku@gmail.com'
-                                gmail_pwd = '!attendancesystem'
-                                smtpserver = smtplib.SMTP("smtp.gmail.com",587)
-                                smtpserver.ehlo()
-                                smtpserver.starttls()
-                                smtpserver.ehlo
-                                smtpserver.login(gmail_user, gmail_pwd)
-                                date = datetime.datetime.now().strftime( "%d/%m/%Y %H:%M" )                                
-                                header = 'To:' + to + '\n' + 'From: ' + gmail_user + '\n' + 'Subject: Register completed \n'
-                                print(header)
-                                msg = header +  '\n Welcome ' + first_name + '\nYour attendance is marked at: ' + date
-                                smtpserver.sendmail(gmail_user, to, msg)
-                                print('sent mail')
-                                smtpserver.close()
+                            to = email
+                            gmail_user = 'attendancesystembku@gmail.com'
+                            gmail_pwd = '!attendancesystem'
+                            smtpserver = smtplib.SMTP("smtp.gmail.com",587)
+                            smtpserver.ehlo()
+                            smtpserver.starttls()
+                            smtpserver.ehlo
+                            smtpserver.login(gmail_user, gmail_pwd)
+                            date = datetime.datetime.now().strftime( "%d/%m/%Y %H:%M" )                                
+                            header = 'To:' + to + '\n' + 'From: ' + gmail_user + '\n' + 'Subject: Register completed \n'
+                            print(header)
+                            msg = header +  '\n Welcome ' + first_name + '\nYour attendance is marked at: ' + date
+                            smtpserver.sendmail(gmail_user, to, msg)
+                            print('sent mail')
+                            smtpserver.close()
+                            
+                            video_capture.release()
+                            cv2.destroyAllWindows()
+                            
+                        elif(confidence>74) and (s2 != str(id_card)):
+                            cv2.putText(img,s,(x,y-5),cv2.FONT_HERSHEY_SIMPLEX,0.8,color,1,cv2.LINE_AA)                
+#                             # If wrong person in 30s -> return notification
+#                             t0 = time.time()
+# 
+#                             if(round((time.time() - t0),2) > 5):
+#                                 print("Wrong person")
+#                                 messagebox.showinfo('Notification','Wrong person\n The user incompatible with student card')
                                 
-#                                 if (cv2.waitKey(1)==ord('q')):
-#                                     break
-                                
-                                video_capture.release()
-                                cv2.destroyAllWindows()
-                                break
-
-
                         else:
                             cv2.putText(img,"UNKNOWN",(x,y-5),cv2.FONT_HERSHEY_SIMPLEX,0.8,(0,0,255),1,cv2.LINE_AA)
-                            # Them dieu kien cho, neu vuot qua thoi gian =>> sai nguoi
+
+       
 
                         coords=[x,y,w,h]
                     return coords
@@ -171,7 +172,6 @@ def checking_attendance():
 
                 faceCascade=cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
                 clf = cv2.face.LBPHFaceRecognizer_create()
-#                 clf.read("Trainer.yml")
                 clf.read("Trainer.xml")
 
 
@@ -197,9 +197,6 @@ def checking_attendance():
     finally:
         GPIO.cleanup()
 
-    
-
-
 b1=tk.Button(window,text="Check Attendance",font=("Algerian",20),bg='green',fg='white',command=checking_attendance)
 b1.place(x=10, y=180)
 
@@ -221,13 +218,12 @@ def train_classifier():
     #Train the classifier and save
     clf = cv2.face.LBPHFaceRecognizer_create()
     clf.train(faces,ids)
-#     clf.write("Trainer.yml")
     clf.write("Trainer.xml")
 
     messagebox.showinfo('Result','Training dataset completed!!!')
 
-b3=tk.Button(window,text="Training Dataset",font=("Algerian",20),bg='orange',fg='red',command=train_classifier)
-b3.place(x=10,y=240)
+b2=tk.Button(window,text="Training Dataset",font=("Algerian",20),bg='orange',fg='red',command=train_classifier)
+b2.place(x=10,y=240)
         
 def generate_dataset():
     if(t1.get()=="" or t2.get()=="" or t3.get()=="" or t4.get()==""):
@@ -316,14 +312,10 @@ def generate_dataset():
     
             messagebox.showinfo('Result','Registration completed!!!')
 
-
         finally:
-            GPIO.cleanup()
-            
-    
+            GPIO.cleanup()            
 
-    # send mail at here
-    
+    # send mail at here    
     to = t4.get()
     gmail_user = 'attendancesystembku@gmail.com'
     gmail_pwd = '!attendancesystem'
@@ -340,8 +332,13 @@ def generate_dataset():
     print('sent mail')
     smtpserver.close()
 
-b4=tk.Button(window,text="Generate Dataset",font=("Algerian",20),bg='orange',fg='red',command=generate_dataset)
-b4.place(x=300,y=180)
+b3=tk.Button(window,text="Generate Dataset",font=("Algerian",20),bg='orange',fg='red',command=generate_dataset)
+b3.place(x=300,y=180)
+
+# def access_website():
+# 
+# b4=tk.Button(window,text="Access Website",font=("Algerian",20),bg='green',fg='white',command=generate_dataset)
+# b4.place(x=300,y=240)
 
 window.geometry("910x320")
 window.mainloop()
