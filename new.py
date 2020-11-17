@@ -96,61 +96,66 @@ def checking_attendance():
                         
                         print("s=")
                         print(s)
-            
-                        if confidence>74:
-                            cv2.putText(img,s,(x,y-5),cv2.FONT_HERSHEY_SIMPLEX,0.8,color,1,cv2.LINE_AA)   
-                            # Compare info of card and face recognition
-                            mycursor2=mydb.cursor()
-                            mycursor2.execute("select rfid_uid from student_table where id_stu="+str(id))
-                            s2 = mycursor2.fetchone()
-                            s2 = ''+''.join(s2)                            
                         
-                            if s2 == str(id_card):
+                          
+                        # Compare info of card and face recognition
+                        mycursor2=mydb.cursor()
+                        mycursor2.execute("select rfid_uid from student_table where id_stu="+str(id))
+                        s2 = mycursor2.fetchone()
+                        s2 = ''+''.join(s2)      
+        
+                        if (confidence>74) and (s2 == str(id_card)):
+                            cv2.putText(img,s,(x,y-5),cv2.FONT_HERSHEY_SIMPLEX,0.8,color,1,cv2.LINE_AA)                
+                        
+                            # 3) Check timetable
+                            cursor.execute("Insert into attendance_table (first_name, last_name, student_number) VALUES (%s,%s,%s)", (result[0],result[1],result[2],))
+                            mydb.commit()
 
-                                # 3) Check timetable
-                                cursor.execute("Insert into attendance_table (first_name, last_name, student_number) VALUES (%s,%s,%s)", (result[0],result[1],result[2],))
-                                mydb.commit()
-
-                                # send mail at here
-                                mycursor3=mydb.cursor()
-                                mycursor3.execute("select email from student_table where id_stu="+str(id))
-                                email = mycursor3.fetchone()
-                                email = ''+''.join(email)
-                                print(email)
+                            # send mail at here
+                            mycursor3=mydb.cursor()
+                            mycursor3.execute("select email from student_table where id_stu="+str(id))
+                            email = mycursor3.fetchone()
+                            email = ''+''.join(email)
+                            print(email)
                                 
-                                mycursor3.execute("select first_name from student_table where id_stu="+str(id))
-                                first_name = mycursor3.fetchone()
-                                first_name = ''+''.join(first_name)
+                            mycursor3.execute("select first_name from student_table where id_stu="+str(id))
+                            first_name = mycursor3.fetchone()
+                            first_name = ''+''.join(first_name)
                                 
-                                print(first_name)
+                            print(first_name)
                                 
-                                to = email
-                                gmail_user = 'attendancesystembku@gmail.com'
-                                gmail_pwd = '!attendancesystem'
-                                smtpserver = smtplib.SMTP("smtp.gmail.com",587)
-                                smtpserver.ehlo()
-                                smtpserver.starttls()
-                                smtpserver.ehlo
-                                smtpserver.login(gmail_user, gmail_pwd)
-                                date = datetime.datetime.now().strftime( "%d/%m/%Y %H:%M" )                                
-                                header = 'To:' + to + '\n' + 'From: ' + gmail_user + '\n' + 'Subject: Register completed \n'
-                                print(header)
-                                msg = header +  '\n Welcome ' + first_name + '\nYour attendance is marked at: ' + date
-                                smtpserver.sendmail(gmail_user, to, msg)
-                                print('sent mail')
-                                smtpserver.close()
+                            to = email
+                            gmail_user = 'attendancesystembku@gmail.com'
+                            gmail_pwd = '!attendancesystem'
+                            smtpserver = smtplib.SMTP("smtp.gmail.com",587)
+                            smtpserver.ehlo()
+                            smtpserver.starttls()
+                            smtpserver.ehlo
+                            smtpserver.login(gmail_user, gmail_pwd)
+                            date = datetime.datetime.now().strftime( "%d/%m/%Y %H:%M" )                                
+                            header = 'To:' + to + '\n' + 'From: ' + gmail_user + '\n' + 'Subject: Register completed \n'
+                            print(header)
+                            msg = header +  '\n Welcome ' + first_name + '\nYour attendance is marked at: ' + date
+                            smtpserver.sendmail(gmail_user, to, msg)
+                            print('sent mail')
+                            smtpserver.close()
+                            
+                            video_capture.release()
+                            cv2.destroyAllWindows()
+                            
+                        elif(confidence>74) and (s2 != str(id_card)):
+                            cv2.putText(img,s,(x,y-5),cv2.FONT_HERSHEY_SIMPLEX,0.8,color,1,cv2.LINE_AA)                
+#                             # If wrong person in 30s -> return notification
+#                             t0 = time.time()
+# 
+#                             if(round((time.time() - t0),2) > 5):
+#                                 print("Wrong person")
+#                                 messagebox.showinfo('Notification','Wrong person\n The user incompatible with student card')
                                 
-#                                 if (cv2.waitKey(1)==ord('q')):
-#                                     break
-                                
-                                video_capture.release()
-                                cv2.destroyAllWindows()
-                                break
-
-
                         else:
                             cv2.putText(img,"UNKNOWN",(x,y-5),cv2.FONT_HERSHEY_SIMPLEX,0.8,(0,0,255),1,cv2.LINE_AA)
-                            # Them dieu kien cho, neu vuot qua thoi gian =>> sai nguoi
+
+       
 
                         coords=[x,y,w,h]
                     return coords
