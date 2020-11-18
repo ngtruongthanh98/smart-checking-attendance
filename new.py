@@ -106,9 +106,7 @@ def checking_attendance():
                         if (confidence>74) and (s2 == str(id_card)):
                             cv2.putText(img,s,(x,y-5),cv2.FONT_HERSHEY_SIMPLEX,0.8,color,1,cv2.LINE_AA)                
                         
-                            # 3) Check timetable
-
-                            
+                            # 3) Check timetable                            
                             def findDay(date):
                                 born = datetime.datetime.strptime(date, '%d/%m/%Y').weekday()
                                 return (calendar.day_name[born])                            
@@ -123,12 +121,23 @@ def checking_attendance():
                             
                             mycursor5=mydb.cursor()
                             mycursor5.execute("SELECT class_list FROM student_table WHERE id_stu="+str(id))
-                            class_list = mycursor5.fetchoneclass_list()
-                            class_list = ''+''.join()
+                            class_list = mycursor5.fetchone()
+                            class_list = ''+''.join(class_list)
                             
                             print("class = "+ class_list)
                             
+                            splited_list = class_list.split(" ")
+                            print(splited_list)
                             
+                            c = [int(e) for e in splited_list]
+                            print(c)
+                            
+                            mycursor6=mydb.cursor()
+                            for no_class in c:
+                                mycursor6.execute("SELECT start_time FROM class_table WHERE id_class="+ str(no_class))
+                                start_time = mycursor6.fetchone()
+                                start_time = ''+''.join(start_time)
+                                print(start_time) 
                             
                             mycursor3=mydb.cursor()
                             mycursor3.execute("SELECT * FROM attendance_table")
@@ -196,7 +205,6 @@ def checking_attendance():
                 faceCascade=cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
                 clf = cv2.face.LBPHFaceRecognizer_create()
                 clf.read("Trainer.xml")
-
 
                 video_capture =  cv2.VideoCapture(0)
 
@@ -350,7 +358,7 @@ def generate_dataset():
     date = datetime.datetime.now().strftime( "%d/%m/%Y %H:%M" )
     header = 'To:' + to + '\n' + 'From: ' + gmail_user + '\n' + 'Subject: Register completed \n'
     print(header)
-    msg = header +  '\n Dear ' + t1.get() + ',\n\n' + 'Thank you for registering for attendance-system-bku\n' + 'Register time: '+ date +'\nIf you have any questions, please let we know!\n\n' +  'Regards,\n\n' + 'attendance-system-bku'
+    msg = header +  '\nDear ' + t1.get() + ',\n\n' + 'Thank you for registering for attendance-system-bku\n' + 'Register time: '+ date +'\nIf you have any questions, please let we know!\n\n' +  'Regards,\n\n' + 'attendance-system-bku'
     smtpserver.sendmail(gmail_user, to, msg)
     print('sent mail')
     smtpserver.close()
