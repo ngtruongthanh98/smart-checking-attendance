@@ -11,6 +11,7 @@ from mfrc522 import SimpleMFRC522
 import mysql.connector
 import time
 import datetime
+import calendar
 import pandas as pd
 import smtplib
 
@@ -94,9 +95,7 @@ def checking_attendance():
                         s = mycursor.fetchone()
                         s = ''+''.join(s)
                         
-                        print("s=")
-                        print(s)
-                        
+                        print("s = " + s)                        
                           
                         # Compare info of card and face recognition
                         mycursor2=mydb.cursor()
@@ -108,11 +107,29 @@ def checking_attendance():
                             cv2.putText(img,s,(x,y-5),cv2.FONT_HERSHEY_SIMPLEX,0.8,color,1,cv2.LINE_AA)                
                         
                             # 3) Check timetable
-#                             mycursor3=mydb.cursor()
-#                             mycursor3.execute("Insert into attendance_table (first_name, last_name, student_number) VALUES (%s,%s,%s)", (result[0],result[1],result[2],))
-#                             mydb.commit()
-#                             print("Save attendance data to database")
 
+                            
+                            def findDay(date):
+                                born = datetime.datetime.strptime(date, '%d/%m/%Y').weekday()
+                                return (calendar.day_name[born])                            
+                            
+                            day = datetime.datetime.now().strftime( "%d/%m/%Y" )
+                            print("day = " + day)
+                            
+                            print(findDay(day))
+                            
+                            hour = datetime.datetime.now().strftime( "%H:%M" )
+                            print("hour = " + hour)                           
+                            
+                            mycursor5=mydb.cursor()
+                            mycursor5.execute("SELECT class_list FROM student_table WHERE id_stu="+str(id))
+                            class_list = mycursor5.fetchoneclass_list()
+                            class_list = ''+''.join()
+                            
+                            print("class = "+ class_list)
+                            
+                            
+                            
                             mycursor3=mydb.cursor()
                             mycursor3.execute("SELECT * FROM attendance_table")
                             id_atd=1
@@ -122,22 +139,10 @@ def checking_attendance():
                             mycursor3.execute("INSERT INTO attendance_table (id_atd, first_name, last_name, student_number) VALUES (%s,%s,%s,%s)", (id_atd,result[0],result[1],result[2],))
                             mydb.commit() 
                             print("Save attendance data to database")
-                            
-                            
-#                             mycursor=mydb.cursor()
-#                             mycursor.execute("SELECT * FROM attendance_table")
-#                             myresult=mycursor.fetchall()
-#                             id_atd=1
-#                             for x in myresult:
-#                                 id_atd+=1
-#                             sql="INSERT INTO student_table(id_atd,first_name,last_name,student_number,email) values(%s,%s,%s,%s,%s)"
-#                             val=(id_atd,t1.get(),t2.get(),t3.get(),t4.get())
-#                             mycursor.execute(sql,val)
-#                             mydb.commit()
         
                             # send mail at here
                             mycursor4=mydb.cursor()
-                            mycursor4.execute("select email from student_table where id_stu="+str(id))
+                            mycursor4.execute("select email from student_table WHERE id_stu="+str(id))
                             email = mycursor4.fetchone()
                             email = ''+''.join(email)
                             print(email)
@@ -157,7 +162,7 @@ def checking_attendance():
                             smtpserver.ehlo
                             smtpserver.login(gmail_user, gmail_pwd)
                             date = datetime.datetime.now().strftime( "%d/%m/%Y %H:%M" )                                
-                            header = 'To:' + to + '\n' + 'From: ' + gmail_user + '\n' + 'Subject: Register completed \n'
+                            header = 'To:' + to + '\n' + 'From: ' + gmail_user + '\n' + 'Subject: Check attendance completed \n'
                             print(header)
                             msg = header +  '\n Welcome ' + first_name + '\nYour attendance is marked at: ' + date
                             smtpserver.sendmail(gmail_user, to, msg)
