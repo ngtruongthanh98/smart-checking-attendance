@@ -117,7 +117,8 @@ def checking_attendance():
                             print(findDay(day))
                             
                             hour = datetime.datetime.now().strftime( "%H:%M" )
-                            print("hour = " + hour)                           
+                            print("hour = " + hour)
+                            hour = datetime.datetime.strptime(hour, '%H:%M')
                             
                             mycursor5=mydb.cursor()
                             mycursor5.execute("SELECT class_list FROM student_table WHERE id_stu="+str(id))
@@ -132,55 +133,114 @@ def checking_attendance():
                             c = [int(e) for e in splited_list]
                             print(c)
                             
-                            mycursor6=mydb.cursor()
+                            today = datetime.datetime.now().strftime( "%d/%m/%Y" )
+                            print(findDay(today))
+                            
                             for no_class in c:
+                                mycursor6=mydb.cursor()
                                 mycursor6.execute("SELECT start_time FROM class_table WHERE id_class="+ str(no_class))
                                 start_time = mycursor6.fetchone()
                                 start_time = ''+''.join(start_time)
-                                print(start_time) 
-                            
-                            mycursor3=mydb.cursor()
-                            mycursor3.execute("SELECT * FROM attendance_table")
-                            id_atd=1
-                            myresult=mycursor.fetchall()
-                            for x in myresult:
-                                id_atd+=1
-                            mycursor3.execute("INSERT INTO attendance_table (id_atd, first_name, last_name, student_number) VALUES (%s,%s,%s,%s)", (id_atd,result[0],result[1],result[2],))
-                            mydb.commit() 
-                            print("Save attendance data to database")
-        
-                            # send mail at here
-                            mycursor4=mydb.cursor()
-                            mycursor4.execute("select email from student_table WHERE id_stu="+str(id))
-                            email = mycursor4.fetchone()
-                            email = ''+''.join(email)
-                            print(email)
+                                print("start_time = " + start_time)
+                                start_time_x = datetime.datetime.strptime(start_time, '%H:%M')
                                 
-                            mycursor4.execute("select first_name from student_table where id_stu="+str(id))
-                            first_name = mycursor4.fetchone()
-                            first_name = ''+''.join(first_name)
+                                mycursor6.execute("SELECT end_time FROM class_table WHERE id_class="+ str(no_class))
+                                end_time = mycursor6.fetchone()
+                                end_time = ''+''.join(end_time)
+                                print("end_time = " + end_time)
+                                end_time_x = datetime.datetime.strptime(end_time, '%H:%M')
                                 
-                            print(first_name)
+                                mycursor6.execute("SELECT day_in_week FROM class_table WHERE id_class="+ str(no_class))
+                                day_in_week = mycursor6.fetchone()
+                                day_in_week = ''+''.join(day_in_week)
+                                print("day_in_week = " + day_in_week)
                                 
-                            to = email
-                            gmail_user = 'attendancesystembku@gmail.com'
-                            gmail_pwd = '!attendancesystem'
-                            smtpserver = smtplib.SMTP("smtp.gmail.com",587)
-                            smtpserver.ehlo()
-                            smtpserver.starttls()
-                            smtpserver.ehlo
-                            smtpserver.login(gmail_user, gmail_pwd)
-                            date = datetime.datetime.now().strftime( "%d/%m/%Y %H:%M" )                                
-                            header = 'To:' + to + '\n' + 'From: ' + gmail_user + '\n' + 'Subject: Check attendance completed \n'
-                            print(header)
-                            msg = header +  '\n Welcome ' + first_name + '\nYour attendance is marked at: ' + date
-                            smtpserver.sendmail(gmail_user, to, msg)
-                            print('sent mail')
-                            smtpserver.close()
+                                id_class = str(no_class)
+                                print("id_class = " + id_class)
+                                
+                                if(day_in_week == findDay(today)):
+                                    print("True value")
+                                    # tiep tuc kiem tra tiet hoc (start_time & end_time)
+                                    if((hour > start_time_x) and (hour < end_time_x)):                                   
+                                        print("checked ok")
+                                        
+                                        mycursor3=mydb.cursor()
+                                        mycursor3.execute("SELECT * FROM attendance_table")
+                                        id_atd=1
+                                        myresult=mycursor.fetchall()                   
+                                        for x in myresult:
+                                            id_atd+=1
+                                        mycursor3.execute("INSERT INTO attendance_table (id_atd, first_name, last_name, student_number, class_number) VALUES (%s,%s,%s,%s,%s)", (id_atd,result[0],result[1],result[2],id_class,))
+                                        mydb.commit() 
+                                        print("Save attendance data to database")
+                                        
+                                        # send mail at here
+                                        mycursor4=mydb.cursor()
+                                        mycursor4.execute("select email from student_table WHERE id_stu="+str(id))
+                                        email = mycursor4.fetchone()
+                                        email = ''+''.join(email)
+                                        print("email = " + email)
+                                
+                                        mycursor4.execute("select first_name from student_table where id_stu="+str(id))
+                                        first_name = mycursor4.fetchone()
+                                        first_name = ''+''.join(first_name)                                
+                                        print("first_name = " + first_name)
+                                        
+                                        mycursor4.execute("select subject_name from class_table where id_class="+str(no_class))
+                                        subject_name = mycursor4.fetchone()
+                                        subject_name = ''+''.join(subject_name)                                
+                                        print("subject_name = " + subject_name)
+                                        
+                                        mycursor4.execute("select subject_code from class_table where id_class="+str(no_class))
+                                        subject_code = mycursor4.fetchone()
+                                        subject_code = ''+''.join(subject_code)                                
+                                        print("subject_code = " + subject_code)
+                                        
+                                        mycursor4.execute("select class_code from class_table where id_class="+str(no_class))
+                                        class_code = mycursor4.fetchone()
+                                        class_code = ''+''.join(class_code)                                
+                                        print("class_code = " + class_code)
+                                        
+                                        mycursor4.execute("select day_in_week from class_table where id_class="+str(no_class))
+                                        day_in_week = mycursor4.fetchone()
+                                        day_in_week = ''+''.join(day_in_week)                                
+                                        print("day_in_week = " + day_in_week)
+                                        
+                                        mycursor4.execute("select start_time from class_table where id_class="+str(no_class))
+                                        start_time = mycursor4.fetchone()
+                                        start_time = ''+''.join(start_time)                                
+                                        print("start_time = " + start_time)
+                                        
+                                        mycursor4.execute("select end_time from class_table where id_class="+str(no_class))
+                                        end_time = mycursor4.fetchone()
+                                        end_time = ''+''.join(end_time)                                
+                                        print("end_time = " + end_time)
+                                        
+                                        mycursor4.execute("select room from class_table where id_class="+str(no_class))
+                                        room = mycursor4.fetchone()
+                                        room = ''+''.join(room)                                
+                                        print("room = " + room)
+                                
+                                        to = email
+                                        gmail_user = 'attendancesystembku@gmail.com'
+                                        gmail_pwd = '!attendancesystem'
+                                        smtpserver = smtplib.SMTP("smtp.gmail.com",587)
+                                        smtpserver.ehlo()
+                                        smtpserver.starttls()
+                                        smtpserver.ehlo
+                                        smtpserver.login(gmail_user, gmail_pwd)
+                                        date = datetime.datetime.now().strftime( "%d/%m/%Y %H:%M" )                                
+                                        header = 'To:' + to + '\n' + 'From: ' + gmail_user + '\n' + 'Subject: Check attendance completed\n'
+                                        print(header)                                       
+                                        msg = header +  '\nWelcome ' + first_name + '\n\nYour attendance is marked at: ' + date + '\n\nSubject: ' + subject_name +' (' + subject_code + ') ' + 'Class: ' + class_code + '\n\n' + day_in_week + ' From: ' +start_time + ' To: ' + end_time + ' Room: ' + room
+                                        smtpserver.sendmail(gmail_user, to, msg)
+                                        print('sent mail')
+                                        smtpserver.close()
                             
-                            video_capture.release()
-                            cv2.destroyAllWindows()
-                            
+                                        video_capture.release()
+                                        cv2.destroyAllWindows()
+                                        break
+                                        
                         elif(confidence>74) and (s2 != str(id_card)):
                             cv2.putText(img,s,(x,y-5),cv2.FONT_HERSHEY_SIMPLEX,0.8,color,1,cv2.LINE_AA)                
 #                             # If wrong person in 30s -> return notification
@@ -373,6 +433,3 @@ b3.place(x=300,y=180)
 
 window.geometry("910x320")
 window.mainloop()
-
-
-
