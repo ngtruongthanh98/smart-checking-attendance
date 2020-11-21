@@ -58,7 +58,7 @@ def checking_attendance():
     )
     cursor = mydb.cursor()
     reader = SimpleMFRC522()
-    
+
     try:
         while True:
             messagebox.showinfo('Notification','Place card \nrecord attendance')
@@ -104,7 +104,10 @@ def checking_attendance():
                         s2 = ''+''.join(s2)      
         
                         if (confidence>74) and (s2 == str(id_card)):
-                            cv2.putText(img,s,(x,y-5),cv2.FONT_HERSHEY_SIMPLEX,0.8,color,1,cv2.LINE_AA)                
+                            cv2.putText(img,s,(x,y-5),cv2.FONT_HERSHEY_SIMPLEX,0.8,color,1,cv2.LINE_AA)
+                            
+                            global value
+                            value = 1
                         
                             # 3) Check timetable                            
                             def findDay(date):
@@ -230,16 +233,23 @@ def checking_attendance():
                                         smtpserver.ehlo
                                         smtpserver.login(gmail_user, gmail_pwd)
                                         date = datetime.datetime.now().strftime( "%d/%m/%Y %H:%M" )                                
-                                        header = 'To:' + to + '\n' + 'From: ' + gmail_user + '\n' + 'Subject: Check attendance completed\n'
-                                        print(header)                                       
-                                        msg = header +  '\nWelcome ' + first_name + '\n\nYour attendance is marked at: ' + date + '\n\nSubject: ' + subject_name +' (' + subject_code + ') ' + 'Class: ' + class_code + '\n\n' + day_in_week + ' From: ' +start_time + ' To: ' + end_time + ' Room: ' + room
+                                        header = 'To: ' + to + '\n' + 'From: ' + gmail_user + '\n' + 'Subject: Check attendance completed\n'
+                                        print(header)
+                                        body = '\nWelcome ' + first_name + ',\n\nYour attendance is marked at: ' + date + '\n\nSubject: ' + subject_name +' (' + subject_code + ') ' + 'Class: ' + class_code
+                                        footer = '\n\n' + day_in_week + ' From: ' +start_time + ' To: ' + end_time + ' Room: ' + room
+                                        msg = header  + body + footer
                                         smtpserver.sendmail(gmail_user, to, msg)
                                         print('sent mail')
+                                        print("__________________")
                                         smtpserver.close()
+                                        
+                                        value = 0
                             
-                                        video_capture.release()
-                                        cv2.destroyAllWindows()
-                                        break
+#                                         video_capture.release()
+#                                         cv2.destroyAllWindows()
+#                                         break
+
+                                        
                                         
                         elif(confidence>74) and (s2 != str(id_card)):
                             cv2.putText(img,s,(x,y-5),cv2.FONT_HERSHEY_SIMPLEX,0.8,color,1,cv2.LINE_AA)                
@@ -273,7 +283,7 @@ def checking_attendance():
                     img=  recognize(img,clf,faceCascade)
                     cv2.imshow("face detection",img)
 
-                    if (cv2.waitKey(1)==ord('q')):
+                    if (cv2.waitKey(1)==ord('q') or int(value) == 0):
                         break
 
                 video_capture.release()
@@ -416,7 +426,7 @@ def generate_dataset():
     smtpserver.ehlo
     smtpserver.login(gmail_user, gmail_pwd)
     date = datetime.datetime.now().strftime( "%d/%m/%Y %H:%M" )
-    header = 'To:' + to + '\n' + 'From: ' + gmail_user + '\n' + 'Subject: Register completed \n'
+    header = 'To: ' + to + '\n' + 'From: ' + gmail_user + '\n' + 'Subject: Register completed \n'
     print(header)
     msg = header +  '\nDear ' + t1.get() + ',\n\n' + 'Thank you for registering for attendance-system-bku\n' + 'Register time: '+ date +'\nIf you have any questions, please let we know!\n\n' +  'Regards,\n\n' + 'attendance-system-bku'
     smtpserver.sendmail(gmail_user, to, msg)

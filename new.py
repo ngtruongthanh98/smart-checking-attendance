@@ -47,7 +47,9 @@ l4.grid(column=0, row=3)
 t4=tk.Entry(window,width=50,bd=5)
 t4.grid(column=1, row=3)
 
-def checking_attendance():
+def checking_attendance(): 
+    global value
+    value = 1
     
     # 1) Check the sv
     mydb=mysql.connector.connect(
@@ -58,7 +60,7 @@ def checking_attendance():
     )
     cursor = mydb.cursor()
     reader = SimpleMFRC522()
-
+    
     try:
         while True:
             messagebox.showinfo('Notification','Place card \nrecord attendance')
@@ -70,6 +72,8 @@ def checking_attendance():
             
             if cursor.rowcount >= 1:
                 messagebox.showinfo('Notification','Welcome ' + result[0])
+                
+                
                 
                 # 2) Check khuon mat
                 def draw_boundary(img,classifier,scaleFactor,minNeighbors,color,text,clf):
@@ -101,14 +105,17 @@ def checking_attendance():
                         mycursor2=mydb.cursor()
                         mycursor2.execute("select rfid_uid from student_table where id_stu="+str(id))
                         s2 = mycursor2.fetchone()
-                        s2 = ''+''.join(s2)      
+                        s2 = ''+''.join(s2)
+                        
+                        def call_var():
+                            global value
+                            value = 0
         
+                        
                         if (confidence>74) and (s2 == str(id_card)):
                             cv2.putText(img,s,(x,y-5),cv2.FONT_HERSHEY_SIMPLEX,0.8,color,1,cv2.LINE_AA)
-                            
-                            global value
-                            value = 1
-                        
+                            print("Case 1: Face exists in database and compatible with RFID")
+
                             # 3) Check timetable                            
                             def findDay(date):
                                 born = datetime.datetime.strptime(date, '%d/%m/%Y').weekday()
@@ -162,10 +169,10 @@ def checking_attendance():
                                 print("id_class = " + id_class)
                                 
                                 if(day_in_week == findDay(today)):
-                                    print("True value")
+                                    print("Correct day in week")
                                     # tiep tuc kiem tra tiet hoc (start_time & end_time)
                                     if((hour > start_time_x) and (hour < end_time_x)):                                   
-                                        print("checked ok")
+                                        print("Correct class")
                                         
                                         mycursor3=mydb.cursor()
                                         mycursor3.execute("SELECT * FROM attendance_table")
@@ -240,30 +247,60 @@ def checking_attendance():
                                         msg = header  + body + footer
                                         smtpserver.sendmail(gmail_user, to, msg)
                                         print('sent mail')
-                                        print("__________________")
-                                        smtpserver.close()
-                                        
-                                        value = 0
-                            
-#                                         video_capture.release()
-#                                         cv2.destroyAllWindows()
-#                                         break
+                                        print("____________________________________")
+                                        smtpserver.close()                                       
 
+                                    else:
+                                        print("No class available!!!")                                
+                                        messagebox.showerror('Error','No class available!!!')
+                                
+                                else:
+                                    print("No class available!!!")
+                                    messagebox.showerror('Error','No class available!!!')
                                         
+
+                            call_var()
+        
                                         
                         elif(confidence>74) and (s2 != str(id_card)):
-                            cv2.putText(img,s,(x,y-5),cv2.FONT_HERSHEY_SIMPLEX,0.8,color,1,cv2.LINE_AA)                
-#                             # If wrong person in 30s -> return notification
-#                             t0 = time.time()
-# 
-#                             if(round((time.time() - t0),2) > 5):
-#                                 print("Wrong person")
-#                                 messagebox.showinfo('Notification','Wrong person\n The user incompatible with student card')
+                            cv2.putText(img,s,(x,y-5),cv2.FONT_HERSHEY_SIMPLEX,0.8,color,1,cv2.LINE_AA)
+                            print("Case 2: Face exists in database and doesnt compatible with RFID card")                            
+                          
+                            # If wrong person in 30s -> return notification
+                            start = time.time()
+                            elapsed_time = 0
+                            while True:
+                                elapsed_time = time.time() - start
+                                time.sleep(1)
+                                print(round(elapsed_time,0), "s")
                                 
+                                if(elapsed_time > 10):                                
+                                    print("Wrong person")
+                                    messagebox.showerror('Error','Wrong person\nThe user incompatible with student card')
+                                    break
+                                
+                            call_var()
+                            
                         else:
                             cv2.putText(img,"UNKNOWN",(x,y-5),cv2.FONT_HERSHEY_SIMPLEX,0.8,(0,0,255),1,cv2.LINE_AA)
-
-       
+                            
+                            print("Case 3: RFID card with Unknown face")
+                            # If wrong person in 30s -> return notification
+                            start = time.time()
+                            elapsed_time = 0
+                            while True:
+                                elapsed_time = time.time() - start
+                                time.sleep(1)
+                                print(round(elapsed_time,0), "s")
+                                
+                                if(elapsed_time > 10):                                
+                                    print("Wrong person")
+                                    messagebox.showerror('Error','Wrong person\nThe user incompatible with student card')
+                                    break
+                                
+                            call_var()
+                                
+  
 
                         coords=[x,y,w,h]
                     return coords
@@ -282,19 +319,22 @@ def checking_attendance():
                     ret,img = video_capture.read()
                     img=  recognize(img,clf,faceCascade)
                     cv2.imshow("face detection",img)
+                    
+                    print(value)
 
                     if (cv2.waitKey(1)==ord('q') or int(value) == 0):
                         break
-
+                    
                 video_capture.release()
                 cv2.destroyAllWindows()    
                 
             else:
-                messagebox.showinfo('Notification','User does not exist')
+                messagebox.showerror('Error','User does not exist')
 #                 time.sleep(2)
                 break
 
-        
+#             if cv2.waitKey(1)==ord('q'):
+#                 break
     finally:
         GPIO.cleanup()
 
