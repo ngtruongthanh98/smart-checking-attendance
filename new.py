@@ -243,16 +243,15 @@ def checking_attendance():
                                     footer = '\n\n' + day_in_week + ' From: ' +start_time + ' To: ' + end_time + ' Room: ' + room
                                     msg = header  + body + footer
                                     smtpserver.sendmail(gmail_user, to, msg)
-                                    print('sent mail')
-                                    print("____________________________________")
+                                    print('sent mail\n____________________________________')
                                     smtpserver.close()                                       
 
                                 else:
-                                    print("No class available!!!")                                
+                                    print("No class available!!!\n____________________________________")
                                     messagebox.showerror('Error','No class available!!!')
                                 
                             else:
-                                print("No class available!!!")
+                                print("No class available!!!\n____________________________________")
                                 messagebox.showerror('Error','No class available!!!')
 
                         call_var()
@@ -271,7 +270,8 @@ def checking_attendance():
                                 
                             if(elapsed_time > 10):                                
                                 print("Wrong person")
-                                messagebox.showerror('Error','Wrong person\nThe user incompatible with student card')
+                                print("____________________________________")
+                                messagebox.showerror('Error','Wrong person\nFace images are not compatible with the RFID card')
                                 break
                                 
                         call_var()
@@ -289,8 +289,9 @@ def checking_attendance():
                             print(round(elapsed_time,0), "s")
                                 
                             if(elapsed_time > 10):                                
-                                print("Wrong person")
-                                messagebox.showerror('Error','Wrong person\nThe user incompatible with student card')
+                                print("Unknown person")
+                                print("____________________________________")
+                                messagebox.showerror('Error','Unknown person\nFace images are not compatible with the RFID card')
                                 break
                                 
                         call_var()
