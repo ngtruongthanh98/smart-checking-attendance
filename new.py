@@ -72,6 +72,7 @@ def checking_attendance():
             
         if cursor.rowcount >= 1:
             messagebox.showinfo('Notification','Welcome ' + result[0])
+            print(result[0]+"'s RFID card")
           
             # 2) Check khuon mat
             def draw_boundary(img,classifier,scaleFactor,minNeighbors,color,text,clf):
@@ -132,44 +133,44 @@ def checking_attendance():
                         class_list = mycursor5.fetchone()
                         class_list = ''+''.join(class_list)
                             
-                        print("class = "+ class_list)
+#                         print("class = "+ class_list)
                             
                         splited_list = class_list.split(" ")
-                        print(splited_list)
+#                         print(splited_list)
                             
                         c = [int(e) for e in splited_list]
-                        print(c)
+#                         print(c)
                             
                         today = datetime.datetime.now().strftime( "%d/%m/%Y" )
-                        print(findDay(today))
+#                         print(findDay(today))
                             
                         for no_class in c:
                             mycursor6=mydb.cursor()
                             mycursor6.execute("SELECT start_time FROM class_table WHERE id_class="+ str(no_class))
                             start_time = mycursor6.fetchone()
                             start_time = ''+''.join(start_time)
-                            print("start_time = " + start_time)
+#                             print("start_time = " + start_time)
                             start_time_x = datetime.datetime.strptime(start_time, '%H:%M')
                                 
                             mycursor6.execute("SELECT end_time FROM class_table WHERE id_class="+ str(no_class))
                             end_time = mycursor6.fetchone()
                             end_time = ''+''.join(end_time)
-                            print("end_time = " + end_time)
+#                             print("end_time = " + end_time)
                             end_time_x = datetime.datetime.strptime(end_time, '%H:%M')
                                 
                             mycursor6.execute("SELECT day_in_week FROM class_table WHERE id_class="+ str(no_class))
                             day_in_week = mycursor6.fetchone()
                             day_in_week = ''+''.join(day_in_week)
-                            print("day_in_week = " + day_in_week)
+#                             print("day_in_week = " + day_in_week)
                                 
                             id_class = str(no_class)
-                            print("id_class = " + id_class)
+#                             print("id_class = " + id_class)
                                 
                             if(day_in_week == findDay(today)):
-                                print("Correct day in week")
+#                                 print("Correct day in week")
                                 # tiep tuc kiem tra tiet hoc (start_time & end_time)
                                 if((hour > start_time_x) and (hour < end_time_x)):                                   
-                                    print("Correct class")
+#                                     print("Correct class")
                                         
                                     mycursor3=mydb.cursor()
                                     mycursor3.execute("SELECT * FROM attendance_table")
@@ -179,54 +180,54 @@ def checking_attendance():
                                         id_atd+=1
                                     mycursor3.execute("INSERT INTO attendance_table (id_atd, first_name, last_name, student_number, class_number) VALUES (%s,%s,%s,%s,%s)", (id_atd,result[0],result[1],result[2],id_class,))
                                     mydb.commit() 
-                                    print("Save attendance data to database")
+                                    print("Save attendance data to database\n")
                                         
                                     # send mail at here
                                     mycursor4=mydb.cursor()
                                     mycursor4.execute("select email from student_table WHERE id_stu="+str(id))
                                     email = mycursor4.fetchone()
                                     email = ''+''.join(email)
-                                    print("email = " + email)
+#                                     print("email = " + email)
                                 
                                     mycursor4.execute("select first_name from student_table where id_stu="+str(id))
                                     first_name = mycursor4.fetchone()
                                     first_name = ''+''.join(first_name)                                
-                                    print("first_name = " + first_name)
+#                                     print("first_name = " + first_name)
                                         
                                     mycursor4.execute("select subject_name from class_table where id_class="+str(no_class))
                                     subject_name = mycursor4.fetchone()
                                     subject_name = ''+''.join(subject_name)                                
-                                    print("subject_name = " + subject_name)
+#                                     print("subject_name = " + subject_name)
                                         
                                     mycursor4.execute("select subject_code from class_table where id_class="+str(no_class))
                                     subject_code = mycursor4.fetchone()
                                     subject_code = ''+''.join(subject_code)                                
-                                    print("subject_code = " + subject_code)
+#                                     print("subject_code = " + subject_code)
                                         
                                     mycursor4.execute("select class_code from class_table where id_class="+str(no_class))
                                     class_code = mycursor4.fetchone()
                                     class_code = ''+''.join(class_code)                                
-                                    print("class_code = " + class_code)
+#                                     print("class_code = " + class_code)
                                         
                                     mycursor4.execute("select day_in_week from class_table where id_class="+str(no_class))
                                     day_in_week = mycursor4.fetchone()
                                     day_in_week = ''+''.join(day_in_week)                                
-                                    print("day_in_week = " + day_in_week)
+#                                     print("day_in_week = " + day_in_week)
                                         
                                     mycursor4.execute("select start_time from class_table where id_class="+str(no_class))
                                     start_time = mycursor4.fetchone()
                                     start_time = ''+''.join(start_time)                                
-                                    print("start_time = " + start_time)
+#                                     print("start_time = " + start_time)
                                         
                                     mycursor4.execute("select end_time from class_table where id_class="+str(no_class))
                                     end_time = mycursor4.fetchone()
                                     end_time = ''+''.join(end_time)                                
-                                    print("end_time = " + end_time)
+#                                     print("end_time = " + end_time)
                                         
                                     mycursor4.execute("select room from class_table where id_class="+str(no_class))
                                     room = mycursor4.fetchone()
                                     room = ''+''.join(room)                                
-                                    print("room = " + room)
+#                                     print("room = " + room)
                                 
                                     to = email
                                     gmail_user = 'attendancesystembku@gmail.com'
@@ -238,10 +239,11 @@ def checking_attendance():
                                     smtpserver.login(gmail_user, gmail_pwd)
                                     date = datetime.datetime.now().strftime( "%d/%m/%Y %H:%M" )                                
                                     header = 'To: ' + to + '\n' + 'From: ' + gmail_user + '\n' + 'Subject: Check attendance completed\n'
-                                    print(header)
+#                                     print(header)
                                     body = '\nWelcome ' + first_name + ',\n\nYour attendance is marked at: ' + date + '\n\nSubject: ' + subject_name +' (' + subject_code + ') ' + 'Class: ' + class_code
                                     footer = '\n\n' + day_in_week + ' From: ' +start_time + ' To: ' + end_time + ' Room: ' + room
                                     msg = header  + body + footer
+                                    print(msg)
                                     smtpserver.sendmail(gmail_user, to, msg)
                                     print('sent mail\n____________________________________')
                                     smtpserver.close()                                       
