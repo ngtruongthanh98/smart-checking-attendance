@@ -74,88 +74,32 @@ def checking_attendance():
             messagebox.showinfo('Notification','Welcome ' + result[0] +'\nClick OK to start Camera')
             print(result[0]+"'s RFID card")
             
-#             def check_eyes_blink():
-#                 eyeCascade=cv2.CascadeClassifier("haarcascade_eye_tree_eyeglasses.xml")
-#                 eyes = eyeCascade.detectMultiScale(
-#                     img,
-#                     scaleFactor=1.1,
-#                     minNeighbors=5,
-#                     minSize=(30, 30),
-#                     # flags = cv2.CV_HAAR_SCALE_IMAGE
-#                 )
-#                 global value2
-#                 value2 = 1
-#                 
-#                 # Eyes close from 0.3s to 1.5s
-#                 start1 = time.time()
-#                 elapsed_time1 = 0
-#                 while True:
-#                     # Examining the length of eyes object for eyes
-#                     print(len(eyes))
-#                     
-#                     # Check fake photo close eye
-#                     if((len(eyes) == 0) and (value2 == 1)):
-#                         print("Close 1")                       
-#                         
-#                         # Check thoi gian close [0.3-1.5]
-#                         elapsed_time1 = time.time() - start1
-#                         time.sleep(0.1)
-#                         print(elapsed_time1)
-#                                 
-#                         if((len(eyes) != 0) and (0.3 < elapsed_time1) and (elapsed_time1 < 2)):                            
-#                             print("Open 1")
-#                             value2 = 0
-#                             break
-#                         
-#                         else:
-#                             value2 = 2
-#                             
-#                         if(value2 == 2):
-#                             print("Fake photo!!!")
-#                             messagebox.showerror('Error','Fake Photo 1----------!!!')
-#                             break
-#                         
-#                     else:
-#                         break
-                                           
-
-                        
-#                     # Check fake photo open eyes                        
-#                     if((len(eyes) != 0) and (value2 == 1)):
-#                         print("Open 2")                       
-#                         
-#                         # Check thoi gian close [0.3-1.5]
-#                         elapsed_time1 = time.time() - start1
-#                         time.sleep(1)
-#                         print(elapsed_time1)
-#                                 
-#                         if(elapsed_time1 > 15):                                
-#                             value2 = 0
-#                             print("Close 2")
-#                             break
-#                         
-#                         else:
-#                             value2 = 2
-#                             
-#                         if(value2 == 2):
-#                             print("Fake photo!!!")
-#                             messagebox.showerror('Error','Fake Photo 2----------!!!')
-#                             break                            
-                                           
-
             # 2) Check khuon mat
             def draw_boundary(img,classifier,scaleFactor,minNeighbors,color,text,clf):
                 gray_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
                 features = classifier.detectMultiScale(gray_image,scaleFactor,minNeighbors)
                 coords = []
+                
+                eyeCascade=cv2.CascadeClassifier("haarcascade_eye_tree_eyeglasses.xml")
 
                 for(x,y,w,h) in features:
-                    cv2.rectangle(img,(x,y),(x+w,y+h),color,2)                    
+                    cv2.rectangle(img,(x,y),(x+w,y+h),color,2)
                     
-#                     check_eyes_blink()
+                    # Now the eyes on the face
+                    # so we have to make the face from gray
+                    gray_face = gray_image[y:y+h,x:x+w]
 #                     
-#                     global value2
+#                     # Make the color face also
+#                     color_face = img[y:y+h,x:x+w]
                     
+                    # Check the eyes on this face
+                    eyes = eyeCascade.detectMultiScale(gray_face,1.3,5)
+                    
+                    if len(eyes) == 0:
+                        print("no eye!!!")
+                    else:
+                        print("eyes!!!")
+                        
                     id,pred = clf.predict(gray_image[y:y+h,x:x+w])
                     confidence = int(100*(1-pred/300))
             
@@ -170,8 +114,6 @@ def checking_attendance():
                     mycursor.execute("select first_name from student_table where id_stu="+str(id))
                     s = mycursor.fetchone()
                     s = ''+''.join(s)
-                        
-#                     print("s = " + s)                        
                           
                     # Compare info of card and face recognition
                     mycursor2=mydb.cursor()
