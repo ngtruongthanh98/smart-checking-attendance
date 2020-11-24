@@ -50,7 +50,7 @@ t4.grid(column=1, row=3)
 def checking_attendance(): 
     global value
     value = 1
-    
+
     # 1) Check the sv
     mydb=mysql.connector.connect(
         host="localhost",
@@ -63,7 +63,7 @@ def checking_attendance():
     
     try:
 
-        messagebox.showinfo('Notification','Place card \nrecord attendance')
+        messagebox.showinfo('Notification','Click OK then \nPlace card to record attendance')
             
         id_card, text = reader.read()
             
@@ -71,18 +71,91 @@ def checking_attendance():
         result = cursor.fetchone()
             
         if cursor.rowcount >= 1:
-            messagebox.showinfo('Notification','Welcome ' + result[0])
+            messagebox.showinfo('Notification','Welcome ' + result[0] +'\nClick OK to start Camera')
             print(result[0]+"'s RFID card")
-          
+            
+#             def check_eyes_blink():
+#                 eyeCascade=cv2.CascadeClassifier("haarcascade_eye_tree_eyeglasses.xml")
+#                 eyes = eyeCascade.detectMultiScale(
+#                     img,
+#                     scaleFactor=1.1,
+#                     minNeighbors=5,
+#                     minSize=(30, 30),
+#                     # flags = cv2.CV_HAAR_SCALE_IMAGE
+#                 )
+#                 global value2
+#                 value2 = 1
+#                 
+#                 # Eyes close from 0.3s to 1.5s
+#                 start1 = time.time()
+#                 elapsed_time1 = 0
+#                 while True:
+#                     # Examining the length of eyes object for eyes
+#                     print(len(eyes))
+#                     
+#                     # Check fake photo close eye
+#                     if((len(eyes) == 0) and (value2 == 1)):
+#                         print("Close 1")                       
+#                         
+#                         # Check thoi gian close [0.3-1.5]
+#                         elapsed_time1 = time.time() - start1
+#                         time.sleep(0.1)
+#                         print(elapsed_time1)
+#                                 
+#                         if((len(eyes) != 0) and (0.3 < elapsed_time1) and (elapsed_time1 < 2)):                            
+#                             print("Open 1")
+#                             value2 = 0
+#                             break
+#                         
+#                         else:
+#                             value2 = 2
+#                             
+#                         if(value2 == 2):
+#                             print("Fake photo!!!")
+#                             messagebox.showerror('Error','Fake Photo 1----------!!!')
+#                             break
+#                         
+#                     else:
+#                         break
+                                           
+
+                        
+#                     # Check fake photo open eyes                        
+#                     if((len(eyes) != 0) and (value2 == 1)):
+#                         print("Open 2")                       
+#                         
+#                         # Check thoi gian close [0.3-1.5]
+#                         elapsed_time1 = time.time() - start1
+#                         time.sleep(1)
+#                         print(elapsed_time1)
+#                                 
+#                         if(elapsed_time1 > 15):                                
+#                             value2 = 0
+#                             print("Close 2")
+#                             break
+#                         
+#                         else:
+#                             value2 = 2
+#                             
+#                         if(value2 == 2):
+#                             print("Fake photo!!!")
+#                             messagebox.showerror('Error','Fake Photo 2----------!!!')
+#                             break                            
+                                           
+
             # 2) Check khuon mat
             def draw_boundary(img,classifier,scaleFactor,minNeighbors,color,text,clf):
                 gray_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
                 features = classifier.detectMultiScale(gray_image,scaleFactor,minNeighbors)
-
                 coords = []
 
                 for(x,y,w,h) in features:
-                    cv2.rectangle(img,(x,y),(x+w,y+h),color,2)
+                    cv2.rectangle(img,(x,y),(x+w,y+h),color,2)                    
+                    
+#                     check_eyes_blink()
+#                     
+#                     global value2
+                    
                     id,pred = clf.predict(gray_image[y:y+h,x:x+w])
                     confidence = int(100*(1-pred/300))
             
@@ -98,7 +171,7 @@ def checking_attendance():
                     s = mycursor.fetchone()
                     s = ''+''.join(s)
                         
-                    print("s = " + s)                        
+#                     print("s = " + s)                        
                           
                     # Compare info of card and face recognition
                     mycursor2=mydb.cursor()
@@ -109,11 +182,8 @@ def checking_attendance():
                     def call_var():
                         global value
                         value = 0
-
-                    if (confidence>74) and (s2 == str(id_card)):
-                        cv2.putText(img,s,(x,y-5),cv2.FONT_HERSHEY_SIMPLEX,0.8,color,1,cv2.LINE_AA)
-                        print("Case 1: Face exists in database and compatible with RFID")
-
+                        
+                    def check_timetable_and_sendmail():
                         # 3) Check timetable                            
                         def findDay(date):
                             born = datetime.datetime.strptime(date, '%d/%m/%Y').weekday()
@@ -131,46 +201,35 @@ def checking_attendance():
                         mycursor5=mydb.cursor()
                         mycursor5.execute("SELECT class_list FROM student_table WHERE id_stu="+str(id))
                         class_list = mycursor5.fetchone()
-                        class_list = ''+''.join(class_list)
-                            
-#                         print("class = "+ class_list)
-                            
+                        class_list = ''+''.join(class_list)                            
+           
                         splited_list = class_list.split(" ")
-#                         print(splited_list)
                             
                         c = [int(e) for e in splited_list]
-#                         print(c)
                             
                         today = datetime.datetime.now().strftime( "%d/%m/%Y" )
-#                         print(findDay(today))
                             
                         for no_class in c:
                             mycursor6=mydb.cursor()
                             mycursor6.execute("SELECT start_time FROM class_table WHERE id_class="+ str(no_class))
                             start_time = mycursor6.fetchone()
                             start_time = ''+''.join(start_time)
-#                             print("start_time = " + start_time)
                             start_time_x = datetime.datetime.strptime(start_time, '%H:%M')
                                 
                             mycursor6.execute("SELECT end_time FROM class_table WHERE id_class="+ str(no_class))
                             end_time = mycursor6.fetchone()
                             end_time = ''+''.join(end_time)
-#                             print("end_time = " + end_time)
                             end_time_x = datetime.datetime.strptime(end_time, '%H:%M')
                                 
                             mycursor6.execute("SELECT day_in_week FROM class_table WHERE id_class="+ str(no_class))
                             day_in_week = mycursor6.fetchone()
                             day_in_week = ''+''.join(day_in_week)
-#                             print("day_in_week = " + day_in_week)
                                 
                             id_class = str(no_class)
-#                             print("id_class = " + id_class)
                                 
                             if(day_in_week == findDay(today)):
-#                                 print("Correct day in week")
                                 # tiep tuc kiem tra tiet hoc (start_time & end_time)
                                 if((hour > start_time_x) and (hour < end_time_x)):                                   
-#                                     print("Correct class")
                                         
                                     mycursor3=mydb.cursor()
                                     mycursor3.execute("SELECT * FROM attendance_table")
@@ -187,47 +246,38 @@ def checking_attendance():
                                     mycursor4.execute("select email from student_table WHERE id_stu="+str(id))
                                     email = mycursor4.fetchone()
                                     email = ''+''.join(email)
-#                                     print("email = " + email)
                                 
                                     mycursor4.execute("select first_name from student_table where id_stu="+str(id))
                                     first_name = mycursor4.fetchone()
                                     first_name = ''+''.join(first_name)                                
-#                                     print("first_name = " + first_name)
                                         
                                     mycursor4.execute("select subject_name from class_table where id_class="+str(no_class))
                                     subject_name = mycursor4.fetchone()
                                     subject_name = ''+''.join(subject_name)                                
-#                                     print("subject_name = " + subject_name)
                                         
                                     mycursor4.execute("select subject_code from class_table where id_class="+str(no_class))
                                     subject_code = mycursor4.fetchone()
                                     subject_code = ''+''.join(subject_code)                                
-#                                     print("subject_code = " + subject_code)
                                         
                                     mycursor4.execute("select class_code from class_table where id_class="+str(no_class))
                                     class_code = mycursor4.fetchone()
                                     class_code = ''+''.join(class_code)                                
-#                                     print("class_code = " + class_code)
                                         
                                     mycursor4.execute("select day_in_week from class_table where id_class="+str(no_class))
                                     day_in_week = mycursor4.fetchone()
                                     day_in_week = ''+''.join(day_in_week)                                
-#                                     print("day_in_week = " + day_in_week)
-                                        
+                                       
                                     mycursor4.execute("select start_time from class_table where id_class="+str(no_class))
                                     start_time = mycursor4.fetchone()
                                     start_time = ''+''.join(start_time)                                
-#                                     print("start_time = " + start_time)
                                         
                                     mycursor4.execute("select end_time from class_table where id_class="+str(no_class))
                                     end_time = mycursor4.fetchone()
                                     end_time = ''+''.join(end_time)                                
-#                                     print("end_time = " + end_time)
                                         
                                     mycursor4.execute("select room from class_table where id_class="+str(no_class))
                                     room = mycursor4.fetchone()
                                     room = ''+''.join(room)                                
-#                                     print("room = " + room)
                                 
                                     to = email
                                     gmail_user = 'attendancesystembku@gmail.com'
@@ -239,7 +289,6 @@ def checking_attendance():
                                     smtpserver.login(gmail_user, gmail_pwd)
                                     date = datetime.datetime.now().strftime( "%d/%m/%Y %H:%M" )                                
                                     header = 'To: ' + to + '\n' + 'From: ' + gmail_user + '\n' + 'Subject: Check attendance completed\n'
-#                                     print(header)
                                     body = '\nWelcome ' + first_name + ',\n\nYour attendance is marked at: ' + date + '\n\nSubject: ' + subject_name +' (' + subject_code + ') ' + 'Class: ' + class_code
                                     footer = '\n\n' + day_in_week + ' From: ' +start_time + ' To: ' + end_time + ' Room: ' + room
                                     msg = header  + body + footer
@@ -249,20 +298,19 @@ def checking_attendance():
                                     smtpserver.close()                                       
 
                                 else:
+                                    print("Correct day, but no class now")
                                     print("No class available!!!\n____________________________________")
                                     messagebox.showerror('Error','No class available!!!')
                                 
                             else:
+                                print("No class today")
                                 print("No class available!!!\n____________________________________")
                                 messagebox.showerror('Error','No class available!!!')
 
-                        call_var()
-           
-                    elif(confidence>74) and (s2 != str(id_card)):
-                        cv2.putText(img,s,(x,y-5),cv2.FONT_HERSHEY_SIMPLEX,0.8,color,1,cv2.LINE_AA)
-                        print("Case 2: Face exists in database and doesnt compatible with RFID card")                            
-                          
-                        # If wrong person in 30s -> return notification
+                       
+                    # If wrong person in 10s -> return notification]
+                    if (confidence < 74):
+                        print("Unknown face")
                         start = time.time()
                         elapsed_time = 0
                         while True:
@@ -270,33 +318,40 @@ def checking_attendance():
                             time.sleep(1)
                             print(round(elapsed_time,0), "s")
                                 
-                            if(elapsed_time > 10):                                
-                                print("Wrong person")
-                                print("____________________________________")
-                                messagebox.showerror('Error','Wrong person\nFace images are not compatible with the RFID card')
-                                break
+                            if (confidence > 74) and (elapsed_time < 10):
+                                # Check card
+                                if (s2 == str(id_card)):
+                                    print("Case 1: Face exists in database and compatible with RFID")
+                                    check_timetable_and_sendmail()
+                                    call_var()
+                                    break
                                 
-                        call_var()
-                            
-                    else:
-                        cv2.putText(img,"UNKNOWN",(x,y-5),cv2.FONT_HERSHEY_SIMPLEX,0.8,(0,0,255),1,cv2.LINE_AA)
-                            
-                        print("Case 3: RFID card with Unknown face")
-                        # If wrong person in 30s -> return notification
-                        start = time.time()
-                        elapsed_time = 0
-                        while True:
-                            elapsed_time = time.time() - start
-                            time.sleep(1)
-                            print(round(elapsed_time,0), "s")
+                                else:
+                                    print("Case 2: Face exists in database and doesnt compatible with RFID card")
+                                    print("____________________________________")
+                                    messagebox.showerror('Error','Wrong person\nFace images are not compatible with the RFID card')
+                                    call_var()
+                                    break
                                 
-                            if(elapsed_time > 10):                                
-                                print("Unknown person")
+                            if (elapsed_time > 10):
+                                print("Case 3: RFID card with Unknown face")
                                 print("____________________________________")
                                 messagebox.showerror('Error','Unknown person\nFace images are not compatible with the RFID card')
+                                call_var()
                                 break
+                            
+                    else:
+                        # Check card
+                        if (s2 == str(id_card)):
+                            print("Case 1: Face exists in database and compatible with RFID")
+                            check_timetable_and_sendmail()
+                            call_var()
                                 
-                        call_var()
+                        else:
+                            print("Case 2: Face exists in database and doesnt compatible with RFID card")
+                            print("____________________________________")
+                            messagebox.showerror('Error','Wrong person\nFace images are not compatible with the RFID card')
+                            call_var()
                                 
                     coords=[x,y,w,h]
                 return coords
@@ -318,7 +373,7 @@ def checking_attendance():
                     
                 print(value)
                 time.sleep(1)
-
+                
                 if (cv2.waitKey(1)==ord('q') or int(value) == 0):
                     break
                     
