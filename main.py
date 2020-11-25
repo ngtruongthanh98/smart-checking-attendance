@@ -84,8 +84,7 @@ def checking_attendance():
 
                 for(x,y,w,h) in features:
                     cv2.rectangle(img,(x,y),(x+w,y+h),color,2)
-                    
-                    
+
                     id,pred = clf.predict(gray_image[y:y+h,x:x+w])
                     confidence = int(100*(1-pred/300))
                     
@@ -241,14 +240,11 @@ def checking_attendance():
                         # If wrong person in 10s -> return notification]
                         if (confidence < 74):
                             print("Unknown face")
-                            start = time.time()
-                            elapsed_time = 0
                             while True:
-                                elapsed_time = time.time() - start
                                 time.sleep(1)
-                                print(round(elapsed_time,0), "s")
+                                print(round(delta,0), "s")
                                     
-                                if (confidence > 74) and (elapsed_time < 10):
+                                if (confidence > 74) and (delta < 10):
                                     # Check card
                                     if (s2 == str(id_card)):
                                         print("Case 1: Face exists in database and compatible with RFID")
@@ -263,7 +259,7 @@ def checking_attendance():
                                         call_var()
                                         break
                                     
-                                if (elapsed_time > 10):
+                                if (delta > 10):
                                     print("Case 3: RFID card with Unknown face")
                                     print("____________________________________")
                                     messagebox.showerror('Error','Unknown person\nFace images are not compatible with the RFID card')
@@ -292,14 +288,7 @@ def checking_attendance():
                     
                     # Check the eyes on this face
                     eyes = eyeCascade.detectMultiScale(gray_face,1.3,5)
-                    
-                    # Get into the eyes with its position
-#                     for (a,b,c,d) in eyes:
-#                         cv2.rectangle(color_face,(a,b),(a+c,b+d),(0,255,0),2)
                         
-
-                    
-                
                     if len(eyes) == 0:
                         print("no eye!!!")
                         check_attendance_main()
@@ -319,11 +308,15 @@ def checking_attendance():
             clf.read("Trainer.xml")
 
             video_capture =  cv2.VideoCapture(0)
-
+            
+            begin = time.time()
+            delta = 0
             while True:
                 ret,img = video_capture.read()
                 img=  recognize(img,clf,faceCascade)
                 cv2.imshow("face detection",img)
+                
+                delta = time.time() - begin
                     
                 print(value)
                 time.sleep(1)

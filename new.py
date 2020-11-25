@@ -288,13 +288,22 @@ def checking_attendance():
                     
                     # Check the eyes on this face
                     eyes = eyeCascade.detectMultiScale(gray_face,1.3,5)
-                        
-                    if len(eyes) == 0:
-                        print("no eye!!!")
-                        check_attendance_main()
+                    
+                    global first_read
+
+                    if len(eyes) >= 2:
+                        # Check if program is running for detection
+                        if(first_read):
+                            # Change first_read to False
+                            print("Go to second_read")
+                        else:
+                            print("Eyes open!")
                     else:
-                        print("eyes!!!")
-                        check_attendance_main()
+                        if(first_read):
+                            print("No eyes detected")
+                        else:
+                            print("Blink detected--------")
+                            check_attendance_main()
 
                     coords=[x,y,w,h]
                 return coords
@@ -311,6 +320,9 @@ def checking_attendance():
             
             begin = time.time()
             delta = 0
+            global first_read
+            first_read= True
+            
             while True:
                 ret,img = video_capture.read()
                 img=  recognize(img,clf,faceCascade)
@@ -323,6 +335,10 @@ def checking_attendance():
                 
                 if (cv2.waitKey(1)==ord('q') or int(value) == 0):
                     break
+                
+                elif(first_read):
+                    # This will start the detection
+                    first_read = False
                     
             video_capture.release()
             cv2.destroyAllWindows()    
