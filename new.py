@@ -15,6 +15,9 @@ import calendar
 import pandas as pd
 import smtplib
 
+import dlib
+from math import hypot
+
 window=Tk()
 window.title("Face recognition system")
 
@@ -50,6 +53,33 @@ t4.grid(column=1, row=3)
 def checking_attendance(): 
     global value
     value = 1
+    
+    def call_var():
+        global value
+        value = 0
+    
+    detector = dlib.get_frontal_face_detector()
+    predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
+    
+    def midpoint(p1,p2):
+        return int((p1.x + p2.x)/2),int((p1.y + p2.y)/2)
+
+    font = cv2.FONT_HERSHEY_SIMPLEX
+
+    def get_blinking_ratio(eye_points, facial_landmarks):
+        left_point = (facial_landmarks.part(eye_points[0]).x, facial_landmarks.part(eye_points[0]).y)
+        right_point = (facial_landmarks.part(eye_points[3]).x, facial_landmarks.part(eye_points[3]).y)
+        hor_line = cv2.line(img, left_point, right_point,(0,255,0), 1)
+
+        center_top = midpoint(facial_landmarks.part(eye_points[1]), facial_landmarks.part(eye_points[2]))
+        center_bottom = midpoint(facial_landmarks.part(eye_points[5]), facial_landmarks.part(eye_points[4]))
+        ver_line = cv2.line(img, center_top, center_bottom,(0,255,0), 1)
+
+        #length of the line
+        hor_line_length = hypot((left_point[0] - right_point[0]), (left_point[1] - right_point[1]))
+        ver_line_length = hypot((center_top[0] - center_bottom[0]), (center_top[1] - center_bottom[1]))
+        ratio = hor_line_length/ ver_line_length, ver_line_length
+        return ratio
 
     # 1) Check the sv
     mydb=mysql.connector.connect(
@@ -79,8 +109,6 @@ def checking_attendance():
                 gray_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
                 features = classifier.detectMultiScale(gray_image,scaleFactor,minNeighbors)
                 coords = []
-                
-                eyeCascade=cv2.CascadeClassifier("haarcascade_eye_tree_eyeglasses.xml")
 
                 for(x,y,w,h) in features:
                     cv2.rectangle(img,(x,y),(x+w,y+h),color,2)
@@ -107,10 +135,6 @@ def checking_attendance():
                         mycursor2.execute("select rfid_uid from student_table where id_stu="+str(id))
                         s2 = mycursor2.fetchone()
                         s2 = ''+''.join(s2)
-                        
-                        def call_var():
-                            global value
-                            value = 0
                         
                         def check_timetable_and_sendmail():
                             # 3) Check timetable                            
@@ -278,32 +302,8 @@ def checking_attendance():
                                 print("____________________________________")
                                 messagebox.showerror('Error','Wrong person\nFace images are not compatible with the RFID card')
                                 call_var()
-                    
-                    # Now the eyes on the face
-                    # so we have to make the face from gray
-                    gray_face = gray_image[y:y+h,x:x+w]
-                    
-                    # Make the color face also
-                    color_face = img[y:y+h,x:x+w]
-                    
-                    # Check the eyes on this face
-                    eyes = eyeCascade.detectMultiScale(gray_face,1.3,5)
-                    
-                    global first_read
 
-                    if len(eyes) >= 2:
-                        # Check if program is running for detection
-                        if(first_read):
-                            # Change first_read to False
-                            print("Go to second_read")
-                        else:
-                            print("Eyes open!")
-                    else:
-                        if(first_read):
-                            print("No eyes detected")
-                        else:
-                            print("Blink detected--------")
-                            check_attendance_main()
+                    check_attendance_main()
 
                     coords=[x,y,w,h]
                 return coords
@@ -325,7 +325,34 @@ def checking_attendance():
             
             while True:
                 ret,img = video_capture.read()
-                img=  recognize(img,clf,faceCascade)
+                
+                
+                gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                faces = detector(gray)
+                
+                for face in faces:
+                    #x, y = face.left(), face.top()
+                    #x1, y1 = face.right(), face.bottom()
+                    #cv2.rectangle(frame, (x,y), (x1,y1), (0,255,0), 3 )# green box, thickness of box
+                    landmarks = predictor(gray, face)
+                    
+                    left_eye_ratio,_ = get_blinking_ratio([36,37,38,39,40,41], landmarks)
+                    
+                    right_eye_ratio, myVerti = get_blinking_ratio([42,43,44,45,46,47], landmarks)
+                    
+                    blinking_ratio = (left_eye_ratio+right_eye_ratio)/2
+                    
+                    if(blinking_ratio >= 6):
+                        cv2.putText(img, "blinking", (50,50), cv2.FONT_HERSHEY_SIMPLEX, 2, (255,0,0))
+                        print("blinking")
+                        
+                        img = recognize(img,clf,faceCascade)
+                    
+                    elif((blinking_ratio < 6) and (delta>30)):
+                        print("Fake image----")
+                        messagebox.showerror('Error','-------Fake image-------')
+                        call_var()
+                        
                 cv2.imshow("face detection",img)
                 
                 delta = time.time() - begin
@@ -335,11 +362,7 @@ def checking_attendance():
                 
                 if (cv2.waitKey(1)==ord('q') or int(value) == 0):
                     break
-                
-                elif(first_read):
-                    # This will start the detection
-                    first_read = False
-                    
+
             video_capture.release()
             cv2.destroyAllWindows()    
                 
