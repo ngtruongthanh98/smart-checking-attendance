@@ -161,7 +161,7 @@ def checking_attendance():
                             class_list = mycursor5.fetchone()
                             class_list = ''+''.join(class_list)                            
            
-                            splited_list = class_list.split(" ")
+                            splited_list = class_list.split(", ")
                             
                             c = [int(e) for e in splited_list]
                             
@@ -406,7 +406,7 @@ b2=tk.Button(window,text="Training Dataset",font=("Algerian",20),bg='orange',fg=
 b2.place(x=10,y=240)
         
 def generate_dataset():
-    if(t1.get()=="" or t2.get()=="" or t3.get()=="" or t4.get()==""):
+    if(t1.get()=="" or t2.get()=="" or t3.get()=="" or t4.get()=="" or t5.get()==""):
         messagebox.showinfo('Result','Please provide complete details of the user')
     else:
         mydb=mysql.connector.connect(
@@ -418,13 +418,33 @@ def generate_dataset():
         mycursor=mydb.cursor()
         mycursor.execute("SELECT * FROM student_table")
         myresult=mycursor.fetchall()
-        
+
+        mycursor2=mydb.cursor()
+        mycursor2.execute("SELECT id_class, subject_code FROM class_table")
+        rows=mycursor2.fetchall()
         
         id_stu=1
         for x in myresult:
             id_stu+=1
-        sql="INSERT INTO student_table(id_stu,first_name,last_name,student_number,email,username,password) values(%s,%s,%s,%s,%s,%s,%s)"
-        val=(id_stu,t1.get(),t2.get(),t3.get(),t4.get(),t3.get(),t3.get())
+
+        class_list= t5.get()
+        print(class_list)
+        
+        splited_list=class_list.split(" ")
+        print(splited_list)
+
+        list_of_id=[]
+        for i in splited_list:
+            for row in rows:
+                if(i == row[1]):
+                    list_of_id.append(row[0])
+                    
+        print(list_of_id)
+        
+        values = ', '.join(str(v) for v in list_of_id)
+
+        sql="INSERT INTO student_table(id_stu,first_name,last_name,student_number,email,username,password,class_list) values(%s,%s,%s,%s,%s,%s,%s,%s)"
+        val=(id_stu,t1.get(),t2.get(),t3.get(),t4.get(),t3.get(),t3.get(),values)
         mycursor.execute(sql,val)
         mydb.commit()
      
