@@ -39,9 +39,9 @@
   <div class="main">
 
     <?php
-      include('db.php');
+      include('config.php');
 
-      $result = mysqli_query($con,"SELECT * FROM student_table");
+      $result = mysqli_query($link,"SELECT * FROM student_table");
 
       echo "<table border='1'>
       <tr>
@@ -64,7 +64,7 @@
       }
       echo "</table>";
 
-      mysqli_close($con);
+      mysqli_close($link);
 
 
     ?>
