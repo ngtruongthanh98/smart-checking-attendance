@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 19, 2020 at 09:08 AM
+-- Generation Time: Nov 27, 2020 at 08:42 AM
 -- Server version: 10.3.25-MariaDB-0+deb10u1
 -- PHP Version: 7.3.19-1~deb10u1
 
@@ -43,7 +43,24 @@ INSERT INTO `attendance_table` (`id_atd`, `first_name`, `last_name`, `student_nu
 (1, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-11-19 08:19:54'),
 (2, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-11-19 08:30:49'),
 (3, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-11-19 08:43:58'),
-(4, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-11-19 08:54:51');
+(4, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-11-20 17:34:58'),
+(5, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-11-20 17:36:17'),
+(6, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-11-20 17:36:23'),
+(7, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-11-20 17:36:29'),
+(8, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-11-20 17:36:35'),
+(9, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-11-20 17:38:13'),
+(10, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-11-20 17:53:57'),
+(11, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-11-20 18:00:57'),
+(12, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-11-20 18:01:02'),
+(13, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-11-20 18:01:07'),
+(14, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-11-20 18:03:25'),
+(15, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-11-20 18:03:31'),
+(16, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-11-20 18:03:36'),
+(17, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-11-20 18:03:41'),
+(18, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-11-20 18:05:49'),
+(19, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-11-23 10:35:22'),
+(20, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-11-23 10:45:33'),
+(21, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-11-23 10:58:01');
 
 -- --------------------------------------------------------
 
@@ -55,7 +72,6 @@ CREATE TABLE `class_table` (
   `id_class` int(255) NOT NULL,
   `subject_code` varchar(10) DEFAULT NULL,
   `subject_name` varchar(255) DEFAULT NULL,
-  `class_code` varchar(10) DEFAULT NULL,
   `day_in_week` varchar(10) DEFAULT NULL,
   `start_time` varchar(255) DEFAULT NULL,
   `end_time` varchar(255) DEFAULT NULL,
@@ -66,15 +82,15 @@ CREATE TABLE `class_table` (
 -- Dumping data for table `class_table`
 --
 
-INSERT INTO `class_table` (`id_class`, `subject_code`, `subject_name`, `class_code`, `day_in_week`, `start_time`, `end_time`, `room`) VALUES
-(1, 'MT1003', 'Calculus 1', 'CC01', 'Monday', '9:00', '11:50', '401B4'),
-(2, 'PH1003', 'Physics 1', 'CC01', 'Monday', '12:00', '14:50', '203A4'),
-(3, 'MT1005', 'Calculus 2', 'CC02', 'Tuesday', '7:00', '9:50', '502B4'),
-(4, 'CH1003', 'General Chemistry', 'CC03', 'Wednesday', '12:00', '14:50', '405B4'),
-(5, 'CO2013', 'Operating System', 'CC01', 'Thursday', '7:00', '9:50', '504B4'),
-(6, 'MT1007', 'Linear Algebra', 'CC02', 'Friday', '12:00', '14:50', '402A4'),
-(7, 'CO3053', 'Embedded Systems', 'CC02', 'Saturday', '7:00', '9:50', '504B4'),
-(8, 'CO3009', 'Microprocessors-microcontrollers', 'CC01', 'Thursday', '00:00', '23:59', '303B4');
+INSERT INTO `class_table` (`id_class`, `subject_code`, `subject_name`, `day_in_week`, `start_time`, `end_time`, `room`) VALUES
+(1, 'MT1003', 'Calculus 1', 'Monday', '9:00', '11:50', '401B4'),
+(2, 'PH1003', 'Physics 1', 'Monday', '12:00', '14:50', '203A4'),
+(3, 'MT1005', 'Calculus 2', 'Tuesday', '7:00', '9:50', '502B4'),
+(4, 'CH1003', 'General Chemistry', 'Wednesday', '12:00', '14:50', '405B4'),
+(5, 'CO2013', 'Operating System', 'Thursday', '7:00', '9:50', '504B4'),
+(6, 'MT1007', 'Linear Algebra', 'Friday', '12:00', '14:50', '402A4'),
+(7, 'CO3053', 'Embedded Systems', 'Saturday', '7:00', '9:50', '504B4'),
+(8, 'CO3009', 'Microprocessors-microcontrollers', 'Monday', '09:00', '11:50', '303B4');
 
 -- --------------------------------------------------------
 
@@ -90,6 +106,8 @@ CREATE TABLE `student_table` (
   `email` varchar(255) DEFAULT NULL,
   `rfid_uid` varchar(255) DEFAULT NULL,
   `class_list` varchar(255) DEFAULT NULL,
+  `username` varchar(50) DEFAULT NULL,
+  `password` varchar(50) DEFAULT NULL,
   `created` varchar(255) NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -97,11 +115,11 @@ CREATE TABLE `student_table` (
 -- Dumping data for table `student_table`
 --
 
-INSERT INTO `student_table` (`id_stu`, `first_name`, `last_name`, `student_number`, `email`, `rfid_uid`, `class_list`, `created`) VALUES
-(1, 'Thanh', 'Nguyen Truong', 1652557, '1652557@hcmut.edu.vn', '482227026359', '1 4 8', '2020-10-30 10:30:37'),
-(2, 'Quan', 'Nguyen Anh', 1552310, '1552310@hcmut.edu.vn', '798152693871', '2 4', '2020-11-03 09:27:27'),
-(3, 'Long', 'Nguyen Thanh', 1655353, 'ngtruongthanh98@gmail.com', '1071090732781', '5', '2020-11-01 21:42:22'),
-(4, 'Hang', 'Nguyen Thi Thu', 1656868, 'ngtruongthanh98@gmail.com', '1001985576659', '6', '2020-11-09 14:46:44');
+INSERT INTO `student_table` (`id_stu`, `first_name`, `last_name`, `student_number`, `email`, `rfid_uid`, `class_list`, `username`, `password`, `created`) VALUES
+(1, 'Thanh', 'Nguyen Truong', 1652557, '1652557@hcmut.edu.vn', '482227026359', '8', '1652557', '1652557', '2020-10-30 10:30:37'),
+(2, 'Quan', 'Nguyen Anh', 1552310, '1552310@hcmut.edu.vn', '798152693871', '2 4', '1552310', '1552310', '2020-11-03 09:27:27'),
+(3, 'Long', 'Nguyen Thanh', 1655353, 'ngtruongthanh98@gmail.com', '1071090732781', '2 5', '1655353', '1655353', '2020-11-01 21:42:22'),
+(4, 'Hang', 'Nguyen Thi Thu', 1656868, 'ngtruongthanh98@gmail.com', '1001985576659', '6', '1656868', '1656868', '2020-11-09 14:46:44');
 
 --
 -- Indexes for dumped tables

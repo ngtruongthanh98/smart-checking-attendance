@@ -50,6 +50,11 @@ l4.grid(column=0, row=3)
 t4=tk.Entry(window,width=50,bd=5)
 t4.grid(column=1, row=3)
 
+l5=tk.Label(window,text="Subject code",font=("Algerian",20))
+l5.grid(column=0, row=4)
+t5=tk.Entry(window,width=50,bd=5)
+t5.grid(column=1, row=4)
+
 def checking_attendance(): 
     global value
     value = 1
@@ -212,10 +217,6 @@ def checking_attendance():
                                         subject_code = mycursor4.fetchone()
                                         subject_code = ''+''.join(subject_code)                                
                                         
-                                        mycursor4.execute("select class_code from class_table where id_class="+str(no_class))
-                                        class_code = mycursor4.fetchone()
-                                        class_code = ''+''.join(class_code)                                
-                                        
                                         mycursor4.execute("select day_in_week from class_table where id_class="+str(no_class))
                                         day_in_week = mycursor4.fetchone()
                                         day_in_week = ''+''.join(day_in_week)                                
@@ -242,7 +243,7 @@ def checking_attendance():
                                         smtpserver.login(gmail_user, gmail_pwd)
                                         date = datetime.datetime.now().strftime( "%d/%m/%Y %H:%M" )                                
                                         header = 'To: ' + to + '\n' + 'From: ' + gmail_user + '\n' + 'Subject: Check attendance completed\n'
-                                        body = '\nWelcome ' + first_name + ',\n\nYour attendance is marked at: ' + date + '\n\nSubject: ' + subject_name +' (' + subject_code + ') ' + 'Class: ' + class_code
+                                        body = '\nWelcome ' + first_name + ',\n\nYour attendance is marked at: ' + date + '\n\nSubject: ' + subject_name +' (' + subject_code + ') '
                                         footer = '\n\n' + day_in_week + ' From: ' +start_time + ' To: ' + end_time + ' Room: ' + room
                                         msg = header  + body + footer
                                         print(msg)
@@ -349,8 +350,10 @@ def checking_attendance():
                         img = recognize(img,clf,faceCascade)
                     
                     elif((blinking_ratio < 6) and (delta>30)):
+                        print("No blink detect")
                         print("Fake image----")
                         messagebox.showerror('Error','-------Fake image-------')
+                        print("____________________________________")
                         call_var()
                         
                 cv2.imshow("face detection",img)
@@ -368,6 +371,8 @@ def checking_attendance():
                 
         else:
             messagebox.showerror('Error','User does not exist')
+            print("User does not exist")
+            print("____________________________________")
 
     finally:
         GPIO.cleanup()
@@ -413,14 +418,16 @@ def generate_dataset():
         mycursor=mydb.cursor()
         mycursor.execute("SELECT * FROM student_table")
         myresult=mycursor.fetchall()
+        
+        
         id_stu=1
         for x in myresult:
             id_stu+=1
-        sql="INSERT INTO student_table(id_stu,first_name,last_name,student_number,email) values(%s,%s,%s,%s,%s)"
-        val=(id_stu,t1.get(),t2.get(),t3.get(),t4.get())
+        sql="INSERT INTO student_table(id_stu,first_name,last_name,student_number,email,username,password) values(%s,%s,%s,%s,%s,%s,%s)"
+        val=(id_stu,t1.get(),t2.get(),t3.get(),t4.get(),t3.get(),t3.get())
         mycursor.execute(sql,val)
         mydb.commit()
-        
+     
         print("Saved to database")
         messagebox.showinfo('Notification','Saved to database \nStart camera to capture images')
         
@@ -470,7 +477,7 @@ def generate_dataset():
         mycursor=mydb.cursor()
         reader = SimpleMFRC522()
         
-        messagebox.showinfo('Notification','Put card\n to register')
+        messagebox.showinfo('Notification','Click OK then\nPut card to register')
 
 
         mycursor.execute("SELECT * FROM student_table")
@@ -505,6 +512,7 @@ def generate_dataset():
     msg = header +  '\nDear ' + t1.get() + ',\n\n' + 'Thank you for registering for attendance-system-bku\n' + 'Register time: '+ date +'\nIf you have any questions, please let we know!\n\n' +  'Regards,\n\n' + 'attendance-system-bku'
     smtpserver.sendmail(gmail_user, to, msg)
     print('sent mail')
+    print("____________________________________")
     smtpserver.close()
 
 b3=tk.Button(window,text="Generate Dataset",font=("Algerian",20),bg='orange',fg='red',command=generate_dataset)
