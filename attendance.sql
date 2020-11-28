@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 28, 2020 at 03:58 PM
+-- Generation Time: Nov 28, 2020 at 08:20 PM
 -- Server version: 10.3.25-MariaDB-0+deb10u1
 -- PHP Version: 7.3.19-1~deb10u1
 
@@ -102,22 +102,23 @@ CREATE TABLE `login_table` (
   `id_login` int(11) NOT NULL,
   `fname` varchar(255) NOT NULL,
   `lname` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
   `username` varchar(100) NOT NULL,
   `password` varchar(100) NOT NULL,
-  `type_login` varchar(45) NOT NULL
+  `user_type` varchar(45) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `login_table`
 --
 
-INSERT INTO `login_table` (`id_login`, `fname`, `lname`, `username`, `password`, `type_login`) VALUES
-(1, 'Thanh', 'Nguyen Truong', '1652557', '1652557', 'student'),
-(2, 'Quan', 'Nguyen Anh', '1552310', '1552310', 'student'),
-(3, 'Long', 'Nguyen Thanh', '1653535', '1653535', 'student'),
-(4, 'Hang', 'Nguyen Thi Thu', '1656868', '1656868', 'student'),
-(5, 'admin', 'system', 'admin', 'password', 'admin'),
-(6, 'teacher', 'system', 'teacher', 'password', 'teacher');
+INSERT INTO `login_table` (`id_login`, `fname`, `lname`, `email`, `username`, `password`, `user_type`) VALUES
+(1, 'Thanh', 'Nguyen Truong', '1652557@hcmut.edu.vn', '1652557', '1652557', 'student'),
+(2, 'Quan', 'Nguyen Anh', '1552310@hcmut.edu.vn', '1552310', '1552310', 'student'),
+(3, 'Long', 'Nguyen Thanh', 'ngtruongthanh98@gmail.com', '1653535', '1653535', 'student'),
+(4, 'Hang', 'Nguyen Thi Thu', 'ngtruongthanh98@gmail.com', '1656868', '1656868', 'student'),
+(5, 'admin', 'system', 'ngtruongthanh98@gmail.com', 'admin', 'password', 'admin'),
+(6, 'teacher', 'system', 'ngtruongthanh98@gmail.com', 'teacher', 'password', 'teacher');
 
 -- --------------------------------------------------------
 

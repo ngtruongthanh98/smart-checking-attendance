@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['mysesi']) && !isset($_SESSION['mytype'])=='student')
+if (!isset($_SESSION['mysesi']) && !isset($_SESSION['mytype'])=='admin')
 {
   echo "<script>window.location.assign('login.php')</script>";
 }

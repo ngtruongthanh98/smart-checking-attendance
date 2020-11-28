@@ -1,124 +1,108 @@
-<?php
-// Initialize the session
-session_start();
- 
-// Check if the user is already logged in, if yes then redirect him to welcome page
-if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
-    header("location: welcome.php");
-    exit;
-}
- 
-// Include config file
-require_once "config.php";
- 
-// Define variables and initialize with empty values
-$username = $password = "";
-$username_err = $password_err = "";
- 
-// Processing form data when form is submitted
-if($_SERVER["REQUEST_METHOD"] == "POST"){
- 
-    // Check if username is empty
-    if(empty(trim($_POST["username"]))){
-        $username_err = "Please enter username.";
-    } else{
-        $username = trim($_POST["username"]);
-    }
-    
-    // Check if password is empty
-    if(empty(trim($_POST["password"]))){
-        $password_err = "Please enter your password.";
-    } else{
-        $password = trim($_POST["password"]);
-    }
-    
-    // Validate credentials
-    if(empty($username_err) && empty($password_err)){
-        // Prepare a select statement
-        $sql = "SELECT id_stu, username, password FROM student_table WHERE username = ?";
-        
-        if($stmt = mysqli_prepare($link, $sql)){
-            // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "s", $param_username);
-            
-            // Set parameters
-            $param_username = $username;
-            
-            // Attempt to execute the prepared statement
-            if(mysqli_stmt_execute($stmt)){
-                // Store result
-                mysqli_stmt_store_result($stmt);
-                
-                // Check if username exists, if yes then verify password
-                if(mysqli_stmt_num_rows($stmt) == 1){                    
-                    // Bind result variables
-                    mysqli_stmt_bind_result($stmt, $id, $username, $hashed_password);
-                    if(mysqli_stmt_fetch($stmt)){
-                        if(password_verify($password, $hashed_password)){
-                            // Password is correct, so start a new session
-                            session_start();
-                            
-                            // Store data in session variables
-                            $_SESSION["loggedin"] = true;
-                            $_SESSION["id"] = $id;
-                            $_SESSION["username"] = $username;                            
-                            
-                            // Redirect user to welcome page
-                            header("location: welcome.php");
-                        } else{
-                            // Display an error message if password is not valid
-                            $password_err = "The password you entered was not valid.";
-                        }
-                    }
-                } else{
-                    // Display an error message if username doesn't exist
-                    $username_err = "No account found with that username.";
-                }
-            } else{
-                echo "Oops! Something went wrong. Please try again later.";
-            }
-
-            // Close statement
-            mysqli_stmt_close($stmt);
-        }
-    }
-    
-    // Close connection
-    mysqli_close($link);
-}
-?>
- 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Login</title>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login Session</title>
+    
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
     <style type="text/css">
         body{ font: 14px sans-serif; }
         .wrapper{ width: 350px; padding: 20px; }
     </style>
-</head>
-<body>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+  </head>
+  <body>
+  <p>
+</p>
+  <div class="container">
+  
+<?php
+$username=$_POST['username'];
+$password=md5($_POST['password']);
+
+$login=$_POST['login'];
+if(isset($login)){
+  $mysqli = new mysqli("localhost", "admin", "password", "attendance");
+  if ($mysqli->connect_errno) {
+    echo "Failed to connect to MySQL: " . $mysqli->connect_error;
+  }
+  $res = $mysqli->query("SELECT * FROM login_table where username='$username' and password='$password'");
+  $row = $res->fetch_assoc();
+  $name = $row['fname'];
+  $user = $row['username'];
+  $pass = $row['password'];
+  $type = $row['user_type'];
+  if($user==$username && $pass=$password){
+    session_start();
+    if($type=="admin"){
+      $_SESSION['mysesi']=$name;
+      $_SESSION['mytype']=$type;
+      echo "<script>window.location.assign('admin.php')</script>";
+    } 
+    else if($type=="teacher"){
+      $_SESSION['mysesi']=$name;
+      $_SESSION['mytype']=$type;
+      echo "<script>window.location.assign('teacher.php')</script>";
+    }    
+    else if($type=="student"){
+      $_SESSION['mysesi']=$name;
+      $_SESSION['mytype']=$type;
+      echo "<script>window.location.assign('index.php')</script>";
+    } else{
+?>
+<div class="alert alert-warning alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+  <strong>Maaf!</strong> Tidak sesuai dengan type user.
+</div>
+<?php
+    }
+  } else{
+?>
+<div class="alert alert-danger alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+  <strong>Warning!</strong> This username or password not same with database.
+</div>
+<?php
+  }
+}
+?>
+  
+
+    
+    
     <div class="wrapper">
-        <h2>Login</h2>
-        <p>Please fill in your credentials to login.</p>
-        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-            <div class="form-group <?php echo (!empty($username_err)) ? 'has-error' : ''; ?>">
-                <label>Username</label>
-                <input type="text" name="username" class="form-control" value="<?php echo $username; ?>">
-                <span class="help-block"><?php echo $username_err; ?></span>
-            </div>    
-            <div class="form-group <?php echo (!empty($password_err)) ? 'has-error' : ''; ?>">
-                <label>Password</label>
-                <input type="password" name="password" class="form-control">
-                <span class="help-block"><?php echo $password_err; ?></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" class="btn btn-primary" value="Login">
-            </div>
-            <p>Don't have an account? <a href="register.php">Sign up now</a>.</p>
+       <h2>Login</h2>
+       <p>Please fill in your credentials to login.</p>
+       
+       <form role="form" method="post">
+		<div class="form-group">
+			<label for="username">Username</label>
+			<input type="text" class="form-control" id="username" name="username">
+         </div>
+         <div class="form-group">    
+			<label for="password">Password</label>
+            <label>Password</label>
+            <input type="password" class="form-control" id="password" name="password">
+         </div>
+         
+         <div class="form-group">
+            <button type="submit" name="login" class="btn btn-primary">Login</button>
+         </div>
+         
+         <p>Don't have an account? <a href="register.php">Sign up now</a>.</p>
         </form>
-    </div>    
-</body>
+    </div>  
+
+  </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="js/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+  </body>
 </html>
