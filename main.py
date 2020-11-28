@@ -14,7 +14,6 @@ import datetime
 import calendar
 import pandas as pd
 import smtplib
-
 import dlib
 from math import hypot
 
@@ -423,6 +422,10 @@ def generate_dataset():
         mycursor2.execute("SELECT id_class, subject_code FROM class_table")
         rows=mycursor2.fetchall()
         
+        mycursor3=mydb.cursor()
+        mycursor3.execute("SELECT * FROM login_table")
+        result=mycursor3.fetchall()
+        
         id_stu=1
         for x in myresult:
             id_stu+=1
@@ -443,9 +446,18 @@ def generate_dataset():
         
         values = ', '.join(str(v) for v in list_of_id)
 
-        sql="INSERT INTO student_table(id_stu,first_name,last_name,student_number,email,username,password,class_list) values(%s,%s,%s,%s,%s,%s,%s,%s)"
-        val=(id_stu,t1.get(),t2.get(),t3.get(),t4.get(),t3.get(),t3.get(),values)
+        sql="INSERT INTO student_table(id_stu,first_name,last_name,student_number,email,class_list) values(%s,%s,%s,%s,%s,%s)"
+        val=(id_stu,t1.get(),t2.get(),t3.get(),t4.get(),values)
         mycursor.execute(sql,val)
+        
+        id_login=1
+        for y in result:
+            id_login+=1
+            
+        query="INSERT INTO login_table(id_login,fname,lname,username,password,type_login) values(%s,%s,%s,%s,%s,%s)"
+        value=(id_login,t1.get(),t2.get(),t3.get(),t3.get(),"student")
+        mycursor3.execute(query,value)
+        
         mydb.commit()
      
         print("Saved to database")

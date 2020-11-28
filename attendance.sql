@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 27, 2020 at 08:42 AM
+-- Generation Time: Nov 28, 2020 at 03:58 PM
 -- Server version: 10.3.25-MariaDB-0+deb10u1
 -- PHP Version: 7.3.19-1~deb10u1
 
@@ -95,6 +95,33 @@ INSERT INTO `class_table` (`id_class`, `subject_code`, `subject_name`, `day_in_w
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `login_table`
+--
+
+CREATE TABLE `login_table` (
+  `id_login` int(11) NOT NULL,
+  `fname` varchar(255) NOT NULL,
+  `lname` varchar(255) NOT NULL,
+  `username` varchar(100) NOT NULL,
+  `password` varchar(100) NOT NULL,
+  `type_login` varchar(45) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `login_table`
+--
+
+INSERT INTO `login_table` (`id_login`, `fname`, `lname`, `username`, `password`, `type_login`) VALUES
+(1, 'Thanh', 'Nguyen Truong', '1652557', '1652557', 'student'),
+(2, 'Quan', 'Nguyen Anh', '1552310', '1552310', 'student'),
+(3, 'Long', 'Nguyen Thanh', '1653535', '1653535', 'student'),
+(4, 'Hang', 'Nguyen Thi Thu', '1656868', '1656868', 'student'),
+(5, 'admin', 'system', 'admin', 'password', 'admin'),
+(6, 'teacher', 'system', 'teacher', 'password', 'teacher');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `student_table`
 --
 
@@ -106,8 +133,6 @@ CREATE TABLE `student_table` (
   `email` varchar(255) DEFAULT NULL,
   `rfid_uid` varchar(255) DEFAULT NULL,
   `class_list` varchar(255) DEFAULT NULL,
-  `username` varchar(50) DEFAULT NULL,
-  `password` varchar(50) DEFAULT NULL,
   `created` varchar(255) NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -115,11 +140,11 @@ CREATE TABLE `student_table` (
 -- Dumping data for table `student_table`
 --
 
-INSERT INTO `student_table` (`id_stu`, `first_name`, `last_name`, `student_number`, `email`, `rfid_uid`, `class_list`, `username`, `password`, `created`) VALUES
-(1, 'Thanh', 'Nguyen Truong', 1652557, '1652557@hcmut.edu.vn', '482227026359', '8', '1652557', '1652557', '2020-10-30 10:30:37'),
-(2, 'Quan', 'Nguyen Anh', 1552310, '1552310@hcmut.edu.vn', '798152693871', '2 4', '1552310', '1552310', '2020-11-03 09:27:27'),
-(3, 'Long', 'Nguyen Thanh', 1655353, 'ngtruongthanh98@gmail.com', '1071090732781', '2 5', '1655353', '1655353', '2020-11-01 21:42:22'),
-(4, 'Hang', 'Nguyen Thi Thu', 1656868, 'ngtruongthanh98@gmail.com', '1001985576659', '6', '1656868', '1656868', '2020-11-09 14:46:44');
+INSERT INTO `student_table` (`id_stu`, `first_name`, `last_name`, `student_number`, `email`, `rfid_uid`, `class_list`, `created`) VALUES
+(1, 'Thanh', 'Nguyen Truong', 1652557, '1652557@hcmut.edu.vn', '482227026359', '2, 8, 4', '2020-10-30 10:30:37'),
+(2, 'Quan', 'Nguyen Anh', 1552310, '1552310@hcmut.edu.vn', '798152693871', '2, 4', '2020-11-03 09:27:27'),
+(3, 'Long', 'Nguyen Thanh', 1655353, 'ngtruongthanh98@gmail.com', '1071090732781', '2, 5', '2020-11-01 21:42:22'),
+(4, 'Hang', 'Nguyen Thi Thu', 1656868, 'ngtruongthanh98@gmail.com', '1001985576659', '6', '2020-11-09 14:46:44');
 
 --
 -- Indexes for dumped tables
@@ -136,6 +161,12 @@ ALTER TABLE `attendance_table`
 --
 ALTER TABLE `class_table`
   ADD PRIMARY KEY (`id_class`);
+
+--
+-- Indexes for table `login_table`
+--
+ALTER TABLE `login_table`
+  ADD PRIMARY KEY (`id_login`);
 
 --
 -- Indexes for table `student_table`
