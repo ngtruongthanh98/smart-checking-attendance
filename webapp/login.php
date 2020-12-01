@@ -86,6 +86,7 @@ if(isset($login)){
          
       <div class="form-group">
         <button type="submit" name="login" class="btn btn-primary">Login</button>
+        <button type="submit" name="reset" id="reset" class="btn btn-default">Forgot Your Password?</button>
       </div>
          
          <p>Don't have an account? <a href="register.php">Sign up now</a>.</p>

@@ -56,8 +56,10 @@ require('registerActivity.php');
 
         <div class="form-group">
             <label for="email">Email</label>
-            <input type="text" class="form-control" id="email" placeholder="Enter Email" name="email">
-
+            <input type="text" class="form-control" id="email" placeholder="Enter Email" name="email" value="<?php echo $set_email;?>">
+            <p class="err-msg">
+            <?php if($emailErr!=1){ echo $emailErr; } ?>
+            </p>
         </div>
 
         
@@ -81,7 +83,6 @@ require('registerActivity.php');
     
         <div class="form-group">
           <button type="submit" class="btn btn-primary" name="submit">Register</button>
-          <button type="submit" name="reset" id="reset" class="btn btn-default">Reset</button>
         </div>
         
         <p>You already have an account? <a href="login.php">Sign in now</a>.</p>
