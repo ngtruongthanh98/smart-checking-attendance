@@ -36,7 +36,7 @@ if(isset($login)){
   $name = $row['fname'];
   $user = $row['username'];
   $pass = $row['password'];
-  $type = $row['user_type'];
+  $type = $row['userlevel'];
   if($user==$username && $pass=$password){
     session_start();
     if($type=="admin"){
@@ -55,10 +55,7 @@ if(isset($login)){
       echo "<script>window.location.assign('index.php')</script>";
     } else{
 ?>
-<div class="alert alert-warning alert-dismissible" role="alert">
-  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-  <strong>Maaf!</strong> Tidak sesuai dengan type user.
-</div>
+
 <?php
     }
   } else{
@@ -72,33 +69,30 @@ if(isset($login)){
 }
 ?>
   
-
-    
-    
     <div class="wrapper">
        <h2>Login</h2>
        <p>Please fill in your credentials to login.</p>
        
        <form role="form" method="post">
-		<div class="form-group">
-			<label for="username">Username</label>
-			<input type="text" class="form-control" id="username" name="username">
-         </div>
-         <div class="form-group">    
-			<label for="password">Password</label>
-            <label>Password</label>
-            <input type="password" class="form-control" id="password" name="password">
-         </div>
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" class="form-control" id="username" name="username">
+      </div>
+      
+      <div class="form-group">    
+        <label for="password">Password</label>
+        <input type="password" class="form-control" id="password" name="password">
+      </div>
          
-         <div class="form-group">
-            <button type="submit" name="login" class="btn btn-primary">Login</button>
-         </div>
+      <div class="form-group">
+        <button type="submit" name="login" class="btn btn-primary">Login</button>
+      </div>
          
          <p>Don't have an account? <a href="register.php">Sign up now</a>.</p>
         </form>
     </div>  
 
-  </div>
+</div>  
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="js/jquery.min.js"></script>

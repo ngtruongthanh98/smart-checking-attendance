@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 28, 2020 at 08:20 PM
+-- Generation Time: Dec 01, 2020 at 09:23 PM
 -- Server version: 10.3.25-MariaDB-0+deb10u1
 -- PHP Version: 7.3.19-1~deb10u1
 
@@ -100,25 +100,26 @@ INSERT INTO `class_table` (`id_class`, `subject_code`, `subject_name`, `day_in_w
 
 CREATE TABLE `login_table` (
   `id_login` int(11) NOT NULL,
-  `fname` varchar(255) NOT NULL,
-  `lname` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `username` varchar(100) NOT NULL,
-  `password` varchar(100) NOT NULL,
-  `user_type` varchar(45) NOT NULL
+  `fname` varchar(255) DEFAULT NULL,
+  `lname` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `username` varchar(100) DEFAULT NULL,
+  `password` varchar(100) DEFAULT NULL,
+  `userlevel` varchar(45) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `login_table`
 --
 
-INSERT INTO `login_table` (`id_login`, `fname`, `lname`, `email`, `username`, `password`, `user_type`) VALUES
-(1, 'Thanh', 'Nguyen Truong', '1652557@hcmut.edu.vn', '1652557', '1652557', 'student'),
-(2, 'Quan', 'Nguyen Anh', '1552310@hcmut.edu.vn', '1552310', '1552310', 'student'),
-(3, 'Long', 'Nguyen Thanh', 'ngtruongthanh98@gmail.com', '1653535', '1653535', 'student'),
-(4, 'Hang', 'Nguyen Thi Thu', 'ngtruongthanh98@gmail.com', '1656868', '1656868', 'student'),
-(5, 'admin', 'system', 'ngtruongthanh98@gmail.com', 'admin', 'password', 'admin'),
-(6, 'teacher', 'system', 'ngtruongthanh98@gmail.com', 'teacher', 'password', 'teacher');
+INSERT INTO `login_table` (`id_login`, `fname`, `lname`, `email`, `username`, `password`, `userlevel`) VALUES
+(1, 'Thanh', 'Nguyen Truong', '1652557@hcmut.edu.vn', '1652557', '9549f81a279cabcf0bbd17fe336da413', 'student'),
+(2, 'Quan', 'Nguyen Anh', '1552310@hcmut.edu.vn', '1552310', 'f542dcdb51886b138479a9ab32889125', 'student'),
+(3, 'Long', 'Nguyen Thanh', 'ngtruongthanh98@gmail.com', '1653535', '9cb572753126be71a594b12bc24e4904', 'student'),
+(4, 'Hang', 'Nguyen Thi Thu', 'ngtruongthanh98@gmail.com', '1656868', '1b7ccfd51671f7414c4ea918f26ea402', 'student'),
+(5, 'admin', 'system', 'ngtruongthanh98@gmail.com', 'admin', '5f4dcc3b5aa765d61d8327deb882cf99', 'admin'),
+(6, 'teacher', 'system', 'ngtruongthanh98@gmail.com', 'teacher', '5f4dcc3b5aa765d61d8327deb882cf99', 'teacher'),
+(7, 'Anh', 'Pham Hoang', 'ngtruongthanh98@gmail.com', 'anhphamhoang', '25f9e794323b453885f5181f1b624d0b', 'teacher');
 
 -- --------------------------------------------------------
 
@@ -189,6 +190,11 @@ ALTER TABLE `attendance_table`
 --
 ALTER TABLE `class_table`
   MODIFY `id_class` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+--
+-- AUTO_INCREMENT for table `login_table`
+--
+ALTER TABLE `login_table`
+  MODIFY `id_login` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 --
 -- AUTO_INCREMENT for table `student_table`
 --

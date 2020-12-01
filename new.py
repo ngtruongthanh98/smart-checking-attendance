@@ -457,7 +457,7 @@ def generate_dataset():
             
         md5_digest = hashlib.md5(t3.get().encode('utf-8')).hexdigest()
             
-        query="INSERT INTO login_table(id_login,fname,lname,username,password,email,user_type) values(%s,%s,%s,%s,%s,%s,%s)"
+        query="INSERT INTO login_table(id_login,fname,lname,username,password,email,userlevel) values(%s,%s,%s,%s,%s,%s,%s)"
         value=(id_login,t1.get(),t2.get(),t3.get(),md5_digest,t4.get(),"student")
         mycursor3.execute(query,value)
         

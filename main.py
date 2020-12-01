@@ -454,7 +454,7 @@ def generate_dataset():
         for y in result:
             id_login+=1
             
-        query="INSERT INTO login_table(id_login,fname,lname,username,password,email,user_type) values(%s,%s,%s,%s,%s,%s,%s)"
+        query="INSERT INTO login_table(id_login,fname,lname,username,password,email,userlevel) values(%s,%s,%s,%s,%s,%s,%s)"
         value=(id_login,t1.get(),t2.get(),t3.get(),t3.get(),t4.get(),"student")
         mycursor3.execute(query,value)
         
