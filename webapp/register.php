@@ -46,22 +46,20 @@ require('registerActivity.php');
         <!--// Username//-->
         <div class="form-group">
             <label for="username">Username</label>
-            <input type="text" class="form-control" id="username" placeholder="Enter username" name="username" value="<?php echo $set_username;?>">
+            <input type="text" class="form-control" id="username" placeholder="Enter Username" name="username" value="<?php echo $set_username;?>">
             <p class="err-msg">
             <?php if($usernameErr!=1){ echo $usernameErr; } ?>
             </p>
         </div>
         
-        <!--// Username//-->
-<!--
+        <!--// Email//-->
+
         <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" class="form-control" id="username" placeholder="Enter username" name="username" value="<?php echo $set_username;?>">
-            <p class="err-msg">
-            <?php if($usernameErr!=1){ echo $usernameErr; } ?>
-            </p>
+            <label for="email">Email</label>
+            <input type="text" class="form-control" id="email" placeholder="Enter Email" name="email">
+
         </div>
--->
+
         
         <!--//Password//-->
         <div class="form-group">

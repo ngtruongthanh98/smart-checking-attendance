@@ -2,9 +2,9 @@
 require_once('database.php'); 
 $db= $conn; // update with your database connection
 // by default, error messages are empty
-$register=$valid=$fnameErr=$lnameErr=$emailErr=$passErr=$cpassErr='';
+$register=$valid=$fnameErr=$lnameErr=$emailErr=$usernameErr=$passErr=$cpassErr='';
  // by default,set input values are empty
- $set_firstName=$set_lastName=$set_email='';
+ $set_firstName=$set_lastName=$set_email=$set_username='';
 extract($_POST);
 if(isset($_POST['submit']))
 {
@@ -38,7 +38,7 @@ else if (!preg_match($validName,$last_name)) {
 else{
    $lnameErr=true;
 }
-//Username Address Validation
+//Username Validation
 if(empty($username)){
   $usernameErr="Username is Required"; 
 }
@@ -48,7 +48,16 @@ else if (!preg_match($validUsername,$username)) {
 else{
   $usernameErr=true;
 }
-
+//Email Address Validation
+if(empty($email)){
+  $emailErr="Email is Required"; 
+}
+else if (!preg_match($validEmail,$email)) {
+  $emailErr="Invalid Email";
+}
+else{
+  $emailErr=true;
+}
     
 // password validation 
 if(empty($password)){
@@ -68,11 +77,12 @@ else{
    $cpassErr=true;
 }
 // check all fields are valid or not
-if($fnameErr==1 && $lnameErr==1 && $usernameErr==1 && $passErr==1 && $cpassErr==1)
+if($fnameErr==1 && $lnameErr==1 && $emailErr==1 && $usernameErr==1 && $passErr==1 && $cpassErr==1)
 {
    
     $firstName =legal_input($first_name);
     $lastName  =legal_input($last_name);
+    $email     =legal_input($email);
     $username  =legal_input($username);
     $password  =legal_input(md5($password));
    
@@ -83,19 +93,43 @@ if($fnameErr==1 && $lnameErr==1 && $usernameErr==1 && $passErr==1 && $cpassErr==
       $register=$username." is already exist";
     }else{
        // Insert data
-      $register=register($firstName,$lastName,$username,$password);
+      $register=register($firstName,$lastName,$email,$username,$password);
       
-      
+      $sql = "UPDATE login_table SET userlevel='teacher' WHERE username='$username'";
+
+      if($conn->query($sql) == TRUE){
+          return "You are registered successfully";
+      } else{
+          echo "Error updating record: " , $conn->error;
+      }
     }
+    
+    // check unique email
+    $checkEmail=unique_email($email);
+    if($checkEmail)
+    {
+      $register=$email." is already exist";
+    }else{
+       // Insert data
+      $register=register($firstName,$lastName,$email,$username,$password);
+      
+      $sql = "UPDATE login_table SET userlevel='teacher' WHERE username='$username'";
+
+      if($conn->query($sql) == TRUE){
+          return "You are registered successfully";
+      } else{
+          echo "Error updating record: " , $conn->error;
+      }    }
     
     
 }else{
      // set input values is empty until input field is invalid
     $set_firstName=$first_name;
     $set_lastName= $last_name;
+    $set_email= $email;
     $set_username= $username;
 }
-// check all fields are vakid or not
+// check all fields are valid or not
 }
 // convert illegal input value to ligal value formate
 function legal_input($value) {
@@ -115,13 +149,24 @@ function unique_username($username){
    return false;
  }
 }
+function unique_email($email){
+  
+  global $db;
+  $sql = "SELECT email FROM login_table WHERE email='".$email."'";
+  $check = $db->query($sql);
+ if ($check->num_rows > 0) {
+   return true;
+ }else{
+   return false;
+ }
+}
 
 // function to insert user data into database table
-function register($firstName,$lastName,$username,$password){
+function register($firstName,$lastName,$email,$username,$password){
    global $db;
-   $sql="INSERT INTO login_table(fname,lname,username,password) VALUES(?,?,?,?)";
+   $sql="INSERT INTO login_table(fname,lname,email,username,password) VALUES(?,?,?,?,?)";
    $query=$db->prepare($sql);
-   $query->bind_param('ssss',$firstName,$lastName,$username,$password);
+   $query->bind_param('sssss',$firstName,$lastName,$email,$username,$password);
    $exec= $query->execute();
     if($exec==true)
     {
