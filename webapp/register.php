@@ -17,6 +17,8 @@ require('registerActivity.php');
     <link href="css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+<div class="container">
+    
     <div class="wrapper">
       
       <h2>Register</h2>
@@ -30,7 +32,7 @@ require('registerActivity.php');
            <label for="first_name">First Name</label>
            <input type="text" class="form-control" placeholder="Enter First Name" name="first_name" value="<?php echo $set_firstName;?>">
            <p class="err-msg">
-           <?php if($fnameErr!=1){ echo $fnameErr; }?>
+            <?php if($fnameErr!=1){ echo $fnameErr; }?>
            </p>
         </div>
         
@@ -48,7 +50,7 @@ require('registerActivity.php');
             <label for="username">Username</label>
             <input type="text" class="form-control" id="username" placeholder="Enter Username" name="username" value="<?php echo $set_username;?>">
             <p class="err-msg">
-            <?php if($usernameErr!=1){ echo $usernameErr; } ?>
+                <?php if($usernameErr!=1){ echo $usernameErr; } ?>
             </p>
         </div>
         
@@ -58,7 +60,7 @@ require('registerActivity.php');
             <label for="email">Email</label>
             <input type="text" class="form-control" id="email" placeholder="Enter Email" name="email" value="<?php echo $set_email;?>">
             <p class="err-msg">
-            <?php if($emailErr!=1){ echo $emailErr; } ?>
+                <?php if($emailErr!=1){ echo $emailErr; } ?>
             </p>
         </div>
 
@@ -68,7 +70,7 @@ require('registerActivity.php');
             <label for="pwd">Password</label>
             <input type="password" class="form-control"  placeholder="Enter password" name="password">
             <p class="err-msg">
-            <?php if($passErr!=1){ echo $passErr; } ?>
+                <?php if($passErr!=1){ echo $passErr; } ?>
             </p>
         </div>
         
@@ -77,7 +79,7 @@ require('registerActivity.php');
             <label for="pwd">Confirm Password</label>
             <input type="password" class="form-control" placeholder="Enter Confirm password" name="cpassword">
             <p class="err-msg">
-            <?php if($cpassErr!=1){ echo $cpassErr; } ?>
+                <?php if($cpassErr!=1){ echo $cpassErr; } ?>
             </p>
         </div>
     
@@ -88,5 +90,7 @@ require('registerActivity.php');
         <p>You already have an account? <a href="login.php">Sign in now</a>.</p>
       </form>
   </div>
+</div>
+
 </body>
 </html>
