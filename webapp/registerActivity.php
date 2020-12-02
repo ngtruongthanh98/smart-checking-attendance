@@ -70,7 +70,10 @@ else{
    $passErr=true;
 }
 // form validation for confirm password
-if($cpassword!=$password){
+if(empty($cpassword)){
+  $cpassErr="Confirm Password is Required"; 
+} 
+elseif($cpassword!=$password){
    $cpassErr="Confirm Password doest Matched";
 }
 else{
