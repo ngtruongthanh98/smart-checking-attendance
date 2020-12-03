@@ -323,11 +323,10 @@ def checking_attendance():
             
             begin = time.time()
             delta = 0
-            global first_read
-            first_read= True
             
             while True:
                 ret,img = video_capture.read()
+                
                 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
                 faces = detector(gray)
                 
