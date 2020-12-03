@@ -16,6 +16,8 @@ import pandas as pd
 import smtplib
 import dlib
 from math import hypot
+import hashlib
+import webbrowser
 
 window=Tk()
 window.title("Face recognition system")
@@ -454,8 +456,10 @@ def generate_dataset():
         for y in result:
             id_login+=1
             
+        md5_digest = hashlib.md5(t3.get().encode('utf-8')).hexdigest()
+            
         query="INSERT INTO login_table(id_login,fname,lname,username,password,email,userlevel) values(%s,%s,%s,%s,%s,%s,%s)"
-        value=(id_login,t1.get(),t2.get(),t3.get(),t3.get(),t4.get(),"student")
+        value=(id_login,t1.get(),t2.get(),t3.get(),md5_digest,t4.get(),"student")
         mycursor3.execute(query,value)
         
         mydb.commit()
@@ -525,35 +529,40 @@ def generate_dataset():
             mydb.commit()
     
             messagebox.showinfo('Result','Registration completed!!!')
+            
+            # send mail at here    
+            to = t4.get()
+            gmail_user = 'attendancesystembku@gmail.com'
+            gmail_pwd = '!attendancesystem'
+            smtpserver = smtplib.SMTP("smtp.gmail.com",587)
+            smtpserver.ehlo()
+            smtpserver.starttls()
+            smtpserver.ehlo
+            smtpserver.login(gmail_user, gmail_pwd)
+            date = datetime.datetime.now().strftime( "%d/%m/%Y %H:%M" )
+            header = 'To: ' + to + '\n' + 'From: ' + gmail_user + '\n' + 'Subject: Register completed \n'
+            print(header)
+            msg = header +  '\nDear ' + t1.get() + ',\n\n' + 'Thank you for registering for attendance-system-bku\n' + 'Register time: '+ date +'\nIf you have any questions, please let we know!\n\n' +  'Regards,\n\n' + 'attendance-system-bku'
+            smtpserver.sendmail(gmail_user, to, msg)
+            print('sent mail')
+            print("____________________________________")
+            smtpserver.close()
 
         finally:
             GPIO.cleanup()            
 
-    # send mail at here    
-    to = t4.get()
-    gmail_user = 'attendancesystembku@gmail.com'
-    gmail_pwd = '!attendancesystem'
-    smtpserver = smtplib.SMTP("smtp.gmail.com",587)
-    smtpserver.ehlo()
-    smtpserver.starttls()
-    smtpserver.ehlo
-    smtpserver.login(gmail_user, gmail_pwd)
-    date = datetime.datetime.now().strftime( "%d/%m/%Y %H:%M" )
-    header = 'To: ' + to + '\n' + 'From: ' + gmail_user + '\n' + 'Subject: Register completed \n'
-    print(header)
-    msg = header +  '\nDear ' + t1.get() + ',\n\n' + 'Thank you for registering for attendance-system-bku\n' + 'Register time: '+ date +'\nIf you have any questions, please let we know!\n\n' +  'Regards,\n\n' + 'attendance-system-bku'
-    smtpserver.sendmail(gmail_user, to, msg)
-    print('sent mail')
-    print("____________________________________")
-    smtpserver.close()
+
 
 b3=tk.Button(window,text="Generate Dataset",font=("Algerian",20),bg='orange',fg='red',command=generate_dataset)
 b3.place(x=300,y=180)
 
-# def access_website():
-# 
-# b4=tk.Button(window,text="Access Website",font=("Algerian",20),bg='green',fg='white',command=generate_dataset)
-# b4.place(x=300,y=240)
+def access_website():
+    new = 1
+    url = "localhost/webapp"
+    webbrowser.open(url,new=new)
+
+b4=tk.Button(window,text="Access Website",font=("Algerian",20),bg='green',fg='white',command=access_website)
+b4.place(x=300,y=240)
 
 window.geometry("910x320")
 window.mainloop()
