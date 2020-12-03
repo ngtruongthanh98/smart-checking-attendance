@@ -18,6 +18,7 @@ import dlib
 from math import hypot
 import hashlib
 import webbrowser
+import re
 
 window=Tk()
 window.title("Face recognition system")
@@ -327,8 +328,6 @@ def checking_attendance():
             
             while True:
                 ret,img = video_capture.read()
-                
-                
                 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
                 faces = detector(gray)
                 
@@ -407,151 +406,156 @@ b2=tk.Button(window,text="Training Dataset",font=("Algerian",20),bg='orange',fg=
 b2.place(x=10,y=240)
         
 def generate_dataset():
+    regex_email = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
+    
     if(t1.get()=="" or t2.get()=="" or t3.get()=="" or t4.get()=="" or t5.get()==""):
         messagebox.showinfo('Result','Please provide complete details of the user')
     else:
-        mydb=mysql.connector.connect(
-            host="localhost",
-            user="admin",
-            passwd="password",
-            database="attendance"
-        )
-        mycursor=mydb.cursor()
-        mycursor.execute("SELECT * FROM student_table")
-        myresult=mycursor.fetchall()
-
-        mycursor2=mydb.cursor()
-        mycursor2.execute("SELECT id_class, subject_code FROM class_table")
-        rows=mycursor2.fetchall()
-        
-        mycursor3=mydb.cursor()
-        mycursor3.execute("SELECT * FROM login_table")
-        result=mycursor3.fetchall()
-        
-        id_stu=1
-        for x in myresult:
-            id_stu+=1
-
-        class_list= t5.get()
-        print(class_list)
-        
-        splited_list=class_list.split(" ")
-        print(splited_list)
-
-        list_of_id=[]
-        for i in splited_list:
-            for row in rows:
-                if(i == row[1]):
-                    list_of_id.append(row[0])
-                    
-        print(list_of_id)
-        
-        values = ', '.join(str(v) for v in list_of_id)
-
-        sql="INSERT INTO student_table(id_stu,first_name,last_name,student_number,email,class_list) values(%s,%s,%s,%s,%s,%s)"
-        val=(id_stu,t1.get(),t2.get(),t3.get(),t4.get(),values)
-        mycursor.execute(sql,val)
-        
-        id_login=1
-        for y in result:
-            id_login+=1
+        if(re.search(regex_email,t4.get())):
             
-        md5_digest = hashlib.md5(t3.get().encode('utf-8')).hexdigest()
+            mydb=mysql.connector.connect(
+                host="localhost",
+                user="admin",
+                passwd="password",
+                database="attendance"
+            )
+            mycursor=mydb.cursor()
+            mycursor.execute("SELECT * FROM student_table")
+            myresult=mycursor.fetchall()
+
+            mycursor2=mydb.cursor()
+            mycursor2.execute("SELECT id_class, subject_code FROM class_table")
+            rows=mycursor2.fetchall()
             
-        query="INSERT INTO login_table(id_login,fname,lname,username,password,email,userlevel) values(%s,%s,%s,%s,%s,%s,%s)"
-        value=(id_login,t1.get(),t2.get(),t3.get(),md5_digest,t4.get(),"student")
-        mycursor3.execute(query,value)
-        
-        mydb.commit()
-     
-        print("Saved to database")
-        messagebox.showinfo('Notification','Saved to database \nStart camera to capture images')
-        
-        face_classifier = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
-        def face_cropped(img):
-            gray  = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-            faces = face_classifier.detectMultiScale(gray,1.3,5)
-            #scaling factor=1.3
-            #Minimum neighbor = 5
-
-            if faces is ():
-                return None
-            for(x,y,w,h) in faces:
-                cropped_face=img[y:y+h,x:x+w]
-            return cropped_face
-
-        cap = cv2.VideoCapture(0)
-        img_id=0
-
-        while True:
-            ret,frame = cap.read()
-            if face_cropped(frame) is not None:
-                img_id+=1
-                face = cv2.resize(face_cropped(frame),(200,200))
-                face  = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
-                file_name_path = "/home/pi/Desktop/smart-checking-attendance/dataset/user."+str(id_stu)+"."+str(img_id)+".jpg"
-                cv2.imwrite(file_name_path,face)
-                cv2.putText(face,str(img_id),(50,50),cv2.FONT_HERSHEY_COMPLEX,1, (0,255,0),2)
-                # (50,50) is the origin point from where text is to be written
-                # font scale=1
-                #thickness=2
-
-                cv2.imshow("Cropped face",face)
-                if cv2.waitKey(1)==ord('q') or int(img_id)==200:
-                    break
-        cap.release()
-        cv2.destroyAllWindows()
-        messagebox.showinfo('Result','Generating dataset completed!!!')
-        
-        mydb=mysql.connector.connect(
-            host="localhost",
-            user="admin",
-            passwd="password",
-            database="attendance"
-        )
+            mycursor3=mydb.cursor()
+            mycursor3.execute("SELECT * FROM login_table")
+            result=mycursor3.fetchall()
             
-        mycursor=mydb.cursor()
-        reader = SimpleMFRC522()
-        
-        messagebox.showinfo('Notification','Click OK then\nPut card to register')
+            id_stu=1
+            for x in myresult:
+                id_stu+=1
 
+            class_list= t5.get()
+            print(class_list)
+            
+            splited_list=class_list.split(" ")
+            print(splited_list)
 
-        mycursor.execute("SELECT * FROM student_table")
-        myresult=mycursor.fetchall()
+            list_of_id=[]
+            for i in splited_list:
+                for row in rows:
+                    if(i == row[1]):
+                        list_of_id.append(row[0])
+                        
+            print(list_of_id)
+            
+            values = ', '.join(str(v) for v in list_of_id)
 
-        try:
-            id_card, text = reader.read()
-            print(id_card)
-    
-            sql="UPDATE student_table SET rfid_uid = %s WHERE student_number=%s"
-            val=(id_card, t3.get())
+            sql="INSERT INTO student_table(id_stu,first_name,last_name,student_number,email,class_list) values(%s,%s,%s,%s,%s,%s)"
+            val=(id_stu,t1.get(),t2.get(),t3.get(),t4.get(),values)
             mycursor.execute(sql,val)
-            mydb.commit()
-    
-            messagebox.showinfo('Result','Registration completed!!!')
             
-            # send mail at here    
-            to = t4.get()
-            gmail_user = 'attendancesystembku@gmail.com'
-            gmail_pwd = '!attendancesystem'
-            smtpserver = smtplib.SMTP("smtp.gmail.com",587)
-            smtpserver.ehlo()
-            smtpserver.starttls()
-            smtpserver.ehlo
-            smtpserver.login(gmail_user, gmail_pwd)
-            date = datetime.datetime.now().strftime( "%d/%m/%Y %H:%M" )
-            header = 'To: ' + to + '\n' + 'From: ' + gmail_user + '\n' + 'Subject: Register completed \n'
-            print(header)
-            msg = header +  '\nDear ' + t1.get() + ',\n\n' + 'Thank you for registering for attendance-system-bku\n' + 'Register time: '+ date +'\nIf you have any questions, please let we know!\n\n' +  'Regards,\n\n' + 'attendance-system-bku'
-            smtpserver.sendmail(gmail_user, to, msg)
-            print('sent mail')
-            print("____________________________________")
-            smtpserver.close()
+            id_login=1
+            for y in result:
+                id_login+=1
+                
+            md5_digest = hashlib.md5(t3.get().encode('utf-8')).hexdigest()
+                
+            query="INSERT INTO login_table(id_login,fname,lname,username,password,email,userlevel) values(%s,%s,%s,%s,%s,%s,%s)"
+            value=(id_login,t1.get(),t2.get(),t3.get(),md5_digest,t4.get(),"student")
+            mycursor3.execute(query,value)
+            
+            mydb.commit()
+         
+            print("Saved to database")
+            messagebox.showinfo('Notification','Saved to database \nStart camera to capture images')
+            
+            face_classifier = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
+            def face_cropped(img):
+                gray  = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                faces = face_classifier.detectMultiScale(gray,1.3,5)
+                #scaling factor=1.3
+                #Minimum neighbor = 5
 
-        finally:
-            GPIO.cleanup()            
+                if faces is ():
+                    return None
+                for(x,y,w,h) in faces:
+                    cropped_face=img[y:y+h,x:x+w]
+                return cropped_face
+
+            cap = cv2.VideoCapture(0)
+            img_id=0
+
+            while True:
+                ret,frame = cap.read()
+                if face_cropped(frame) is not None:
+                    img_id+=1
+                    face = cv2.resize(face_cropped(frame),(200,200))
+                    face  = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
+                    file_name_path = "/home/pi/Desktop/smart-checking-attendance/dataset/user."+str(id_stu)+"."+str(img_id)+".jpg"
+                    cv2.imwrite(file_name_path,face)
+                    cv2.putText(face,str(img_id),(50,50),cv2.FONT_HERSHEY_COMPLEX,1, (0,255,0),2)
+                    # (50,50) is the origin point from where text is to be written
+                    # font scale=1
+                    #thickness=2
+
+                    cv2.imshow("Cropped face",face)
+                    if cv2.waitKey(1)==ord('q') or int(img_id)==200:
+                        break
+            cap.release()
+            cv2.destroyAllWindows()
+            messagebox.showinfo('Result','Generating dataset completed!!!')
+            
+            mydb=mysql.connector.connect(
+                host="localhost",
+                user="admin",
+                passwd="password",
+                database="attendance"
+            )
+                
+            mycursor=mydb.cursor()
+            reader = SimpleMFRC522()
+            
+            messagebox.showinfo('Notification','Click OK then\nPut card to register')
 
 
+            mycursor.execute("SELECT * FROM student_table")
+            myresult=mycursor.fetchall()
+
+            try:
+                id_card, text = reader.read()
+                print(id_card)
+        
+                sql="UPDATE student_table SET rfid_uid = %s WHERE student_number=%s"
+                val=(id_card, t3.get())
+                mycursor.execute(sql,val)
+                mydb.commit()
+        
+                messagebox.showinfo('Result','Registration completed!!!')
+                
+                # send mail at here    
+                to = t4.get()
+                gmail_user = 'attendancesystembku@gmail.com'
+                gmail_pwd = '!attendancesystem'
+                smtpserver = smtplib.SMTP("smtp.gmail.com",587)
+                smtpserver.ehlo()
+                smtpserver.starttls()
+                smtpserver.ehlo
+                smtpserver.login(gmail_user, gmail_pwd)
+                date = datetime.datetime.now().strftime( "%d/%m/%Y %H:%M" )
+                header = 'To: ' + to + '\n' + 'From: ' + gmail_user + '\n' + 'Subject: Register completed \n'
+                print(header)
+                msg = header +  '\nDear ' + t1.get() + ',\n\n' + 'Thank you for registering for attendance-system-bku\n' + 'Register time: '+ date +'\nIf you have any questions, please let we know!\n\n' +  'Regards,\n\n' + 'attendance-system-bku'
+                smtpserver.sendmail(gmail_user, to, msg)
+                print('sent mail')
+                print("____________________________________")
+                smtpserver.close()
+
+            finally:
+                GPIO.cleanup()            
+
+        else:
+            messagebox.showinfo('Result','Please provide valid email address')
 
 b3=tk.Button(window,text="Generate Dataset",font=("Algerian",20),bg='orange',fg='red',command=generate_dataset)
 b3.place(x=300,y=180)
