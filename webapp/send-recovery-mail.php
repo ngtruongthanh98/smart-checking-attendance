@@ -47,7 +47,7 @@ function send_mail($to, $subject, $message)
 	    $mail->SMTPSecure = 'tls';                                  // Enable TLS encryption, `ssl` also accepted
 	    $mail->Port       = 587;                                    // TCP port to connect to
 
-	    $mail->setFrom('attendancesystembku@gmail.com', 'Attendance System');
+	    $mail->setFrom('attendancesystembku@gmail.com', 'attendancesystembku');
 	    //Recipients
 	    $mail->addAddress($to);
 
