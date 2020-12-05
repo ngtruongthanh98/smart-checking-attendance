@@ -183,6 +183,35 @@ if (!isset($_SESSION['mysesi']) && !isset($_SESSION['mytype'])=='admin')
     echo "<br>";
     echo "<br>";
     
+    $result4 = mysqli_query($con,"SELECT * FROM teacher_table");
+
+    echo "Teacher table";
+    echo "<table border='1'>
+    <tr>
+    <th>Id</th>
+    <th>Firstname</th>
+    <th>Lastname</th>
+    <th>Teacher number</th>
+    <th>Email</th>
+    <th>Class list</th>
+    </tr>";
+
+    while($row4 = mysqli_fetch_array($result4))
+    {
+    echo "<tr>";
+    echo "<td>" . $row4['id_teacher'] . "</td>";
+    echo "<td>" . $row4['first_name'] . "</td>";
+    echo "<td>" . $row4['last_name'] . "</td>";
+    echo "<td>" . $row4['teacher_number'] . "</td>";
+    echo "<td>" . $row4['email'] . "</td>";
+    echo "<td>" . $row4['class_list'] . "</td>";
+    echo "</tr>";
+    }
+    echo "</table>";
+    
+    echo "<br>";
+    echo "<br>";
+    
     
     
     
