@@ -17,6 +17,14 @@ if (!isset($_SESSION['mysesi']) && !isset($_SESSION['mytype'])=='admin')
 <style>
   <?php include 'CSS/main.css'; ?>
 </style>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
+<style type="text/css">
+    body{ font: 14px sans-serif; }
+    .wrapper{ width: 350px; padding: 20px; }
+</style>
+
+<!-- Bootstrap -->
+<link href="css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 
@@ -32,196 +40,111 @@ if (!isset($_SESSION['mysesi']) && !isset($_SESSION['mytype'])=='admin')
   <a class="right">Welcome <?php echo $_SESSION['mysesi'] ?></a>
 </div>
 
-<div class="row">
-  <div class="side">
-<!--
-    <h2>About Me</h2>
-    <h5>Photo of me:</h5>
-    <div class="fakeimg" style="height:200px;">Image</div>
-    <p>Some text about me in culpa qui officia deserunt mollit anim..</p>
-    <h3>More Text</h3>
-    <p>Lorem ipsum dolor sit ame.</p>
-    <div class="fakeimg" style="height:60px;">Image</div><br>
-    <div class="fakeimg" style="height:60px;">Image</div><br>
-    <div class="fakeimg" style="height:60px;">Image</div>
--->
-  </div>
+<div class="container">
 
+        <?php
+            require_once('process.php');
+        ?>
+        
+        <?php
+            $mysqli = new mysqli('localhost', 'admin', 'password', 'attendance') or die(mysqli_error($mysqli));
+            $result = $mysqli->query("SELECT * FROM student_table") or die($mysqli->error);
+            //pre_r($result);
+            //pre_r($result->fetch_assoc());
+            //pre_r($result->fetch_assoc());
+            //pre_r($result->fetch_assoc());
+            ?>
+            
+            <strong>Student Table</strong>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Student Number</th>
+                        <th>Email</th>
+                        <th>RFID UID</th>
+                        <th>Class List</th>
+                        <th>Create</th>
+                        <th colspan="2">Action</th>
+                    </tr>
+                </thead>
+                
+            <?php
+                while($row = $result->fetch_assoc()): ?>
+                <tr>
+                    <td><?php echo $row['id_stu']; ?></td>
+                    <td><?php echo $row['first_name']; ?></td>
+                    <td><?php echo $row['last_name']; ?></td>
+                    <td><?php echo $row['student_number']; ?></td>
+                    <td><?php echo $row['email']; ?></td>
+                    <td><?php echo $row['rfid_uid']; ?></td>
+                    <td><?php echo $row['class_list']; ?></td>
+                    <td><?php echo $row['created']; ?></td>
+                    <td>
+                        <a href="admin.php?edit=<?php echo $row['id'] ?>"
+                           class="btn btn-info">Edit</a>
+                        <a href="process.php?delte=<?php echo $row['id'] ?>"
+                           class="btn btn-danger">Delete</a>
+                    </td>
 
+                </tr>
+                <?php endwhile; ?>
+            
+            </table>
 
-  <div class="main">
-  <?php
-    $con=mysqli_connect("localhost","admin","password","attendance");
-    // Check connection
-    if (mysqli_connect_errno())
-    {
-    echo "Failed to connect to MySQL: " . mysqli_connect_error();
-    }
-
-    $result = mysqli_query($con,"SELECT * FROM student_table");
-
-    echo "Student table";
-    echo "<table border='1'>
-    <tr>
-    <th>Id</th>
-    <th>Firstname</th>
-    <th>Lastname</th>
-    <th>Student number</th>
-    <th>Email</th>
-    <th>RFID UID</th>
-    <th>Class list</th>
-    <th>Date join</th>
-    </tr>";
-
-    while($row = mysqli_fetch_array($result))
-    {
-    echo "<tr>";
-    echo "<td>" . $row['id_stu'] . "</td>";
-    echo "<td>" . $row['first_name'] . "</td>";
-    echo "<td>" . $row['last_name'] . "</td>";
-    echo "<td>" . $row['student_number'] . "</td>";
-    echo "<td>" . $row['email'] . "</td>";
-    echo "<td>" . $row['rfid_uid'] . "</td>";
-    echo "<td>" . $row['class_list'] . "</td>";
-    echo "<td>" . $row['created'] . "</td>";
-    echo "</tr>";
-    }
-    echo "</table>";
-    
-    echo "<br>";
-    echo "<br>";
-
-    
-
-    $result1 = mysqli_query($con,"SELECT * FROM login_table");
-
-    echo "Login table";
-    echo "<table border='1'>
-    <tr>
-    <th>Id</th>
-    <th>Firstname</th>
-    <th>Lastname</th>
-    <th>Email</th>
-    <th>Username</th>
-    <th>Userlevel</th>
-    </tr>";
-
-    while($row1 = mysqli_fetch_array($result1))
-    {
-    echo "<tr>";
-    echo "<td>" . $row1['id_login'] . "</td>";
-    echo "<td>" . $row1['fname'] . "</td>";
-    echo "<td>" . $row1['lname'] . "</td>";
-    echo "<td>" . $row1['email'] . "</td>";
-    echo "<td>" . $row1['username'] . "</td>";
-    echo "<td>" . $row1['userlevel'] . "</td>";
-    echo "</tr>";
-    }
-    echo "</table>";
-    
-    echo "<br>";
-    echo "<br>";
-    
-    
-    $result2 = mysqli_query($con,"SELECT * FROM class_table");
-
-    echo "Class table";
-    echo "<table border='1'>
-    <tr>
-    <th>Id</th>
-    <th>Subject code</th>
-    <th>Subject name</th>
-    <th>Day in week</th>
-    <th>Start time</th>
-    <th>End time</th>
-    <th>Room</th>
-    </tr>";
-
-    while($row2 = mysqli_fetch_array($result2))
-    {
-    echo "<tr>";
-    echo "<td>" . $row2['id_class'] . "</td>";
-    echo "<td>" . $row2['subject_code'] . "</td>";
-    echo "<td>" . $row2['subject_name'] . "</td>";
-    echo "<td>" . $row2['day_in_week'] . "</td>";
-    echo "<td>" . $row2['start_time'] . "</td>";
-    echo "<td>" . $row2['end_time'] . "</td>";
-    echo "<td>" . $row2['room'] . "</td>";
-    echo "</tr>";
-    }
-    echo "</table>";
-    
-    echo "<br>";
-    echo "<br>";
-    
-    $result3 = mysqli_query($con,"SELECT * FROM attendance_table");
-
-    echo "Attendance table";
-    echo "<table border='1'>
-    <tr>
-    <th>Id</th>
-    <th>Firstname</th>
-    <th>Lastname</th>
-    <th>Student number</th>
-    <th>Class number</th>
-    <th>Clock in</th>
-    </tr>";
-
-    while($row3 = mysqli_fetch_array($result3))
-    {
-    echo "<tr>";
-    echo "<td>" . $row3['id_atd'] . "</td>";
-    echo "<td>" . $row3['first_name'] . "</td>";
-    echo "<td>" . $row3['last_name'] . "</td>";
-    echo "<td>" . $row3['student_number'] . "</td>";
-    echo "<td>" . $row3['class_number'] . "</td>";
-    echo "<td>" . $row3['clock_in'] . "</td>";
-    echo "</tr>";
-    }
-    echo "</table>";
-    
-    echo "<br>";
-    echo "<br>";
-    
-    $result4 = mysqli_query($con,"SELECT * FROM teacher_table");
-
-    echo "Teacher table";
-    echo "<table border='1'>
-    <tr>
-    <th>Id</th>
-    <th>Firstname</th>
-    <th>Lastname</th>
-    <th>Teacher number</th>
-    <th>Email</th>
-    <th>Class list</th>
-    </tr>";
-
-    while($row4 = mysqli_fetch_array($result4))
-    {
-    echo "<tr>";
-    echo "<td>" . $row4['id_teacher'] . "</td>";
-    echo "<td>" . $row4['first_name'] . "</td>";
-    echo "<td>" . $row4['last_name'] . "</td>";
-    echo "<td>" . $row4['teacher_number'] . "</td>";
-    echo "<td>" . $row4['email'] . "</td>";
-    echo "<td>" . $row4['class_list'] . "</td>";
-    echo "</tr>";
-    }
-    echo "</table>";
-    
-    echo "<br>";
-    echo "<br>";
-    
-    
-    
-    
-    mysqli_close($con);
-  ?>
-
-
-
-  </div>
+            <?php
+            
+            function pre_r($array)
+            {
+                echo '<pre>';
+                print_r($array);
+                echo '</pre>';
+            }
+            
+            
+        ?>
+        <div class="wrapper">
+        <form action="process.php" method="POST">
+            <div class="form-group">
+                <label>First Name</label>
+                <input type="text" name="first_name" class="form_control">
+            </div>
+            <div class="form-group">
+                <label>Last Name</label>
+                <input type="text" name="last_name" class="form_control">
+            </div>
+            <div class="form-group">
+                <label>Student Number</label>
+                <input type="text" name="student_number" class="form_control">
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="text" name="email" class="form_control">
+            </div>
+            <div class="form-group">
+                <label>RFID UID</label>
+                <input type="number" name="rfid_uid" class="form_control">
+            </div>
+            <div class="form-group">
+                <label>Class List</label>
+                <input type="text" name="class_list" class="form_control">
+            </div>
+            <div class="form-group">
+                <label>Created</label>
+                <input type="text" name="created" class="form_control">
+            </div>            
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary" name="save">Save</button>
+            </div>
+            
+        </form>
+        </div>
 </div>
+
+
+
 
 
 
@@ -229,10 +152,10 @@ if (!isset($_SESSION['mysesi']) && !isset($_SESSION['mytype'])=='admin')
   <h2>Footer</h2>
 </div>
 
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="js/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="js/bootstrap.min.js"></script>
+
 </body>
 </html>
-
-
-
-
-
