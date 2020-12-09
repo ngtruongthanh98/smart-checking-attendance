@@ -15,6 +15,12 @@
 		$mysqli->query("INSERT INTO student_table (first_name, last_name, student_number, email, rfid_uid, class_list, created) 
 		VALUES('$first_name','$last_name', '$student_number','$email', '$rfid_uid', '$class_list', '$created')") or	die($mysqli->error);
 	}
+	
+	if(isset($_POST['delete']))
+	{
+		$id_stu = $_GET['delete'];
+		$mysqli->query("DELETE FROM student_table WHERE id_stu=$id_stu") or die($mysqli->error());
+	}
 
 ?>
 

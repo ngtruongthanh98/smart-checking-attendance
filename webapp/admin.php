@@ -23,8 +23,6 @@ if (!isset($_SESSION['mysesi']) && !isset($_SESSION['mytype'])=='admin')
     .wrapper{ width: 350px; padding: 20px; }
 </style>
 
-<!-- Bootstrap -->
-<link href="css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 
@@ -83,9 +81,9 @@ if (!isset($_SESSION['mysesi']) && !isset($_SESSION['mytype'])=='admin')
                     <td><?php echo $row['class_list']; ?></td>
                     <td><?php echo $row['created']; ?></td>
                     <td>
-                        <a href="admin.php?edit=<?php echo $row['id'] ?>"
+                        <a href="admin.php?edit=<?php echo $row['id_stu'] ?>"
                            class="btn btn-info">Edit</a>
-                        <a href="process.php?delte=<?php echo $row['id'] ?>"
+                        <a href="process.php?delete=<?php echo $row['id_stu'] ?>"
                            class="btn btn-danger">Delete</a>
                     </td>
 
@@ -105,8 +103,7 @@ if (!isset($_SESSION['mysesi']) && !isset($_SESSION['mytype'])=='admin')
             
             
         ?>
-        <div class="wrapper">
-        <form action="process.php" method="POST">
+        <form class="form-horizontal" action="process.php" method="POST">
             <div class="form-group">
                 <label>First Name</label>
                 <input type="text" name="first_name" class="form_control">
@@ -140,8 +137,9 @@ if (!isset($_SESSION['mysesi']) && !isset($_SESSION['mytype'])=='admin')
             </div>
             
         </form>
-        </div>
 </div>
+
+
 
 
 
@@ -152,10 +150,10 @@ if (!isset($_SESSION['mysesi']) && !isset($_SESSION['mytype'])=='admin')
   <h2>Footer</h2>
 </div>
 
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="js/jquery.min.js"></script>
-<!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="js/bootstrap.min.js"></script>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
 </body>
 </html>
