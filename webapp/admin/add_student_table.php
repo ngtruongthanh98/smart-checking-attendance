@@ -9,13 +9,13 @@
 include_once("../config.php");
 
 if(isset($_POST['Submit'])) {	
-	$first_name = mysqli_real_escape_string($mysqli, $_POST['first_name']);
-	$last_name = mysqli_real_escape_string($mysqli, $_POST['last_name']);
-	$student_number = mysqli_real_escape_string($mysqli, $_POST['student_number']);
-	$email = mysqli_real_escape_string($mysqli, $_POST['email']);
-	$rfid_uid = mysqli_real_escape_string($mysqli, $_POST['rfid_uid']);
-	$class_list = mysqli_real_escape_string($mysqli, $_POST['class_list']);
-	$created = mysqli_real_escape_string($mysqli, $_POST['created']);
+	$first_name = mysqli_real_escape_string($link, $_POST['first_name']);
+	$last_name = mysqli_real_escape_string($link, $_POST['last_name']);
+	$student_number = mysqli_real_escape_string($link, $_POST['student_number']);
+	$email = mysqli_real_escape_string($link, $_POST['email']);
+	$rfid_uid = mysqli_real_escape_string($link, $_POST['rfid_uid']);
+	$class_list = mysqli_real_escape_string($link, $_POST['class_list']);
+	$created = mysqli_real_escape_string($link, $_POST['created']);
 		
 	// checking empty fields
 	if(empty($first_name) || empty($last_name)|| empty($student_number) || empty($email) || empty($rfid_uid) || empty($class_list) || empty($created)) {
@@ -54,7 +54,7 @@ if(isset($_POST['Submit'])) {
 		// if all the fields are filled (not empty) 
 			
 		//insert data to database	
-		$result = mysqli_query($mysqli, "INSERT INTO student_table(first_name,last_name,student_number,email, rfid_uid, class_list, created) VALUES('$first_name' ,'$last_name','$student_number' ,
+		$result = mysqli_query($link, "INSERT INTO student_table(first_name,last_name,student_number,email, rfid_uid, class_list, created) VALUES('$first_name' ,'$last_name','$student_number' ,
 		'$email','$rfid_uid' ,'$class_list' ,'$created')");
 		
 		//display success message

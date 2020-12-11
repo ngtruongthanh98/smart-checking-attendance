@@ -49,12 +49,12 @@ if(isset($_POST['login']))
 			if($type=="admin"){
 				$_SESSION['mysesi']=$fname;
 				$_SESSION['mytype']=$type;
-				echo "<script>window.location.assign('admin.php')</script>";
+				echo "<script>window.location.assign('admin/admin.php')</script>";
 			} 
 			else if($type=="teacher"){
 				$_SESSION['mysesi']=$fname;
 			    $_SESSION['mytype']=$type;
-			    echo "<script>window.location.assign('teacher.php')</script>";
+			    echo "<script>window.location.assign('teacher/teacher.php')</script>";
 			}    
 		    else if($type=="student"){
 		        $_SESSION['mysesi']=$fname;

@@ -5,14 +5,14 @@ include_once("../config.php");
 if(isset($_POST['update']))
 {	
 
-	$id_stu = mysqli_real_escape_string($mysqli, $_POST['id_stu']);	
-	$first_name = mysqli_real_escape_string($mysqli, $_POST['first_name']);
-	$last_name = mysqli_real_escape_string($mysqli, $_POST['last_name']);
-	$student_number = mysqli_real_escape_string($mysqli, $_POST['student_number']);
-	$email = mysqli_real_escape_string($mysqli, $_POST['email']);	
-	$rfid_uid = mysqli_real_escape_string($mysqli, $_POST['rfid_uid']);	
-	$class_list = mysqli_real_escape_string($mysqli, $_POST['class_list']);	
-	$created = mysqli_real_escape_string($mysqli, $_POST['created']);	
+	$id_stu = mysqli_real_escape_string($link, $_POST['id_stu']);	
+	$first_name = mysqli_real_escape_string($link, $_POST['first_name']);
+	$last_name = mysqli_real_escape_string($link, $_POST['last_name']);
+	$student_number = mysqli_real_escape_string($link, $_POST['student_number']);
+	$email = mysqli_real_escape_string($link, $_POST['email']);	
+	$rfid_uid = mysqli_real_escape_string($link, $_POST['rfid_uid']);	
+	$class_list = mysqli_real_escape_string($link, $_POST['class_list']);	
+	$created = mysqli_real_escape_string($link, $_POST['created']);	
 
 
 	// checking empty fields
@@ -49,11 +49,11 @@ if(isset($_POST['update']))
 		
 	} else {	
 		//updating the table
-		$result = mysqli_query($mysqli, "UPDATE student_table SET first_name='$first_name', last_name='$last_name',
+		$result = mysqli_query($link, "UPDATE student_table SET first_name='$first_name', last_name='$last_name',
 		student_number='$student_number',email='$email', rfid_uid='$rfid_uid', class_list='$class_list', created='$created' WHERE id_stu=$id_stu");
 		
 		//redirectig to the display page. In our case, it is index.php
-		header("Location:admin.php");
+		header("Location:teacher.php");
 	}
 }
 ?>
@@ -62,7 +62,7 @@ if(isset($_POST['update']))
 $id_stu = $_GET['id_stu'];
 
 //selecting data associated with this particular id
-$result = mysqli_query($mysqli, "SELECT * FROM student_table WHERE id_stu=$id_stu");
+$result = mysqli_query($link, "SELECT * FROM student_table WHERE id_stu=$id_stu");
 
 while($res = mysqli_fetch_array($result))
 {
@@ -82,7 +82,7 @@ while($res = mysqli_fetch_array($result))
 </head>
 
 <body>
-	<a href="admin.php">Home</a>
+	<a href="teacher.php">Home</a>
 	<br/><br/>
 	
 	<form name="form1" method="post" action="edit_student_table.php">
