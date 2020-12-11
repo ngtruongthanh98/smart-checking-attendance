@@ -1,6 +1,6 @@
 <?php
 // including the database connection file
-include_once("config.php");
+include_once("../config.php");
 
 if(isset($_POST['update']))
 {	
@@ -53,7 +53,7 @@ if(isset($_POST['update']))
 		student_number='$student_number',email='$email', rfid_uid='$rfid_uid', class_list='$class_list', created='$created' WHERE id_stu=$id_stu");
 		
 		//redirectig to the display page. In our case, it is index.php
-		header("Location: index.php");
+		header("Location:admin.php");
 	}
 }
 ?>
@@ -82,10 +82,10 @@ while($res = mysqli_fetch_array($result))
 </head>
 
 <body>
-	<a href="index.php">Home</a>
+	<a href="admin.php">Home</a>
 	<br/><br/>
 	
-	<form name="form1" method="post" action="edit.php">
+	<form name="form1" method="post" action="edit_student_table.php">
 		<table border="0">
 			<tr> 
 				<td>First Name</td>
