@@ -91,7 +91,7 @@ while($res = mysqli_fetch_array($result))
             </tr>
 			<tr> 
 				<td>Clock In</td>
-				<td><input type="text" name="clock_in" value="<?php echo $clock_in;?>"></td>
+				<td><input type="datetime-local" name="clock_in" value="<?php echo $clock_in;?>"></td>
 			</tr>
 			<tr>
 				<td><input type="hidden" name="id_atd" value=<?php echo $_GET['id_atd'];?>></td>
