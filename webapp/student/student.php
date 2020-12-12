@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['mysesi']) && !isset($_SESSION['mytype'])=='teacher')
+if (!isset($_SESSION['mysesi']) && !isset($_SESSION['mytype'])=='student')
 {
   echo "<script>window.location.assign('../login.php')</script>";
 }
@@ -42,7 +42,7 @@ $result2 = mysqli_query($link, "SELECT * FROM class_table ORDER BY id_class"); /
 </div>
 
 <div class="navbar">
-  <a href="teacher.php">Home</a>
+  <a href="student.php">Home</a>
   <a href="#">Link</a>
   <a href="#">Link</a>
   <a href="../logout.php" class="right">Logout</a>

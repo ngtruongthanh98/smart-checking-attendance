@@ -59,17 +59,17 @@ if(isset($_POST['login']))
 		    else if($type=="student"){
 		        $_SESSION['mysesi']=$fname;
 		        $_SESSION['mytype']=$type;
-		        echo "<script>window.location.assign('index.php')</script>";
+		        echo "<script>window.location.assign('student/student.php')</script>";
 		    } 
-		    else{
-
-		    }
 	      }
-	      else{
-			  echo "This username or password not same with database.";
-		  }
+	    else{
+			echo "This username or password not same with database.";
+		}
 	   
 
+	}
+	else{
+		echo "This username or password not same with database.";
 	}
 }
 ?>

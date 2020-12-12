@@ -1,6 +1,6 @@
 <html>
 <head>
-	<title>Add Student Data</title>
+	<title>Add Data</title>
 </head>
 
 <body>
@@ -59,7 +59,7 @@ if(isset($_POST['Submit'])) {
 		
 		//display success message
 		echo "<font color='green'>Data added successfully.";
-		echo "<br/><a href='admin.php'>View Result</a>";
+		echo "<br/><a href='teacher.php'>View Result</a>";
 	}
 }
 ?>

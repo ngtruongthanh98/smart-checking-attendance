@@ -53,7 +53,7 @@ if(isset($_POST['update']))
 		student_number='$student_number',email='$email', rfid_uid='$rfid_uid', class_list='$class_list', created='$created' WHERE id_stu=$id_stu");
 		
 		//redirectig to the display page. In our case, it is index.php
-		header("Location:admin.php");
+		header("Location:teacher.php");
 	}
 }
 ?>
@@ -82,7 +82,7 @@ while($res = mysqli_fetch_array($result))
 </head>
 
 <body>
-	<a href="admin.php">Home</a>
+	<a href="teacher.php">Home</a>
 	<br/><br/>
 	
 	<form name="form1" method="post" action="edit_student_table.php">
@@ -101,7 +101,7 @@ while($res = mysqli_fetch_array($result))
 			</tr>
 			<tr> 
 				<td>Email</td>
-				<td><input type="email" name="email" value="<?php echo $email;?>"></td>
+				<td><input type="text" name="email" value="<?php echo $email;?>"></td>
 			</tr>
 			<tr> 
 				<td>RFID UID</td>

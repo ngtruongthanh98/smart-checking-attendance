@@ -71,7 +71,7 @@ while($res = mysqli_fetch_array($result))
 ?>
 <html>
 <head>	
-	<title>Edit Data</title>
+	<title>Edit Class Data</title>
 </head>
 
 <body>
