@@ -42,7 +42,7 @@ if(isset($_POST['update']))
 		teacher_number='$teacher_number',email='$email', class_list='$class_list' WHERE id_teacher=$id_teacher");
 		
 		//redirectig to the display page. In our case, it is index.php
-		header("Location:admin.php");
+		header("Location:crud_teacher.php");
 	}
 }
 ?>

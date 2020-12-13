@@ -48,7 +48,7 @@ if(isset($_POST['update']))
 		day_in_week='$day_in_week',start_time='$start_time', end_time='$end_time', room='$room' WHERE id_class=$id_class");
 		
 		//redirectig to the display page. In our case, it is index.php
-		header("Location:admin.php");
+		header("Location:crud_class.php");
 	}
 }
 ?>

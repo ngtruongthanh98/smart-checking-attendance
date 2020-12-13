@@ -42,7 +42,7 @@ if(isset($_POST['update']))
         ,student_number='$student_number', class_number='$class_number', clock_in='$clock_in' WHERE id_atd=$id_atd");
 		
 		//redirectig to the display page. In our case, it is index.php
-		header("Location:admin.php");
+		header("Location:crud_attendance.php");
 	}
 }
 ?>

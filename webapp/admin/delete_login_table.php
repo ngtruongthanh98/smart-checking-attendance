@@ -9,6 +9,6 @@ $id_login = $_GET['id_login'];
 $result = mysqli_query($link, "DELETE FROM login_table WHERE id_login=$id_login");
 
 //redirecting to the display page (index.php in our case)
-header("Location:admin.php");
+header("Location:crud_attendance.php");
 ?>
 

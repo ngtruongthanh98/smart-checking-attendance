@@ -43,7 +43,7 @@ if (!isset($_SESSION['class_list_ses']) && !isset($_SESSION['mysesi']) && !isset
 
 <div class="container">
 
-<h1>Teacher site</h1>
+<h1>Attendance</h1>
 
 
 

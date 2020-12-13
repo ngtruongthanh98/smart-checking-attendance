@@ -53,7 +53,7 @@ if(isset($_POST['update']))
 		student_number='$student_number',email='$email', rfid_uid='$rfid_uid', class_list='$class_list', created='$created' WHERE id_stu=$id_stu");
 		
 		//redirectig to the display page. In our case, it is index.php
-		header("Location:admin.php");
+		header("Location:crud_student.php");
 	}
 }
 ?>

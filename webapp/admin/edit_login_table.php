@@ -41,7 +41,7 @@ if(isset($_POST['update']))
 		email='$email',username='$username', userlevel='$userlevel' WHERE id_login=$id_login");
 		
 		//redirectig to the display page. In our case, it is index.php
-		header("Location:admin.php");
+		header("Location:crud_login.php");
 	}
 }
 ?>

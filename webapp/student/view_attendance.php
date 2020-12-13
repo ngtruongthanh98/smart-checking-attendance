@@ -2,8 +2,8 @@
 session_start();
 
 if (!isset($_SESSION['class_list_ses']) && !isset($_SESSION['mysesi']) && !isset($_SESSION['id'])
-
-&& !isset($_SESSION['mytype'])=='teacher'){
+&& !isset($_SESSION['mytype'])=='student')
+{
   echo "<script>window.location.assign('../login.php')</script>";
 }
 ?>
@@ -33,9 +33,9 @@ if (!isset($_SESSION['class_list_ses']) && !isset($_SESSION['mysesi']) && !isset
 </div>
 
 <div class="navbar">
-  <a href="teacher.php">Home</a>
+  <a href="student.php">Home</a>
   <a href="view_class.php">View Class</a>
-  <a href="view_info.php">Teacher Data</a>
+  <a href="view_info.php">Student Data</a>
   <a href="view_attendance.php">Attendance Data</a>
   <a href="../logout.php" class="right">Logout</a>
   <a class="right">Welcome <?php echo $_SESSION['mysesi'] ?></a>
@@ -43,7 +43,7 @@ if (!isset($_SESSION['class_list_ses']) && !isset($_SESSION['mysesi']) && !isset
 
 <div class="container">
 
-<h1>Teacher site</h1>
+<h1>Attendance</h1>
 
 
 

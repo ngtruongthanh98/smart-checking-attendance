@@ -9,6 +9,6 @@ $id_stu = $_GET['id_stu'];
 $result = mysqli_query($link, "DELETE FROM student_table WHERE id_stu=$id_stu");
 
 //redirecting to the display page (index.php in our case)
-header("Location:admin.php");
+header("Location:crud_attendance.php");
 ?>
 

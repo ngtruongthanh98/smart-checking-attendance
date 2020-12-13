@@ -7,6 +7,15 @@ if (!isset($_SESSION['mysesi']) && !isset($_SESSION['mytype'])=='admin')
 }
 ?>
 
+<?php
+//including the database connection file
+include_once("../config.php");
+
+//fetching data in descending order (lastest entry first)
+//$result = mysql_query("SELECT * FROM users ORDER BY id DESC"); // mysql_query is deprecated
+$result4 = mysqli_query($link, "SELECT * FROM login_table ORDER BY id_login"); // using mysqli_query instead
+
+?>
 
 
 <!DOCTYPE html>
@@ -43,9 +52,35 @@ if (!isset($_SESSION['mysesi']) && !isset($_SESSION['mytype'])=='admin')
 </div>
 
 <div class="container">
+	<a href="add_login_table.html">Add New Login Data</a><br/><br/>
+	<strong>Login Table</strong>
+	<table width='80%' border=0>
 
-<h1>Admin site</h1>
-
+	<tr bgcolor='#CCCCCC'>
+		<td>ID</td>
+		<td>First Name</td>
+		<td>Last Name</td>
+		<td>Email</td>
+		<td>Username</td>
+		<td>Userlevel</td>
+		<td>Update</td>
+	</tr>
+	<?php 
+	//while($res = mysql_fetch_array($result)) { // mysql_fetch_array is deprecated, we need to use mysqli_fetch_array 
+	while($res = mysqli_fetch_array($result4)) { 		
+		echo "<tr>";
+		echo "<td>".$res['id_login']."</td>";
+		echo "<td>".$res['fname']."</td>";
+		echo "<td>".$res['lname']."</td>";
+		echo "<td>".$res['email']."</td>";
+		echo "<td>".$res['username']."</td>";
+		echo "<td>".$res['userlevel']."</td>";
+	
+		echo "<td><a href=\"edit_login_table.php?id_login=$res[id_login]\">Edit</a> | <a href=\"delete_login_table.php?id_login=$res[id_login]\" onClick=\"return confirm('Are you sure you want to delete?')\">Delete</a></td>";		
+	}
+	?>
+    
+	</table>	<br><br>
 
 
 </div>
