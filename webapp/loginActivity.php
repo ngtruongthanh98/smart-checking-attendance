@@ -55,6 +55,9 @@ if(isset($_POST['login']))
 		$class_list_student = $row3['class_list'];
 		$id_stu = $row3['id_stu'];
 
+		$res4 = $mysqli->query("SELECT * FROM attendance_table where first_name='$fname' and last_name='$lname' and student_number='$username' ");
+		$row4 = $res4->fetch_assoc();
+		$class_number = $row4['class_number'];
 		 
 		if($user==$username && $pass=$password){
 			session_start();
@@ -68,6 +71,7 @@ if(isset($_POST['login']))
 				$_SESSION['mytype']=$type;
 				$_SESSION['id']=$id_teacher;
 				$_SESSION['class_list_ses']=$class_list_teacher;
+				// $_SESSION['class_number']=$class_number;
 			    echo "<script>window.location.assign('teacher/teacher.php')</script>";
 			}    
 		    else if($type=="student"){
@@ -75,6 +79,7 @@ if(isset($_POST['login']))
 				$_SESSION['mytype']=$type;
 				$_SESSION['id']=$id_stu;
 				$_SESSION['class_list_ses']=$class_list_student;
+				$_SESSION['class_number']=$class_number;
 		        echo "<script>window.location.assign('student/student.php')</script>";
 		    } 
 	      }

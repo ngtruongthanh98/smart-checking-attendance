@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['class_list_ses']) && !isset($_SESSION['mysesi']) && !isset($_SESSION['id'])
-&& !isset($_SESSION['mytype'])=='teacher'){
+   && !isset($_SESSION['class_number']) && !isset($_SESSION['mytype'])=='teacher'){
   echo "<script>window.location.assign('../login.php')</script>";
 }
 ?>

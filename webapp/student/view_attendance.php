@@ -2,13 +2,33 @@
 session_start();
 
 if (!isset($_SESSION['class_list_ses']) && !isset($_SESSION['mysesi']) && !isset($_SESSION['id'])
-&& !isset($_SESSION['mytype'])=='student')
-{
+   && !isset($_SESSION['class_number']) && !isset($_SESSION['mytype'])=='student'){
   echo "<script>window.location.assign('../login.php')</script>";
 }
 ?>
 
+<?php
+//including the database connection file
+include_once("../config.php");
 
+$class_list_var = $_SESSION['class_list_ses'];
+$array = array_map('intval', explode(',', $class_list_var));
+$array = implode("','",$array);
+
+$result6 = mysqli_query($link, "SELECT * FROM class_table WHERE id_class IN('".$array."')"); // using mysqli_query instead
+
+$class_number = $_SESSION['class_number'];
+
+echo $_SESSION['class_number'];
+// $class_number = 8;
+
+
+//fetching data in descending order (lastest entry first)
+//$result = mysql_query("SELECT * FROM users ORDER BY id DESC"); // mysql_query is deprecated
+
+$result5 = mysqli_query($link, "SELECT * FROM attendance_table WHERE class_number='$class_number'"); // using mysqli_query instead
+
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -44,6 +64,34 @@ if (!isset($_SESSION['class_list_ses']) && !isset($_SESSION['mysesi']) && !isset
 <div class="container">
 
 <h1>Attendance</h1>
+
+<strong>Attendance Table</strong>
+<table width='80%' border=0>
+
+<tr bgcolor='#CCCCCC'>
+  <td>ID</td>
+  <td>First Name</td>
+  <td>Last Name</td>
+  <td>Student Number</td>
+  <td>Class Number</td>
+  <td>Clock In</td>
+</tr>
+<?php 
+//while($res = mysql_fetch_array($result)) { // mysql_fetch_array is deprecated, we need to use mysqli_fetch_array 
+while($res = mysqli_fetch_array($result5)) { 		
+  echo "<tr>";
+  echo "<td>".$res['id_atd']."</td>";
+  echo "<td>".$res['first_name']."</td>";
+  echo "<td>".$res['last_name']."</td>";
+  echo "<td>".$res['student_number']."</td>";
+  echo "<td>".$res['class_number']."</td>";
+  echo "<td>".$res['clock_in']."</td>";	
+}
+?>
+  
+</table>	<br><br>
+
+</div>
 
 
 
