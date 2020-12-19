@@ -55,33 +55,34 @@ $result5 = mysqli_query($link, "SELECT * FROM attendance_table ORDER BY id_atd")
 
 <div class="container">
 
-<h1>View Info</h1>
-
-<br>
-
-	<strong>Teacher Table</strong>
-	<table width='80%' border=0>
-	<tr bgcolor='#CCCCCC'>
-		<td>ID</td>
-		<td>First Name</td>
-		<td>Last Name</td>
-		<td>Teacher Number</td>
-		<td>Email</td>
-		<td>Class List</td>
-	</tr>
-	<?php 
-	//while($res = mysql_fetch_array($result)) { // mysql_fetch_array is deprecated, we need to use mysqli_fetch_array 
-	while($res = mysqli_fetch_array($result2)) { 		
-		echo "<tr>";
-		echo "<td>".$res['id_teacher']."</td>";
-		echo "<td>".$res['first_name']."</td>";
-		echo "<td>".$res['last_name']."</td>";
-		echo "<td>".$res['teacher_number']."</td>";
-		echo "<td>".$res['email']."</td>";	
-		echo "<td>".$res['class_list']."</td>";
-	}
-	?>
-	</table>	<br><br>
+<h3 class="text-center">Info Table</h3><br />  
+	<div class="table-responsive" id="info_table">  
+		<table class="table table-bordered">  
+			<tr>  
+				<th><a class="column_sort" id="id_teacher" data-order="desc" href="#">ID</a></th>  
+				<th><a class="column_sort" id="first_name" data-order="desc" href="#">First Name</a></th>  
+				<th><a class="column_sort" id="last_name" data-order="desc" href="#">Last Name</a></th>  
+				<th><a class="column_sort" id="teacher_number" data-order="desc" href="#">Teacher Number</a></th>  
+				<th><a class="column_sort" id="email" data-order="desc" href="#">Email</a></th>  
+				<th><a class="column_sort" id="class_list" data-order="desc" href="#">Class List</a></th>  
+			</tr>  
+			<?php  
+			while($row = mysqli_fetch_array($result2))  
+			{  
+			?>  
+			<tr>  
+				<td><?php echo $row["id_teacher"]; ?></td>  
+				<td><?php echo $row["first_name"]; ?></td>  
+				<td><?php echo $row["last_name"]; ?></td>  
+				<td><?php echo $row["teacher_number"]; ?></td>  
+				<td><?php echo $row["email"]; ?></td>  
+				<td><?php echo $row["class_list"]; ?></td>  
+			</tr>  
+			<?php  
+			}  
+			?>
+		</table>
+	</div>
 
 </div>
 

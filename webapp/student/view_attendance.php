@@ -18,15 +18,16 @@ $array = implode("','",$array);
 $result6 = mysqli_query($link, "SELECT * FROM class_table WHERE id_class IN('".$array."')"); // using mysqli_query instead
 
 $class_number = $_SESSION['class_number'];
+$first_name = $_SESSION['mysesi'];
 
-echo $_SESSION['class_number'];
+// echo $_SESSION['class_number'];
 // $class_number = 8;
 
 
 //fetching data in descending order (lastest entry first)
 //$result = mysql_query("SELECT * FROM users ORDER BY id DESC"); // mysql_query is deprecated
 
-$result5 = mysqli_query($link, "SELECT * FROM attendance_table WHERE class_number='$class_number'"); // using mysqli_query instead
+$result5 = mysqli_query($link, "SELECT * FROM attendance_table WHERE class_number='$class_number' AND first_name='$first_name'"); // using mysqli_query instead
 
 ?>
 
@@ -63,38 +64,34 @@ $result5 = mysqli_query($link, "SELECT * FROM attendance_table WHERE class_numbe
 
 <div class="container">
 
-<h1>Attendance</h1>
-
-<strong>Attendance Table</strong>
-<table width='80%' border=0>
-
-<tr bgcolor='#CCCCCC'>
-  <td>ID</td>
-  <td>First Name</td>
-  <td>Last Name</td>
-  <td>Student Number</td>
-  <td>Class Number</td>
-  <td>Clock In</td>
-</tr>
-<?php 
-//while($res = mysql_fetch_array($result)) { // mysql_fetch_array is deprecated, we need to use mysqli_fetch_array 
-while($res = mysqli_fetch_array($result5)) { 		
-  echo "<tr>";
-  echo "<td>".$res['id_atd']."</td>";
-  echo "<td>".$res['first_name']."</td>";
-  echo "<td>".$res['last_name']."</td>";
-  echo "<td>".$res['student_number']."</td>";
-  echo "<td>".$res['class_number']."</td>";
-  echo "<td>".$res['clock_in']."</td>";	
-}
-?>
-  
-</table>	<br><br>
-
-</div>
-
-
-
+<h3 class="text-center">Attendance Table</h3><br/> 
+	<div class="table-responsive" id="attendance_table">  
+		<table class="table table-bordered">  
+			<tr>  
+				<th><a class="column_sort" id="id" data-order="desc" href="#">ID</a></th>  
+				<th><a class="column_sort" id="first_name" data-order="desc" href="#">First Name</a></th>  
+				<th><a class="column_sort" id="last_name" data-order="desc" href="#">Last Name</a></th>  
+				<th><a class="column_sort" id="student_number" data-order="desc" href="#">Student Number</a></th>  
+				<th><a class="column_sort" id="class_number" data-order="desc" href="#">Class Number</a></th>  
+				<th><a class="column_sort" id="clock_in" data-order="desc" href="#">Clock In</a></th>  
+			</tr>  
+			<?php  
+			while($row = mysqli_fetch_array($result5))  
+			{  
+			?>  
+			<tr>  
+				<td><?php echo $row["id_atd"]; ?></td>  
+				<td><?php echo $row["first_name"]; ?></td>  
+				<td><?php echo $row["last_name"]; ?></td>  
+				<td><?php echo $row["student_number"]; ?></td>  
+				<td><?php echo $row["class_number"]; ?></td>  
+				<td><?php echo $row["clock_in"]; ?></td> 
+			</tr>  
+			<?php  
+			}  
+			?>
+		</table>
+	</div>
 </div>
 
 
@@ -111,3 +108,33 @@ while($res = mysqli_fetch_array($result5)) {
 
 </body>
 </html>
+
+<script>  
+$(document).ready(function(){  
+	$(document).on('click', '.column_sort', function(){  
+		var column_name = $(this).attr("id");  
+		var order = $(this).data("order");  
+		var arrow = '';  
+		//glyphicon glyphicon-arrow-up  
+		//glyphicon glyphicon-arrow-down  
+		if(order == 'desc')  
+		{  
+			arrow = '&nbsp;<span class="glyphicon glyphicon-arrow-down"></span>';  
+		}  
+		else  
+		{  
+			arrow = '&nbsp;<span class="glyphicon glyphicon-arrow-up"></span>';  
+		}  
+		$.ajax({  
+			url:"sort_attendance.php",  
+			method:"POST",  
+			data:{column_name:column_name, order:order},  
+			success:function(data)  
+			{  
+					$('#attendance_table').html(data);  
+					$('#'+column_name+'').append(arrow);  
+			}  
+		})  
+	});  
+});  
+</script> 

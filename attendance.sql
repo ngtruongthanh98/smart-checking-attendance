@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Dec 19, 2020 at 01:59 AM
+-- Generation Time: Dec 19, 2020 at 03:10 PM
 -- Server version: 10.4.14-MariaDB
 -- PHP Version: 7.4.11
 
@@ -33,7 +33,7 @@ CREATE TABLE `attendance_table` (
   `last_name` varchar(255) DEFAULT NULL,
   `student_number` int(7) DEFAULT NULL,
   `class_number` varchar(255) DEFAULT NULL,
-  `clock_in` timestamp(6) NOT NULL DEFAULT current_timestamp(6)
+  `clock_in` varchar(255) NOT NULL DEFAULT 'current_timestamp(6)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -41,32 +41,32 @@ CREATE TABLE `attendance_table` (
 --
 
 INSERT INTO `attendance_table` (`id_atd`, `first_name`, `last_name`, `student_number`, `class_number`, `clock_in`) VALUES
-(1, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-11-02 02:46:00.000000'),
-(2, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-11-09 02:30:49.669000'),
-(3, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-11-16 02:43:58.756000'),
-(4, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-11-23 02:43:58.526000'),
-(5, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-11-30 02:43:58.423000'),
-(6, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-12-07 02:43:58.979000'),
-(7, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-12-14 02:43:58.882000'),
-(175, 'Quan', 'Nguyen Anh', 1552310, '8', '2020-11-02 02:46:00.000000'),
-(176, 'Quan', 'Nguyen Anh', 1552310, '8', '2020-11-09 02:46:00.000000'),
-(177, 'Quan', 'Nguyen Anh', 1552310, '8', '2020-11-16 02:46:00.000000'),
-(178, 'Quan', 'Nguyen Anh', 1552310, '8', '2020-11-23 02:46:00.000000'),
-(179, 'Quan', 'Nguyen Anh', 1552310, '8', '2020-11-30 02:46:00.000000'),
-(180, 'Quan', 'Nguyen Anh', 1552310, '8', '2020-12-07 02:46:00.000000'),
-(181, 'Quan', 'Nguyen Anh', 1552310, '8', '2020-12-14 02:46:00.000000'),
-(182, 'Long', 'Nguyen Thanh', 1655353, '8', '2020-11-02 02:46:00.000000'),
-(183, 'Long', 'Nguyen Thanh', 1655353, '8', '2020-11-16 02:46:00.000000'),
-(184, 'Long', 'Nguyen Thanh', 1655353, '8', '2020-11-23 02:46:00.000000'),
-(185, 'Long', 'Nguyen Thanh', 1655353, '8', '2020-11-30 02:46:00.000000'),
-(186, 'Long', 'Nguyen Thanh', 1655353, '8', '2020-12-07 02:46:00.000000'),
-(187, 'Long', 'Nguyen Thanh', 1655353, '8', '2020-12-14 02:46:00.000000'),
-(188, 'Hang', 'Nguyen Thi Thu', 1656868, '8', '2020-11-02 02:46:00.000000'),
-(189, 'Hang', 'Nguyen Thi Thu', 1656868, '8', '2020-11-16 02:46:00.000000'),
-(190, 'Hang', 'Nguyen Thi Thu', 1656868, '8', '2020-11-23 02:46:00.000000'),
-(191, 'Hang', 'Nguyen Thi Thu', 1656868, '8', '2020-11-30 02:46:00.000000'),
-(192, 'Hang', 'Nguyen Thi Thu', 1656868, '8', '2020-12-07 02:46:00.000000'),
-(193, 'Hang', 'Nguyen Thi Thu', 1656868, '8', '2020-12-14 02:46:00.000000');
+(1, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-11-02 09:46:00'),
+(2, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-11-09 09:30:49'),
+(3, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-11-16 09:43:58'),
+(4, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-11-23 09:43:58'),
+(5, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-11-30 09:43:58'),
+(6, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-12-07 09:43:58'),
+(7, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-12-14 09:43:58'),
+(175, 'Quan', 'Nguyen Anh', 1552310, '8', '2020-11-02 09:46:00'),
+(176, 'Quan', 'Nguyen Anh', 1552310, '8', '2020-11-09 09:46:00'),
+(177, 'Quan', 'Nguyen Anh', 1552310, '8', '2020-11-16 09:46:00'),
+(178, 'Quan', 'Nguyen Anh', 1552310, '8', '2020-11-23 09:46:00'),
+(179, 'Quan', 'Nguyen Anh', 1552310, '8', '2020-11-30 09:46:00'),
+(180, 'Quan', 'Nguyen Anh', 1552310, '8', '2020-12-07 09:46:00'),
+(181, 'Quan', 'Nguyen Anh', 1552310, '8', '2020-12-14 09:46:00'),
+(182, 'Long', 'Nguyen Thanh', 1655353, '8', '2020-11-02 09:46:00'),
+(183, 'Long', 'Nguyen Thanh', 1655353, '8', '2020-11-16 09:46:00'),
+(184, 'Long', 'Nguyen Thanh', 1655353, '8', '2020-11-23 09:46:00'),
+(185, 'Long', 'Nguyen Thanh', 1655353, '8', '2020-11-30 09:46:00'),
+(186, 'Long', 'Nguyen Thanh', 1655353, '8', '2020-12-07 09:46:00'),
+(187, 'Long', 'Nguyen Thanh', 1655353, '8', '2020-12-14 09:46:00'),
+(188, 'Hang', 'Nguyen Thi Thu', 1656868, '8', '2020-11-02 09:46:00'),
+(189, 'Hang', 'Nguyen Thi Thu', 1656868, '8', '2020-11-16 09:46:00'),
+(190, 'Hang', 'Nguyen Thi Thu', 1656868, '8', '2020-11-23 09:46:00'),
+(191, 'Hang', 'Nguyen Thi Thu', 1656868, '8', '2020-11-30 09:46:00'),
+(192, 'Hang', 'Nguyen Thi Thu', 1656868, '8', '2020-12-07 09:46:00'),
+(193, 'Hang', 'Nguyen Thi Thu', 1656868, '8', '2020-12-14 09:46:00');
 
 -- --------------------------------------------------------
 

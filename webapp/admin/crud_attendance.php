@@ -52,38 +52,39 @@ $result5 = mysqli_query($link, "SELECT * FROM attendance_table ORDER BY id_atd")
 </div>
 
 <div class="container">
-	<a href="add_attendance_table.html">Add New Attendance Data</a><br/><br/>
-	<strong>Attendance Table</strong>
-	<table width='80%' border=0>
 
-	<tr bgcolor='#CCCCCC'>
-		<td>ID</td>
-		<td>First Name</td>
-		<td>Last Name</td>
-		<td>Student Number</td>
-		<td>Class Number</td>
-		<td>Clock In</td>
-		<td>Update</td>
-	</tr>
-	<?php 
-	//while($res = mysql_fetch_array($result)) { // mysql_fetch_array is deprecated, we need to use mysqli_fetch_array 
-	while($res = mysqli_fetch_array($result5)) { 		
-		echo "<tr>";
-		echo "<td>".$res['id_atd']."</td>";
-		echo "<td>".$res['first_name']."</td>";
-		echo "<td>".$res['last_name']."</td>";
-		echo "<td>".$res['student_number']."</td>";
-		echo "<td>".$res['class_number']."</td>";
-		echo "<td>".$res['clock_in']."</td>";
-	
-		echo "<td><a href=\"edit_attendance_table.php?id_atd=$res[id_atd]\">Edit</a> | <a href=\"delete_attendance_table.php?id_atd=$res[id_atd]\" onClick=\"return confirm('Are you sure you want to delete?')\">Delete</a></td>";		
-	}
-	?>
-    
-	</table>	<br><br>
-
+<h3 class="text-center">Attendance Table</h3><br/> 
+<a href="add_attendance_table.html">Add New Attendance Data</a><br/><br/>
+	<div class="table-responsive" id="attendance_table">  
+		<table class="table table-bordered">  
+			<tr>  
+				<th><a class="column_sort" id="id" data-order="desc" href="#">ID</a></th>  
+				<th><a class="column_sort" id="first_name" data-order="desc" href="#">First Name</a></th>  
+				<th><a class="column_sort" id="last_name" data-order="desc" href="#">Last Name</a></th>  
+				<th><a class="column_sort" id="student_number" data-order="desc" href="#">Student Number</a></th>  
+				<th><a class="column_sort" id="class_number" data-order="desc" href="#">Class Number</a></th>  
+				<th><a class="column_sort" id="clock_in" data-order="desc" href="#">Clock In</a></th>  
+				<th><a class="column_sort" id="update"  href="#">Update</a></th>  
+			</tr>  
+			<?php  
+			while($row = mysqli_fetch_array($result5))  
+			{  
+			?>  
+			<tr>  
+				<td><?php echo $row["id_atd"]; ?></td>  
+				<td><?php echo $row["first_name"]; ?></td>  
+				<td><?php echo $row["last_name"]; ?></td>  
+				<td><?php echo $row["student_number"]; ?></td>  
+				<td><?php echo $row["class_number"]; ?></td>  
+				<td><?php echo $row["clock_in"]; ?></td>  
+				<td><a href="edit_attendance_table.php?id_atd=<?php echo $row["id_atd"];?>">Edit</a> | <a href="delete_attendance_table.php?id_atd=<?php echo $row["id_atd"];?>" onClick="return confirm('Are you sure you want to delete?')">Delete</a></td>
+			</tr>  
+			<?php  
+			}  
+			?>
+		</table>
+	</div>
 </div>
-
 
 <div class="footer">
 <!--
@@ -98,3 +99,33 @@ $result5 = mysqli_query($link, "SELECT * FROM attendance_table ORDER BY id_atd")
 
 </body>
 </html>
+
+<script>  
+$(document).ready(function(){  
+	$(document).on('click', '.column_sort', function(){  
+		var column_name = $(this).attr("id");  
+		var order = $(this).data("order");  
+		var arrow = '';  
+		//glyphicon glyphicon-arrow-up  
+		//glyphicon glyphicon-arrow-down  
+		if(order == 'desc')  
+		{  
+			arrow = '&nbsp;<span class="glyphicon glyphicon-arrow-down"></span>';  
+		}  
+		else  
+		{  
+			arrow = '&nbsp;<span class="glyphicon glyphicon-arrow-up"></span>';  
+		}  
+		$.ajax({  
+			url:"sort_attendance.php",  
+			method:"POST",  
+			data:{column_name:column_name, order:order},  
+			success:function(data)  
+			{  
+					$('#attendance_table').html(data);  
+					$('#'+column_name+'').append(arrow);  
+			}  
+		})  
+	});  
+});  
+</script> 

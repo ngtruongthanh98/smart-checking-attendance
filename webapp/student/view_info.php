@@ -51,43 +51,50 @@ $result5 = mysqli_query($link, "SELECT * FROM attendance_table ORDER BY id_atd")
   <a class="right">Welcome <?php echo $_SESSION['mysesi'] ?></a>
 </div>
 
+<!-- <td>ID</td>
+<td>First Name</td>
+<td>Last Name</td>
+<td>Student Number</td>
+<td>Email</td>
+<td>RFID UID</td>
+<td>Class List</td>
+<td>Created</td> -->
+
+
 <div class="container">
 
-<h1>View Info</h1>
-
-<br>
-
-<strong>Student Table</strong>
-<table width='80%' border=0>
-
-<tr bgcolor='#CCCCCC'>
-    <td>ID</td>
-    <td>First Name</td>
-    <td>Last Name</td>
-    <td>Student Number</td>
-    <td>Email</td>
-    <td>RFID UID</td>
-    <td>Class List</td>
-    <td>Created</td>
-</tr>
-<?php 
-//while($res = mysql_fetch_array($result)) { // mysql_fetch_array is deprecated, we need to use mysqli_fetch_array 
-while($res = mysqli_fetch_array($result)) { 		
-    echo "<tr>";
-    echo "<td>".$res['id_stu']."</td>";
-    echo "<td>".$res['first_name']."</td>";
-    echo "<td>".$res['last_name']."</td>";
-    echo "<td>".$res['student_number']."</td>";
-    echo "<td>".$res['email']."</td>";	
-    echo "<td>".$res['rfid_uid']."</td>";
-    echo "<td>".$res['class_list']."</td>";
-    echo "<td>".$res['created']."</td>";	
-}
-?>
-</table>
-<br><br>
-
-
+<h3 class="text-center">Info Table</h3><br />  
+	<div class="table-responsive" id="info_table">  
+		<table class="table table-bordered">  
+			<tr>  
+				<th><a class="column_sort" id="id_stu" data-order="desc" href="#">ID</a></th>  
+				<th><a class="column_sort" id="first_name" data-order="desc" href="#">First Name</a></th>  
+				<th><a class="column_sort" id="last_name" data-order="desc" href="#">Last Name</a></th>  
+				<th><a class="column_sort" id="student_number" data-order="desc" href="#">Student Number</a></th>  
+				<th><a class="column_sort" id="email" data-order="desc" href="#">Email</a></th>
+				<th><a class="column_sort" id="rfid_uid" data-order="desc" href="#">RFID_UID</a></th> 
+				<th><a class="column_sort" id="class_list" data-order="desc" href="#">Class List</a></th> 
+				<th><a class="column_sort" id="created" data-order="desc" href="#">Created</a></th>  
+			</tr>  
+			<?php  
+			while($row = mysqli_fetch_array($result))  
+			{  
+			?>  
+			<tr>  
+				<td><?php echo $row["id_stu"]; ?></td>  
+				<td><?php echo $row["first_name"]; ?></td>  
+				<td><?php echo $row["last_name"]; ?></td>  
+				<td><?php echo $row["student_number"]; ?></td>  
+				<td><?php echo $row["email"]; ?></td>  
+				<td><?php echo $row["rfid_uid"]; ?></td>  
+				<td><?php echo $row["class_list"]; ?></td>  
+				<td><?php echo $row["created"]; ?></td>
+			</tr>  
+			<?php  
+			}  
+			?>
+		</table>
+	</div>
 </div>
 
 

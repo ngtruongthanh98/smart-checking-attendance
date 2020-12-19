@@ -17,6 +17,12 @@ $result = mysqli_query($link, "SELECT * FROM student_table ORDER BY id_stu"); //
 $result2 = mysqli_query($link, "SELECT * FROM teacher_table ORDER BY id_teacher"); // using mysqli_query instead
 $result3 = mysqli_query($link, "SELECT * FROM class_table ORDER BY id_class"); // using mysqli_query instead
 $result5 = mysqli_query($link, "SELECT * FROM attendance_table ORDER BY id_atd"); // using mysqli_query instead
+
+$class_list_var = $_SESSION['class_list_ses'];
+$array = array_map('intval', explode(',', $class_list_var));
+$array = implode("','",$array);
+
+$result6 = mysqli_query($link, "SELECT * FROM class_table WHERE id_class IN('".$array."')"); // using mysqli_query instead
 ?>
 
 <!DOCTYPE html>
@@ -52,43 +58,36 @@ $result5 = mysqli_query($link, "SELECT * FROM attendance_table ORDER BY id_atd")
 
 <div class="container">
 
-<strong>Class Table </strong> 
-<table width='80%' border=0>
-
-<tr bgcolor='#CCCCCC'>
-    <td>ID</td>
-    <td>Subject Code</td>
-    <td>Subject Name</td>
-    <td>Day in week</td>
-    <td>Start Time</td>
-    <td>End Time</td>
-    <td>Room</td>
-</tr>
-
-<?php 
-
-    $class_list_var = $_SESSION['class_list_ses'];
-    $array = array_map('intval', explode(',', $class_list_var));
-    $array = implode("','",$array);
-
-    $result6 = mysqli_query($link, "SELECT * FROM class_table WHERE id_class IN('".$array."')"); // using mysqli_query instead
-
-    while($res6 = mysqli_fetch_array($result6)) { 		
-        echo "<tr>";
-        echo "<td>".$res6['id_class']."</td>";
-        echo "<td>".$res6['subject_code']."</td>";
-        echo "<td>".$res6['subject_name']."</td>";
-        echo "<td>".$res6['day_in_week']."</td>";
-        echo "<td>".$res6['start_time']."</td>";
-        echo "<td>".$res6['end_time']."</td>";
-        echo "<td>".$res6['room']."</td>";
-        echo "</tr>";
-    }
-
-
-
-?>
-
+<h3 class="text-center">Class Table</h3><br />  
+	<div class="table-responsive" id="class_table">  
+		<table class="table table-bordered">  
+			<tr>  
+				<th><a class="column_sort" id="id_class" data-order="desc" href="#">ID</a></th>  
+				<th><a class="column_sort" id="subject_code" data-order="desc" href="#">Subject Code</a></th>  
+				<th><a class="column_sort" id="subject_name" data-order="desc" href="#">Subject Name</a></th>  
+				<th><a class="column_sort" id="day_in_week" data-order="desc" href="#">Day in Week</a></th>  
+				<th><a class="column_sort" id="start_time" data-order="desc" href="#">Start Time</a></th>  
+				<th><a class="column_sort" id="end_time" data-order="desc" href="#">End Time</a></th>  
+				<th><a class="column_sort" id="room" data-order="desc" href="#">Room</a></th>  
+			</tr>  
+			<?php  
+			while($row = mysqli_fetch_array($result6))  
+			{  
+			?>  
+			<tr>  
+				<td><?php echo $row["id_class"]; ?></td>  
+				<td><?php echo $row["subject_code"]; ?></td>  
+				<td><?php echo $row["subject_name"]; ?></td>  
+				<td><?php echo $row["day_in_week"]; ?></td>  
+				<td><?php echo $row["start_time"]; ?></td>  
+				<td><?php echo $row["end_time"]; ?></td>  
+				<td><?php echo $row["room"]; ?></td>  
+			</tr>  
+			<?php  
+			}  
+			?>
+		</table>
+	</div>
 
 
 </div>
@@ -107,3 +106,34 @@ $result5 = mysqli_query($link, "SELECT * FROM attendance_table ORDER BY id_atd")
 
 </body>
 </html>
+
+<script>  
+$(document).ready(function(){  
+	$(document).on('click', '.column_sort', function(){  
+		var column_name = $(this).attr("id");  
+		var order = $(this).data("order");  
+		var arrow = '';  
+		//glyphicon glyphicon-arrow-up  
+		//glyphicon glyphicon-arrow-down  
+		if(order == 'desc')  
+		{  
+			arrow = '&nbsp;<span class="glyphicon glyphicon-arrow-down"></span>';  
+		}  
+		else  
+		{  
+			arrow = '&nbsp;<span class="glyphicon glyphicon-arrow-up"></span>';  
+		}  
+		$.ajax({  
+			url:"sort_class.php",  
+			method:"POST",  
+			data:{column_name:column_name, order:order},  
+			success:function(data)  
+			{  
+					$('#class_table').html(data);  
+					$('#'+column_name+'').append(arrow);  
+			}  
+		})  
+	});  
+});  
+</script> 
+
