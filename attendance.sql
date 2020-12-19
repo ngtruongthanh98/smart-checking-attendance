@@ -1,13 +1,14 @@
 -- phpMyAdmin SQL Dump
--- version 4.6.6deb5
+-- version 5.0.3
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost:3306
--- Generation Time: Dec 06, 2020 at 06:41 AM
--- Server version: 10.3.25-MariaDB-0+deb10u1
--- PHP Version: 7.3.19-1~deb10u1
+-- Host: localhost
+-- Generation Time: Dec 19, 2020 at 01:59 AM
+-- Server version: 10.4.14-MariaDB
+-- PHP Version: 7.4.11
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
 SET time_zone = "+00:00";
 
 
@@ -32,7 +33,7 @@ CREATE TABLE `attendance_table` (
   `last_name` varchar(255) DEFAULT NULL,
   `student_number` int(7) DEFAULT NULL,
   `class_number` varchar(255) DEFAULT NULL,
-  `clock_in` varchar(255) NOT NULL DEFAULT current_timestamp()
+  `clock_in` timestamp(6) NOT NULL DEFAULT current_timestamp(6)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -40,9 +41,32 @@ CREATE TABLE `attendance_table` (
 --
 
 INSERT INTO `attendance_table` (`id_atd`, `first_name`, `last_name`, `student_number`, `class_number`, `clock_in`) VALUES
-(1, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-11-19 08:19:54'),
-(2, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-11-19 08:30:49'),
-(3, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-11-19 08:43:58');
+(1, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-11-02 02:46:00.000000'),
+(2, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-11-09 02:30:49.669000'),
+(3, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-11-16 02:43:58.756000'),
+(4, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-11-23 02:43:58.526000'),
+(5, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-11-30 02:43:58.423000'),
+(6, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-12-07 02:43:58.979000'),
+(7, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-12-14 02:43:58.882000'),
+(175, 'Quan', 'Nguyen Anh', 1552310, '8', '2020-11-02 02:46:00.000000'),
+(176, 'Quan', 'Nguyen Anh', 1552310, '8', '2020-11-09 02:46:00.000000'),
+(177, 'Quan', 'Nguyen Anh', 1552310, '8', '2020-11-16 02:46:00.000000'),
+(178, 'Quan', 'Nguyen Anh', 1552310, '8', '2020-11-23 02:46:00.000000'),
+(179, 'Quan', 'Nguyen Anh', 1552310, '8', '2020-11-30 02:46:00.000000'),
+(180, 'Quan', 'Nguyen Anh', 1552310, '8', '2020-12-07 02:46:00.000000'),
+(181, 'Quan', 'Nguyen Anh', 1552310, '8', '2020-12-14 02:46:00.000000'),
+(182, 'Long', 'Nguyen Thanh', 1655353, '8', '2020-11-02 02:46:00.000000'),
+(183, 'Long', 'Nguyen Thanh', 1655353, '8', '2020-11-16 02:46:00.000000'),
+(184, 'Long', 'Nguyen Thanh', 1655353, '8', '2020-11-23 02:46:00.000000'),
+(185, 'Long', 'Nguyen Thanh', 1655353, '8', '2020-11-30 02:46:00.000000'),
+(186, 'Long', 'Nguyen Thanh', 1655353, '8', '2020-12-07 02:46:00.000000'),
+(187, 'Long', 'Nguyen Thanh', 1655353, '8', '2020-12-14 02:46:00.000000'),
+(188, 'Hang', 'Nguyen Thi Thu', 1656868, '8', '2020-11-02 02:46:00.000000'),
+(189, 'Hang', 'Nguyen Thi Thu', 1656868, '8', '2020-11-16 02:46:00.000000'),
+(190, 'Hang', 'Nguyen Thi Thu', 1656868, '8', '2020-11-23 02:46:00.000000'),
+(191, 'Hang', 'Nguyen Thi Thu', 1656868, '8', '2020-11-30 02:46:00.000000'),
+(192, 'Hang', 'Nguyen Thi Thu', 1656868, '8', '2020-12-07 02:46:00.000000'),
+(193, 'Hang', 'Nguyen Thi Thu', 1656868, '8', '2020-12-14 02:46:00.000000');
 
 -- --------------------------------------------------------
 
@@ -126,10 +150,10 @@ CREATE TABLE `student_table` (
 --
 
 INSERT INTO `student_table` (`id_stu`, `first_name`, `last_name`, `student_number`, `email`, `rfid_uid`, `class_list`, `created`) VALUES
-(1, 'Thanh', 'Nguyen Truong', 1652557, '1652557@hcmut.edu.vn', '482227026359', '2, 8, 4', '2020-10-30 10:30:37'),
-(2, 'Quan', 'Nguyen Anh', 1552310, '1552310@hcmut.edu.vn', '798152693871', '2, 4', '2020-11-03 09:27:27'),
-(3, 'Long', 'Nguyen Thanh', 1655353, '1655353@hcmut.edu.vn', '1071090732781', '2, 5', '2020-11-01 21:42:22'),
-(4, 'Hang', 'Nguyen Thi Thu', 1656868, '1656868@hcmut.edu.vn', '1001985576659', '6', '2020-11-09 14:46:44');
+(1, 'Thanh', 'Nguyen Truong', 1652557, '1652557@hcmut.edu.vn', '482227026359', '2, 4, 8', '2020-10-30 10:30:37'),
+(2, 'Quan', 'Nguyen Anh', 1552310, '1552310@hcmut.edu.vn', '798152693871', '2, 4, 8', '2020-11-03 09:27:27'),
+(3, 'Long', 'Nguyen Thanh', 1655353, '1655353@hcmut.edu.vn', '1071090732781', '2, 5, 8', '2020-11-01 21:42:22'),
+(4, 'Hang', 'Nguyen Thi Thu', 1656868, '1656868@hcmut.edu.vn', '1001985576659', '6, 8', '2020-11-09 14:46:44');
 
 -- --------------------------------------------------------
 
@@ -151,7 +175,7 @@ CREATE TABLE `teacher_table` (
 --
 
 INSERT INTO `teacher_table` (`id_teacher`, `first_name`, `last_name`, `teacher_number`, `email`, `class_list`) VALUES
-(1, 'teacher', 'system', 1000, 'teacher@gmail.com', '1, 3, 6'),
+(1, 'teacher', 'system', 1000, 'teacher@gmail.com', '6, 8'),
 (2, 'Anh', 'Pham Hoang', 1001, 'anhphamhoang@gmail.com', '5, 7');
 
 --
@@ -197,27 +221,33 @@ ALTER TABLE `teacher_table`
 -- AUTO_INCREMENT for table `attendance_table`
 --
 ALTER TABLE `attendance_table`
-  MODIFY `id_atd` int(255) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=169;
+  MODIFY `id_atd` int(255) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=194;
+
 --
 -- AUTO_INCREMENT for table `class_table`
 --
 ALTER TABLE `class_table`
   MODIFY `id_class` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
 --
 -- AUTO_INCREMENT for table `login_table`
 --
 ALTER TABLE `login_table`
-  MODIFY `id_login` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id_login` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+
 --
 -- AUTO_INCREMENT for table `student_table`
 --
 ALTER TABLE `student_table`
-  MODIFY `id_stu` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
+  MODIFY `id_stu` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
+
 --
 -- AUTO_INCREMENT for table `teacher_table`
 --
 ALTER TABLE `teacher_table`
-  MODIFY `id_teacher` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_teacher` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+COMMIT;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
