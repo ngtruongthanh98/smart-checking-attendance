@@ -1,8 +1,8 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['class_list_ses']) && !isset($_SESSION['mysesi']) 
- && !isset($_SESSION['id'])             && !isset($_SESSION['mytype'])=='teacher'){
+if (!isset($_SESSION['class_list_ses']) && !isset($_SESSION['mysesi']) && !isset($_SESSION['id'])
+   && !isset($_SESSION['class_number']) && !isset($_SESSION['mytype'])=='teacher'){
   echo "<script>window.location.assign('../login.php')</script>";
 }
 ?>
@@ -11,15 +11,55 @@ if (!isset($_SESSION['class_list_ses']) && !isset($_SESSION['mysesi'])
 //including the database connection file
 include_once("../config.php");
 
+$result = mysqli_query($link, "SELECT * FROM student_table ORDER BY id_stu"); // using mysqli_query instead
+$result2 = mysqli_query($link, "SELECT * FROM teacher_table ORDER BY id_teacher"); // using mysqli_query instead
+$result3 = mysqli_query($link, "SELECT * FROM class_table ORDER BY id_class"); // using mysqli_query instead
+$result5 = mysqli_query($link, "SELECT * FROM attendance_table ORDER BY id_atd"); // using mysqli_query instead
+
 $class_list_var = $_SESSION['class_list_ses'];
 $array = array_map('intval', explode(',', $class_list_var));
 $array = implode("','",$array);
 
-//fetching data in descending order (lastest entry first)
-//$result = mysql_query("SELECT * FROM users ORDER BY id DESC"); // mysql_query is deprecated
+$result7 = mysqli_query($link, "SELECT * FROM student_table WHERE class_list IN('".$array."') ");
 
-$result5 = mysqli_query($link, "SELECT * FROM attendance_table WHERE class_number IN('".$array."')"); // using mysqli_query instead
+// $result8 = mysqli_query($link, "SELECT COUNT(id_stu) AS NumberOfStudents FROM student_table WHERE class_list IN('".$array."')");
 
+// SELECT COUNT(ProductID) AS NumberOfProducts FROM Products;
+
+// $result8 = mysqli_query($link, "SELECT COUNT(*) AS `NumberOfStudents` FROM `student_table` WHERE `class_list` IN ('".$array."') OR `class_list`=2 ");
+$result8 = mysqli_query($link, "SELECT COUNT(*) AS `NumberOfStudents` FROM `student_table`");
+$row8 = mysqli_fetch_array($result8);
+$count = $row8['NumberOfStudents'];
+
+$result9 = mysqli_query($link, "SELECT COUNT(*) AS `abc` , clock_in , student_number , class_number FROM `attendance_table` ");
+$row9 = mysqli_fetch_array($result9);
+$count9 = $row9['abc'];
+
+$result10 = mysqli_query($link, "SELECT COUNT(*) AS `abc` FROM `attendance_table` WHERE DATE(clock_in) = '2020-11-09' ");
+$row10 = mysqli_fetch_array($result10);
+$count10 = $row10['abc'];
+
+// SELECT *, DATE_FORMAT(clock_in, '%Y-%m-%dT%H:%i') AS custom_date 
+// FROM attendance_table 
+// WHERE class_number = $class_number
+// LMIT 1
+?>
+
+<?php
+if (isset($_POST["search"])) {
+  $valueToSearch= $_POST['valueToSearch'];
+  $query = "SELECT * FROM `attendance_table` WHERE CONCAT(`id_atd`, `first_name`, `last_name`, `student_number`, `class_number`, `clock_in`) LIKE '%".$valueToSearch."%'";
+  $search_result = filterTable($query);
+}
+	else{
+      $query = "SELECT * FROM `attendance_table`";
+      $search_result = filterTable($query);
+}
+function filterTable($query){
+  $connect = mysqli_connect("localhost", "admin", "password", "attendance");
+  $filter_Result = mysqli_query($connect, $query);
+  return $filter_Result;
+  }
 ?>
 
 <!DOCTYPE html>
@@ -55,9 +95,20 @@ $result5 = mysqli_query($link, "SELECT * FROM attendance_table WHERE class_numbe
 </div>
 
 <div class="container">
-
 <h3 class="text-center">Attendance Table</h3><br/> 
 <a href="add_attendance_table.html">Add New Attendance Data</a><br/><br/>
+
+<a href="class_members.php">View Class Members</a><br/><br/>
+
+<strong>Attendance Report</strong>
+  <form action="chart.php" method="post">
+    <label> Search </label>
+    <input type ="text" name="valueToSearch" placeholder="Search information">
+    <input type ="submit" name="search" value="filter">
+  </form>
+  <br>
+  <br>
+
 	<div class="table-responsive" id="attendance_table">  
 		<table class="table table-bordered">  
 			<tr>  
@@ -70,7 +121,7 @@ $result5 = mysqli_query($link, "SELECT * FROM attendance_table WHERE class_numbe
 				<th><a class="column_sort" id="update"  href="#">Update</a></th>  
 			</tr>  
 			<?php  
-			while($row = mysqli_fetch_array($result5))  
+			while($row = mysqli_fetch_array($search_result))  
 			{  
 			?>  
 			<tr>  
@@ -81,7 +132,6 @@ $result5 = mysqli_query($link, "SELECT * FROM attendance_table WHERE class_numbe
 				<td><?php echo $row["class_number"]; ?></td>  
 				<td><?php echo $row["clock_in"]; ?></td>  
 				<td><a href="edit_attendance_table.php?id_atd=<?php echo $row["id_atd"];?>">Edit</a> | <a href="delete_attendance_table.php?id_atd=<?php echo $row["id_atd"];?>" onClick="return confirm('Are you sure you want to delete?')">Delete</a></td>
-
 			</tr>  
 			<?php  
 			}  
@@ -103,33 +153,3 @@ $result5 = mysqli_query($link, "SELECT * FROM attendance_table WHERE class_numbe
 
 </body>
 </html>
-
-<script>  
-$(document).ready(function(){  
-	$(document).on('click', '.column_sort', function(){  
-		var column_name = $(this).attr("id");  
-		var order = $(this).data("order");  
-		var arrow = '';  
-		//glyphicon glyphicon-arrow-up  
-		//glyphicon glyphicon-arrow-down  
-		if(order == 'desc')  
-		{  
-			arrow = '&nbsp;<span class="glyphicon glyphicon-arrow-down"></span>';  
-		}  
-		else  
-		{  
-			arrow = '&nbsp;<span class="glyphicon glyphicon-arrow-up"></span>';  
-		}  
-		$.ajax({  
-			url:"sort_attendance.php",  
-			method:"POST",  
-			data:{column_name:column_name, order:order},  
-			success:function(data)  
-			{  
-					$('#attendance_table').html(data);  
-					$('#'+column_name+'').append(arrow);  
-			}  
-		})  
-	});  
-});  
-</script> 

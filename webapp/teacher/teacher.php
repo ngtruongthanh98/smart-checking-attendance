@@ -36,6 +36,7 @@ if (!isset($_SESSION['class_list_ses']) && !isset($_SESSION['mysesi']) && !isset
   <a href="view_class.php">View Class</a>
   <a href="view_info.php">Teacher Data</a>
   <a href="view_attendance.php">Attendance Data</a>
+  <a href="chart.php">Attendance Chart</a>
   <a href="../logout.php" class="right">Logout</a>
   <a class="right">Welcome <?php echo $_SESSION['mysesi'] ?></a>
 </div>

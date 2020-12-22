@@ -52,6 +52,7 @@ $result6 = mysqli_query($link, "SELECT * FROM class_table WHERE id_class IN('".$
   <a href="view_class.php">View Class</a>
   <a href="view_info.php">Teacher Data</a>
   <a href="view_attendance.php">Attendance Data</a>
+  <a href="chart.php">Attendance Chart</a>
   <a href="../logout.php" class="right">Logout</a>
   <a class="right">Welcome <?php echo $_SESSION['mysesi'] ?></a>
 </div>

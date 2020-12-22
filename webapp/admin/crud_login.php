@@ -45,6 +45,7 @@ $result4 = mysqli_query($link, "SELECT * FROM login_table ORDER BY id_login"); /
   <a href="crud_class.php">Class Data</a>
   <a href="crud_login.php">Login Data</a>
   <a href="crud_attendance.php">Attendance Data</a>
+  <a href="crud_report.php">Attendance Report</a>
   <a href="../logout.php" class="right">Logout</a>
   <a class="right">Welcome <?php echo $_SESSION['mysesi'] ?></a>
 </div>
