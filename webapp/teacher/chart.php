@@ -27,17 +27,17 @@ $result7 = mysqli_query($link, "SELECT * FROM student_table WHERE class_list IN(
 // SELECT COUNT(ProductID) AS NumberOfProducts FROM Products;
 
 // $result8 = mysqli_query($link, "SELECT COUNT(*) AS `NumberOfStudents` FROM `student_table` WHERE `class_list` IN ('".$array."') OR `class_list`=2 ");
-$result8 = mysqli_query($link, "SELECT COUNT(*) AS `NumberOfStudents` FROM `student_table`");
-$row8 = mysqli_fetch_array($result8);
-$count = $row8['NumberOfStudents'];
+// $result8 = mysqli_query($link, "SELECT COUNT(*) AS `NumberOfStudents` FROM `student_table`");
+// $row8 = mysqli_fetch_array($result8);
+// $count = $row8['NumberOfStudents'];
 
-$result9 = mysqli_query($link, "SELECT COUNT(*) AS `abc` , clock_in , student_number , class_number FROM `attendance_table` ");
-$row9 = mysqli_fetch_array($result9);
-$count9 = $row9['abc'];
+// $result9 = mysqli_query($link, "SELECT COUNT(*) AS `abc` , clock_in , student_number , class_number FROM `attendance_table` ");
+// $row9 = mysqli_fetch_array($result9);
+// $count9 = $row9['abc'];
 
-$result10 = mysqli_query($link, "SELECT COUNT(*) AS `abc` FROM `attendance_table` WHERE DATE(clock_in) = '2020-11-09' ");
-$row10 = mysqli_fetch_array($result10);
-$count10 = $row10['abc'];
+// $result10 = mysqli_query($link, "SELECT COUNT(*) AS `abc` FROM `attendance_table` WHERE DATE(clock_in) = '2020-11-09' ");
+// $row10 = mysqli_fetch_array($result10);
+// $count10 = $row10['abc'];
 
 // SELECT *, DATE_FORMAT(clock_in, '%Y-%m-%dT%H:%i') AS custom_date 
 // FROM attendance_table 
@@ -59,7 +59,16 @@ function filterTable($query){
   $connect = mysqli_connect("localhost", "admin", "password", "attendance");
   $filter_Result = mysqli_query($connect, $query);
   return $filter_Result;
-  }
+}
+
+
+// $result8 = mysqli_query($link, "SELECT *
+// 								FROM   student_table s
+// 								WHERE  NOT EXISTS ( SELECT *
+//                                     FROM   attendance_table a
+//                                     WHERE  s.student_number= a.student_number AND a.clock_in = ".$valueToSearch." )"
+//                                   );
+
 ?>
 
 <!DOCTYPE html>
@@ -100,7 +109,6 @@ function filterTable($query){
 
 <a href="class_members.php">View Class Members</a><br/><br/>
 
-<strong>Attendance Report</strong>
   <form action="chart.php" method="post">
     <label> Search </label>
     <input type ="text" name="valueToSearch" placeholder="Search information">
@@ -138,6 +146,7 @@ function filterTable($query){
 			?>
 		</table>
 	</div>
+
 </div>
 
 <div class="footer">

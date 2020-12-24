@@ -58,12 +58,11 @@ function filterTable($query){
 <h3 class="text-center">Attendance Table</h3><br/> 
 <a href="add_attendance_table.html">Add New Attendance Data</a><br/><br/>
 
-<strong>Attendance Report</strong>
   <form action="crud_report.php" method="post">
     <label> Search </label>
     <input type ="text" name="valueToSearch" placeholder="Search information">
     <input type ="submit" name="search" value="filter">
-  </form>
+  </form> <br><br>
 
 	<div class="table-responsive" id="attendance_table">  
 		<table class="table table-bordered">  
