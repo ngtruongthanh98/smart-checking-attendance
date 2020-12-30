@@ -103,41 +103,6 @@ $result8 = mysqli_query($link, "SELECT *
 			?>
 		</table>
 	</div>
-
-		
-	<h1>Students who do not join in any lesson day</h1>	
-
-	<div class="table-responsive" id="info_table">  
-		<table class="table table-bordered">  
-			<tr>  
-				<th><a class="column_sort" id="id_stu" data-order="desc" href="#">ID</a></th>  
-				<th><a class="column_sort" id="first_name" data-order="desc" href="#">First Name</a></th>  
-				<th><a class="column_sort" id="last_name" data-order="desc" href="#">Last Name</a></th>  
-				<th><a class="column_sort" id="student_number" data-order="desc" href="#">Student Number</a></th>  
-				<th><a class="column_sort" id="email" data-order="desc" href="#">Email</a></th>
-				<th><a class="column_sort" id="rfid_uid" data-order="desc" href="#">RFID_UID</a></th> 
-				<th><a class="column_sort" id="class_list" data-order="desc" href="#">Class List</a></th> 
-				<th><a class="column_sort" id="created" data-order="desc" href="#">Created</a></th>  
-			</tr>  
-			<?php  
-			while($row = mysqli_fetch_array($result8))  
-			{  
-			?>  
-			<tr>  
-				<td><?php echo $row["id_stu"]; ?></td>  
-				<td><?php echo $row["first_name"]; ?></td>  
-				<td><?php echo $row["last_name"]; ?></td>  
-				<td><?php echo $row["student_number"]; ?></td>  
-				<td><?php echo $row["email"]; ?></td>  
-				<td><?php echo $row["rfid_uid"]; ?></td>  
-				<td><?php echo $row["class_list"]; ?></td>  
-				<td><?php echo $row["created"]; ?></td>
-			</tr>  
-			<?php  
-			}  
-			?>
-		</table>
-	</div>
 </div>
 
 
