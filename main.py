@@ -57,6 +57,9 @@ l5.grid(column=0, row=4)
 t5=tk.Entry(window,width=50,bd=5)
 t5.grid(column=1, row=4)
 
+detector = dlib.get_frontal_face_detector()
+predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
+
 def checking_attendance(): 
     global value
     value = 1
@@ -64,15 +67,12 @@ def checking_attendance():
     def call_var():
         global value
         value = 0
-    
-    detector = dlib.get_frontal_face_detector()
-    predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
-    
+        
     def midpoint(p1,p2):
         return int((p1.x + p2.x)/2),int((p1.y + p2.y)/2)
 
     font = cv2.FONT_HERSHEY_SIMPLEX
-
+        
     def get_blinking_ratio(eye_points, facial_landmarks):
         left_point = (facial_landmarks.part(eye_points[0]).x, facial_landmarks.part(eye_points[0]).y)
         right_point = (facial_landmarks.part(eye_points[3]).x, facial_landmarks.part(eye_points[3]).y)
@@ -87,6 +87,7 @@ def checking_attendance():
         ver_line_length = hypot((center_top[0] - center_bottom[0]), (center_top[1] - center_bottom[1]))
         ratio = hor_line_length/ ver_line_length, ver_line_length
         return ratio
+
 
     # 1) Check the sv
     mydb=mysql.connector.connect(
@@ -108,7 +109,9 @@ def checking_attendance():
         result = cursor.fetchone()
             
         if cursor.rowcount >= 1:
-            messagebox.showinfo('Notification','Welcome ' + result[0] +'\nClick OK to start Camera')
+            messagebox.showinfo('Notification','Welcome ' + result[0] + ' ' + result[1] +
+                                '\nStudent ID: ' + str(result[2]) +
+                                '\n\nClick OK to start Camera')
             print(result[0]+"'s RFID card")
             
             # 2) Check khuon mat
@@ -569,3 +572,5 @@ b4.place(x=300,y=240)
 
 window.geometry("910x320")
 window.mainloop()
+
+
