@@ -9,59 +9,52 @@ if (!isset($_SESSION['class_list_ses']) && !isset($_SESSION['mysesi']) && !isset
 
 <?php
 //including the database connection file
-include_once("../config.php");
+include_once("../config.php");	
 
 $result = mysqli_query($link, "SELECT * FROM student_table ORDER BY id_stu"); // using mysqli_query instead
 $result2 = mysqli_query($link, "SELECT * FROM teacher_table ORDER BY id_teacher"); // using mysqli_query instead
 $result3 = mysqli_query($link, "SELECT * FROM class_table ORDER BY id_class"); // using mysqli_query instead
 $result5 = mysqli_query($link, "SELECT * FROM attendance_table ORDER BY id_atd"); // using mysqli_query instead
 
-$class_list_var = $_SESSION['class_list_ses'];
-$array = array_map('intval', explode(',', $class_list_var));
-$array = implode("','",$array);
-
-$result7 = mysqli_query($link, "SELECT * FROM student_table WHERE class_list IN('".$array."') ");
-
+// $class_list_var = $_SESSION['class_list_ses'];
+// $array = array_map('intval', explode(',', $class_list_var));
+// $array = implode("','",$array);
+// $result7 = mysqli_query($link, "SELECT * FROM student_table WHERE class_list IN('".$array."') ");
 
 ?>
 
 <?php
 if (isset($_POST["search"])) {
-  $valueToSearch= $_POST['valueToSearch'];
-  $query = "SELECT * FROM `attendance_table` WHERE CONCAT(`id_atd`, `first_name`, `last_name`, `student_number`, `class_number`, `clock_in`) 
-  				LIKE '%".$valueToSearch."%'";
-  $search_result = filterTable($query);
+	  $valueToSearch= $_POST['valueToSearch'];
+	  $course = $_POST['course'];
+  	$query = "SELECT * FROM `attendance_table` WHERE CONCAT(`id_atd`, `first_name`, `last_name`, `student_number`, `class_number`, `clock_in`) 
+  				LIKE '%".$valueToSearch."%' AND class_number LIKE '%".$course."%'";
+  	$search_result = filterTable($query);
   //present_student
-  $result123 = mysqli_query($link, "SELECT COUNT(*) AS `present` FROM `attendance_table` WHERE clock_in LIKE '%".$valueToSearch."%'");
-  $row11 = mysqli_fetch_array($result123);
-  $count123 = $row11['present'];
+ 	 $result123 = mysqli_query($link, "SELECT COUNT(*) AS `present` FROM `attendance_table` WHERE clock_in LIKE '%".$valueToSearch."%'");
+  	$row11 = mysqli_fetch_array($result123);
+  	$count123 = $row11['present'];
   //total student
-  $result100 = mysqli_query($link, "SELECT * FROM student_table");
-  $row7 = mysqli_num_rows($result7);
+  		$query7 = "SELECT * FROM student_table WHERE class_list LIKE '%".$course."%'";
+		$result7 = mysqli_query($link, $query7);
+		$row7 = mysqli_num_rows($result7);
   //absent_student
-  $absent = $row7 - $count123;
+  	$absent = $row7 - $count123;
   //insert data into chart_table
-  $add123 = mysqli_query($link, "INSERT INTO chart_table(total_student,present_student, absent_student, present_date) 
-							VALUES('$row7' ,'$count123', '$absent' ,'$valueToSearch')
-							WHERE NOT EXISTS (SELECT id_chart,total_student,present_student, absent_student, present_date 
-											  WHERE present_date = '$valueToSearch')");
-	$result8 = mysqli_query($link, "SELECT *
-		FROM   student_table s
-		WHERE  NOT EXISTS ( SELECT *
-							FROM   attendance_table a
-							WHERE  s.student_number= a.student_number AND DATE(a.clock_in)='$valueToSearch')");
+  	$add123 = mysqli_query($link, "INSERT INTO chart_table(total_student, present_student, absent_student, present_date) 
+				VALUES('$row7' ,'$count123', '$absent' ,'$valueToSearch')
+				WHERE NOT EXISTS (SELECT * FROM chart_table WHERE present_date = '$valueToSearch')");
 }
 	else{
       $query = "SELECT * FROM `attendance_table`";
       $search_result = filterTable($query);
 }
+
 function filterTable($query){
   $connect = mysqli_connect("localhost", "root", "", "attendance");
   $filter_Result = mysqli_query($connect, $query);
   return $filter_Result;
 }
-
-
 
 ?>
 
@@ -103,12 +96,24 @@ function filterTable($query){
 
 <a href="class_members.php">View Class Members</a><br/><br/>
 
-<button class = "btn btn-primary btn-sm"><a href = "show_chart.php" style = "text-decoration: none; color: #fff;"><i class="fas fa-chart-bar"></i> Gprahical Results</a></button> <br/><br/>
+<button class = "btn btn-primary btn-sm"><a href = "show_chart.php" style = "text-decoration: none; color: #fff;"><i class="fas fa-chart-bar"></i> Graphical Results</a></button> <br/><br/>
 
   <form action="chart.php" method="post">
-    <label> Search </label>
-    <input type ="text" name="valueToSearch" placeholder="Search information">
-    <input type ="submit" name="search" value="filter">
+  	<div class = "form-group">
+    	<label> Search </label>
+    	<input type ="text" name="valueToSearch" placeholder="Search information">
+	</div>
+	<div class = "form-group">
+		<label> Choose a class </label>
+		<select name = "course" >
+  		<option> Select </option>
+  		<option value = "6"> 6 </option>
+  		<option value = "8"> 8 </option>
+		</select>
+	</div>
+	<div class = "form-group">
+    	<input type ="submit" name="search" value="filter">
+	</div>
   </form>
   <br>
   <br>
@@ -143,25 +148,29 @@ function filterTable($query){
 			?>
 		</table>
 	</div>
-
+			<?php  
+			if (isset($_POST["search"])) {
+				$result8 = mysqli_query($link, "SELECT * FROM   student_table s WHERE  NOT EXISTS ( SELECT * FROM   attendance_table a
+							WHERE  s.student_number = a.student_number AND DATE(a.clock_in)='$valueToSearch') AND s.class_list LIKE '%".$course."%'");
+			?>
 	<h2>Absent students</h2>
 
-	<div class="table-responsive" id="info_table">  
+		<div class="table-responsive" id="info_table">  
 		<table class="table table-bordered">  
-			<tr>  
-				<th><a class="column_sort" id="id_stu" data-order="desc" href="#">ID</a></th>  
-				<th><a class="column_sort" id="first_name" data-order="desc" href="#">First Name</a></th>  
-				<th><a class="column_sort" id="last_name" data-order="desc" href="#">Last Name</a></th>  
-				<th><a class="column_sort" id="student_number" data-order="desc" href="#">Student Number</a></th>  
-				<th><a class="column_sort" id="email" data-order="desc" href="#">Email</a></th>
-				<th><a class="column_sort" id="rfid_uid" data-order="desc" href="#">RFID_UID</a></th> 
-				<th><a class="column_sort" id="class_list" data-order="desc" href="#">Class List</a></th> 
-				<th><a class="column_sort" id="created" data-order="desc" href="#">Created</a></th>  
-			</tr>  
-			<?php  
+		<tr>  
+			<th><a class="column_sort" id="id_stu" data-order="desc" href="#">ID</a></th>  
+			<th><a class="column_sort" id="first_name" data-order="desc" href="#">First Name</a></th>  
+			<th><a class="column_sort" id="last_name" data-order="desc" href="#">Last Name</a></th>  
+			<th><a class="column_sort" id="student_number" data-order="desc" href="#">Student Number</a></th>  
+			<th><a class="column_sort" id="email" data-order="desc" href="#">Email</a></th>
+			<th><a class="column_sort" id="rfid_uid" data-order="desc" href="#">RFID_UID</a></th> 
+			<th><a class="column_sort" id="class_list" data-order="desc" href="#">Class List</a></th> 
+			<th><a class="column_sort" id="created" data-order="desc" href="#">Created</a></th> 
+		</tr>
+			<?php
 			while($row = mysqli_fetch_array($result8))  
 			{  
-			?>  
+			?>	   
 			<tr>  
 				<td><?php echo $row["id_stu"]; ?></td>  
 				<td><?php echo $row["first_name"]; ?></td>  
@@ -173,7 +182,8 @@ function filterTable($query){
 				<td><?php echo $row["created"]; ?></td>
 			</tr>  
 			<?php  
-			}  
+			}
+		} else{ echo " ";}  
 			?>
 		</table>
 	</div>

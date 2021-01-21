@@ -58,6 +58,10 @@ $result5 = mysqli_query($link, "SELECT * FROM attendance_table WHERE class_numbe
 
 <h3 class="text-center">Attendance Table</h3><br/> 
 <a href="add_attendance_table.html">Add New Attendance Data</a><br/><br/>
+<form method="post" action="export.php">
+     <input type="submit" name="export" class="btn btn-success" value="Export" />
+</form>
+</br>
 	<div class="table-responsive" id="attendance_table">  
 		<table class="table table-bordered">  
 			<tr>  
