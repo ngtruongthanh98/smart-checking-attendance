@@ -41,9 +41,9 @@ if (isset($_POST["search"])) {
   //absent_student
   	$absent = $row7 - $count123;
   //insert data into chart_table
-  	$add123 = mysqli_query($link, "INSERT INTO chart_table(total_student, present_student, absent_student, present_date) 
-				VALUES('$row7' ,'$count123', '$absent' ,'$valueToSearch')
-				WHERE NOT EXISTS (SELECT * FROM chart_table WHERE present_date = '$valueToSearch')");
+  $query8 = "UPDATE chart_table SET total_student = '$row7', present_student = '$count123',
+	absent_student = '$absent', present_date = '$valueToSearch' WHERE present_date = '$valueToSearch'";
+	$add12 = mysqli_query($link, $query8);
 }
 	else{
       $query = "SELECT * FROM `attendance_table`";
