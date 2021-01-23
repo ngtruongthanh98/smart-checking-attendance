@@ -196,11 +196,11 @@ def checking_attendance():
                                         
                                         mycursor3=mydb.cursor()
                                         mycursor3.execute("SELECT * FROM attendance_table")
-                                        id_atd=1
-                                        myresult=mycursor.fetchall()                   
-                                        for x in myresult:
-                                            id_atd+=1
-                                        mycursor3.execute("INSERT INTO attendance_table (id_atd, first_name, last_name, student_number, class_number) VALUES (%s,%s,%s,%s,%s)", (id_atd,result[0],result[1],result[2],id_class,))
+                                        myresult=mycursor.fetchall()
+#                                         id_atd=1
+#                                         for x in myresult:
+#                                             id_atd+=1
+                                        mycursor3.execute("INSERT INTO attendance_table (first_name, last_name, student_number, class_number) VALUES (%s,%s,%s,%s)", (result[0],result[1],result[2],id_class,))
                                         mydb.commit() 
                                         print("Save attendance data to database\n")
                                         
@@ -254,7 +254,8 @@ def checking_attendance():
                                         print(msg)
                                         smtpserver.sendmail(gmail_user, to, msg)
                                         print('sent mail\n____________________________________')
-                                        smtpserver.close()                                       
+                                        smtpserver.close()
+                                        messagebox.showinfo('Completed check attendance','-------------Email sent-------------')
 
                                     else:
                                         print("Correct day, but no class now")

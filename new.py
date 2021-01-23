@@ -91,10 +91,10 @@ def checking_attendance():
 
     # 1) Check the sv
     mydb=mysql.connector.connect(
-        host="localhost",
-        user="admin",
-        passwd="password",
-        database="attendance"
+        host="85.10.205.173",
+        user="thanhnguyen",
+        passwd="123456789",
+        database="attendance_bku"
     )
     cursor = mydb.cursor()
     reader = SimpleMFRC522()
@@ -129,10 +129,10 @@ def checking_attendance():
                     def check_attendance_main():
                         
                         mydb=mysql.connector.connect(
-                            host="localhost",
-                            user="admin",
-                            passwd="password",
-                            database="attendance"
+                            host="85.10.205.173",
+                            user="thanhnguyen",
+                            passwd="123456789",
+                            database="attendance_bku"
                         )
                         
                         mycursor=mydb.cursor()
@@ -254,7 +254,8 @@ def checking_attendance():
                                         print(msg)
                                         smtpserver.sendmail(gmail_user, to, msg)
                                         print('sent mail\n____________________________________')
-                                        smtpserver.close()                                       
+                                        smtpserver.close()
+                                        messagebox.showinfo('Completed check attendance','-------------Email sent-------------')
 
                                     else:
                                         print("Correct day, but no class now")
@@ -416,10 +417,10 @@ def generate_dataset():
         if(re.search(regex_email,t4.get())):
             
             mydb=mysql.connector.connect(
-                host="localhost",
-                user="admin",
-                passwd="password",
-                database="attendance"
+                host="85.10.205.173",
+                user="thanhnguyen",
+                passwd="123456789",
+                database="attendance_bku"
             )
             mycursor=mydb.cursor()
             mycursor.execute("SELECT * FROM student_table")
@@ -509,10 +510,10 @@ def generate_dataset():
             messagebox.showinfo('Result','Generating dataset completed!!!')
             
             mydb=mysql.connector.connect(
-                host="localhost",
-                user="admin",
-                passwd="password",
-                database="attendance"
+                host="85.10.205.173",
+                user="thanhnguyen",
+                passwd="123456789",
+                database="attendance_bku"
             )
                 
             mycursor=mydb.cursor()
