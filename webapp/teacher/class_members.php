@@ -30,19 +30,7 @@ $result8 = mysqli_query($link, "SELECT *
 													FROM   attendance_table a
 													WHERE  s.student_number= a.student_number)"
 						);	
-// if ($options = 10) {
-//   $query = "SELECT * FROM `student_table` WHERE class_list LIKE '%".$options."%'";
-//   $search_result = filterTable($query);
-// }
-// 	else{
-//       $query = "SELECT * FROM `student_table`";
-//       $search_result = filterTable($query);
-// }
-// function filterTable($query){
-//   $connect = mysqli_connect("localhost", "root", "", "attendance");
-//   $filter_Result = mysqli_query($connect, $query);
-//   return $filter_Result;
-//   }
+
 ?>
 
 

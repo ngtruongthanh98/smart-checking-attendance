@@ -51,7 +51,7 @@ if (isset($_POST["search"])) {
 }
 
 function filterTable($query){
-  $connect = mysqli_connect("localhost", "root", "", "attendance");
+  $connect = mysqli_connect("localhost", "admin", "password", "attendance");
   $filter_Result = mysqli_query($connect, $query);
   return $filter_Result;
 }

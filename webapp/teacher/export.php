@@ -1,7 +1,7 @@
 <?php  
 //export.php  
 include_once("../config.php");
-$connect = mysqli_connect("localhost", "root", "", "attendance");
+$connect = mysqli_connect("localhost", "admin", "password", "attendance");
 $output = '';
 if(isset($_POST["export"]))
 {
