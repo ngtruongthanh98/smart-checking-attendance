@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jan 23, 2021 at 07:52 PM
+-- Generation Time: Jan 24, 2021 at 02:06 PM
 -- Server version: 10.3.27-MariaDB-0+deb10u1
 -- PHP Version: 7.3.19-1~deb10u1
 
@@ -49,7 +49,7 @@ INSERT INTO `attendance_table` (`id_atd`, `first_name`, `last_name`, `student_nu
 (7, 'Thanh', 'Nguyen Truong', 1652557, '8', '2020-12-14 09:43:58'),
 (8, 'Khoa', 'Nguyen Dang', 1651005, '8', '2020-11-16 09:05:00'),
 (9, 'Nhat', 'Nguyen Tran Bao', 1651011, '8', '2020-11-16 09:06:10'),
-(10, 'Thanh', 'Le An', 1651012, '8', '2020-11-16 09:04:20'),
+(10, 'Thao', 'Le An', 1651012, '8', '2020-11-16 09:04:20'),
 (11, 'Nguyen', 'Do Cao', 1651013, '8', '2020-11-16 09:03:05'),
 (12, 'Sang', 'Nguyen Quang', 1651014, '8', '2020-11-16 09:02:00'),
 (13, 'Minh', 'Nguyen Ngoc', 1651016, '8', '2020-11-16 09:01:00'),
@@ -59,7 +59,7 @@ INSERT INTO `attendance_table` (`id_atd`, `first_name`, `last_name`, `student_nu
 (18, 'Minh', 'Doan Xuan', 1852168, '8', '2020-11-16 09:04:09'),
 (19, 'Dai', 'Tran Quang', 1552089, '8', '2020-11-16 09:05:15'),
 (20, 'Nhat', 'Nguyen Tran Bao', 1651011, '8', '2020-11-23 09:10:00'),
-(21, 'Thanh', 'Le An', 1651012, '8', '2020-11-23 09:09:00'),
+(21, 'Thao', 'Le An', 1651012, '8', '2020-11-23 09:09:00'),
 (22, 'Nguyen', 'Do Cao', 1651013, '8', '2020-11-23 09:08:00'),
 (23, 'Sang', 'Nguyen Quang', 1651014, '8', '2020-11-23 09:08:00'),
 (24, 'Minh', 'Nguyen Ngoc', 1651016, '8', '2020-11-23 09:04:00'),
@@ -71,7 +71,7 @@ INSERT INTO `attendance_table` (`id_atd`, `first_name`, `last_name`, `student_nu
 (30, 'Toan', 'Nguyen Van', 1552004, '8', '2020-11-23 09:02:15'),
 (31, 'Hung', 'Nguyen Manh', 1651004, '8', '2020-11-30 09:08:00'),
 (32, 'Nhat', 'Nguyen Tran Bao', 1651011, '8', '2020-11-30 09:07:00'),
-(33, 'Thanh', 'Le An', 1651012, '8', '2020-11-30 09:06:00'),
+(33, 'Thao', 'Le An', 1651012, '8', '2020-11-30 09:06:00'),
 (34, 'Nguyen', 'Do Cao', 1651013, '8', '2020-11-30 09:04:09'),
 (35, 'Sang', 'Nguyen Quang', 1651014, '8', '2020-11-30 09:01:00'),
 (36, 'Minh', 'Nguyen Ngoc', 1651016, '8', '2020-11-30 09:05:07'),
@@ -92,7 +92,7 @@ INSERT INTO `attendance_table` (`id_atd`, `first_name`, `last_name`, `student_nu
 (51, 'Cat', 'Nguyen Ngoc Gia', 1651018, '8', '2020-12-07 09:10:00'),
 (52, 'Anh', 'Le Thi Dieu', 1651000, '8', '2020-12-14 09:02:00'),
 (53, 'Nhat', 'Nguyen Tran Bao', 1651011, '8', '2020-12-14 09:03:00'),
-(54, 'Thanh', 'Le An', 1651012, '8', '2020-12-14 09:04:00'),
+(54, 'Thao', 'Le An', 1651012, '8', '2020-12-14 09:04:00'),
 (55, 'Nguyen', 'Do Cao', 1651013, '8', '2020-12-14 09:05:00'),
 (56, 'Sang', 'Nguyen Quang', 1651014, '8', '2020-12-14 09:06:00'),
 (57, 'Minh', 'Nguyen Ngoc', 1651016, '8', '2020-12-14 09:07:00'),
@@ -104,7 +104,7 @@ INSERT INTO `attendance_table` (`id_atd`, `first_name`, `last_name`, `student_nu
 (63, 'Hang', 'Nguyen Thi Thu', 1656868, '8', '2020-11-09 09:02:04'),
 (64, 'Dan', 'Nguyen Ngoc Linh', 1651007, '8', '2020-11-09 09:02:06'),
 (65, 'Nhat', 'Nguyen Tran Bao', 1651011, '8', '2020-11-09 09:02:08'),
-(66, 'Thanh', 'Le An', 1651012, '8', '2020-11-09 09:02:10'),
+(66, 'Thao', 'Le An', 1651012, '8', '2020-11-09 09:02:10'),
 (67, 'Nguyen', 'Do Cao', 1651013, '8', '2020-11-09 09:02:12'),
 (68, 'Sang', 'Nguyen Quang', 1651014, '8', '2020-11-09 09:02:14'),
 (69, 'Minh', 'Nguyen Ngoc', 1651016, '8', '2020-11-09 09:02:15'),
@@ -114,7 +114,7 @@ INSERT INTO `attendance_table` (`id_atd`, `first_name`, `last_name`, `student_nu
 (73, 'Cuong', 'Nguyen Duy', 1651019, '8', '2020-11-09 09:02:22'),
 (74, 'Toan', 'Phan Minh', 1852798, '8', '2020-11-09 09:02:25'),
 (75, 'Nhat', 'Nguyen Tran Bao', 1651011, '8', '2020-11-02 09:03:05'),
-(76, 'Thanh', 'Le An', 1651012, '8', '2020-11-02 09:03:07'),
+(76, 'Thao', 'Le An', 1651012, '8', '2020-11-02 09:03:07'),
 (77, 'Nguyen', 'Do Cao', 1651013, '8', '2020-11-02 09:03:09'),
 (78, 'Sang', 'Nguyen Quang', 1651014, '8', '2020-11-02 09:03:11'),
 (79, 'Minh', 'Nguyen Ngoc', 1651016, '8', '2020-11-02 09:03:13'),
@@ -133,7 +133,7 @@ INSERT INTO `attendance_table` (`id_atd`, `first_name`, `last_name`, `student_nu
 (92, 'Dang', 'Nguyen Hai', 1651002, '6', '2020-11-06 12:01:03'),
 (93, 'Nhat', 'Nguyen An', 1651010, '6', '2020-11-06 12:01:05'),
 (94, 'Nhat', 'Nguyen Tran Bao', 1651011, '6', '2020-11-06 12:01:08'),
-(95, 'Thanh', 'Le An', 1651012, '6', '2020-11-06 12:01:09'),
+(95, 'Thao', 'Le An', 1651012, '6', '2020-11-06 12:01:09'),
 (96, 'Minh', 'Nguyen Ngoc', 1651016, '6', '2020-11-06 12:01:11'),
 (97, 'Cuong', 'Nguyen Duy', 1651019, '6', '2020-11-06 12:01:13'),
 (98, 'Thuan', 'Ngo Nguyen', 1752525, '6', '2020-11-06 12:01:15'),
@@ -146,7 +146,7 @@ INSERT INTO `attendance_table` (`id_atd`, `first_name`, `last_name`, `student_nu
 (105, 'Dang', 'Nguyen Hai', 1651002, '6', '2020-11-13 12:02:10'),
 (106, 'Nhat', 'Nguyen An', 1651010, '6', '2020-11-13 12:02:12'),
 (107, 'Nhat', 'Nguyen Tran Bao', 1651011, '6', '2020-11-13 12:02:14'),
-(108, 'Thanh', 'Le An', 1651012, '6', '2020-11-13 12:02:20'),
+(108, 'Thao', 'Le An', 1651012, '6', '2020-11-13 12:02:20'),
 (109, 'Minh', 'Nguyen Ngoc', 1651016, '6', '2020-11-13 12:02:30'),
 (110, 'Cuong', 'Nguyen Duy', 1651019, '6', '2020-11-13 12:02:40'),
 (111, 'Thuan', 'Ngo Nguyen', 1752525, '6', '2020-11-13 12:02:50'),
@@ -158,7 +158,7 @@ INSERT INTO `attendance_table` (`id_atd`, `first_name`, `last_name`, `student_nu
 (117, 'Dang', 'Nguyen Hai', 1651002, '6', '2020-11-20 12:03:09'),
 (118, 'Nhat', 'Nguyen An', 1651010, '6', '2020-11-20 12:03:10'),
 (119, 'Nhat', 'Nguyen Tran Bao Nhat', 1651011, '6', '2020-11-20 12:03:20'),
-(120, 'Thanh', 'Le An', 1651012, '6', '2020-11-20 12:03:30'),
+(120, 'Thao', 'Le An', 1651012, '6', '2020-11-20 12:03:30'),
 (121, 'Minh', 'Nguyen Ngoc', 1651016, '6', '2020-11-20 12:03:40'),
 (122, 'Cuong', 'Nguyen Duy', 1651019, '6', '2020-11-20 12:03:50'),
 (123, 'Thuan', 'Ngo Nguyen', 1752525, '6', '2020-11-20 12:03:55'),
@@ -169,7 +169,7 @@ INSERT INTO `attendance_table` (`id_atd`, `first_name`, `last_name`, `student_nu
 (128, 'Dang', 'Nguyen Hai', 1651002, '6', '2020-11-27 12:04:09'),
 (129, 'Nhat', 'Nguyen An', 1651010, '6', '2020-11-27 12:04:12'),
 (130, 'Nhat', 'Nguyen Tran Bao', 1651011, '6', '2020-11-27 12:04:15'),
-(131, 'Thanh', 'Le An', 1651012, '6', '2020-11-27 12:04:18'),
+(131, 'Thao', 'Le An', 1651012, '6', '2020-11-27 12:04:18'),
 (132, 'Minh', 'Nguyen Ngoc', 1651016, '6', '2020-11-27 12:04:19'),
 (133, 'Cuong', 'Nguyen Duy', 1651019, '6', '2020-11-27 12:04:25'),
 (134, 'Thuan', 'Ngo Nguyen', 1752525, '6', '2020-11-27 12:04:29'),
@@ -181,7 +181,7 @@ INSERT INTO `attendance_table` (`id_atd`, `first_name`, `last_name`, `student_nu
 (140, 'Dang', 'Nguyen Hai', 1651002, '6', '2020-12-04 12:05:04'),
 (141, 'Nhat', 'Nguyen An', 1651010, '6', '2020-12-04 12:05:06'),
 (142, 'Nhat', 'Nguyen Tran Bao', 1651011, '6', '2020-12-04 12:05:08'),
-(143, 'Thanh', 'Le An', 1651012, '6', '2020-12-04 12:05:10'),
+(143, 'Thao', 'Le An', 1651012, '6', '2020-12-04 12:05:10'),
 (144, 'Minh', 'Nguyen Ngoc', 1651016, '6', '2020-12-04 12:05:15'),
 (145, 'Cuong', 'Nguyen Duy', 1651019, '6', '2020-12-04 12:05:20'),
 (146, 'Thuan', 'Ngo Nguyen', 1752525, '6', '2020-12-04 12:05:25'),
@@ -370,8 +370,7 @@ INSERT INTO `login_table` (`id_login`, `fname`, `lname`, `email`, `username`, `p
 (4, 'Hang', 'Nguyen Thi Thu', '1656868@hcmut.edu.vn', '1656868', '1b7ccfd51671f7414c4ea918f26ea402', 'student', NULL),
 (5, 'admin', 'system', 'admin@gmail.com', 'admin', '5f4dcc3b5aa765d61d8327deb882cf99', 'admin', NULL),
 (6, 'teacher', 'system', 'teacher@gmail.com', 'teacher', '5f4dcc3b5aa765d61d8327deb882cf99', 'teacher', NULL),
-(7, 'Anh', 'Pham Hoang', 'anhphamhoang@gmail.com', 'anhphamhoang', '25f9e794323b453885f5181f1b624d0b', 'teacher', NULL),
-(8, 'tuid', 'fdsx', 'aseidu@gmail.com', '154816', '109b1afec4a8b130e017bb848bb635ee', 'student', NULL);
+(7, 'Anh', 'Pham Hoang', 'anhphamhoang@gmail.com', 'anhphamhoang', '25f9e794323b453885f5181f1b624d0b', 'teacher', NULL);
 
 -- --------------------------------------------------------
 
@@ -444,8 +443,7 @@ INSERT INTO `student_table` (`id_stu`, `first_name`, `last_name`, `student_numbe
 (47, 'Van', 'Nguyen Xuan', 1657894, '1657894@hcmut.edu.vn', '3325145408426', '3, 5, 6', '2020-10-30 09:28:11'),
 (48, 'Khai', 'Vo Quoc', 1552589, '1552589@hcmut.edu.vn', '3326524002489', '1, 4, 9', '2020-10-30 09:28:12'),
 (49, 'Tuong', 'Tran Duy', 1754848, '1754848@hcmut.edu.vn', '26316500549120', '1, 2, 5, 7', '2020-10-30 09:28:13'),
-(50, 'Duy', 'Le', 1557854, '1557854@hcmut.edu.vn', '26314518549120', '1, 2, 6, 7', '2020-10-30 09:28:14'),
-(51, 'tuid', 'fdsx', 154816, 'aseidu@gmail.com', '659858957104', '1', '2021-01-23 18:40:13');
+(50, 'Duy', 'Le', 1557854, '1557854@hcmut.edu.vn', '26314518549120', '1, 2, 6, 7', '2020-10-30 09:28:14');
 
 -- --------------------------------------------------------
 
